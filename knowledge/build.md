@@ -8,7 +8,7 @@
 | `core/` | Plain Java 17 build, JUnit 5. Only compiles and tests `core/src`; no game code |
 | `bta/` | Loom build of the mod (Kotlin DSL, from Turnip-Labs/bta-example-mod via Betafront). Compiles `../core/src/main/java` into the mod jar |
 | `bta/gradle/libs.versions.toml` | All versions (table below) |
-| `.github/workflows/build.yml` | CI |
+| `.github/workflows/build.yml`, `release.yml` | CI and tagged releases |
 | `.run/` | IntelliJ run configurations: Build All, Core Tests, Run Client |
 
 ## Commands
@@ -23,6 +23,16 @@
 ## CI (GitHub Actions)
 
 `build.yml` runs on every pull request, every push to `main`, and by hand (`workflow_dispatch`). It installs Temurin 17 and 21 (21 runs Gradle, 17 is the toolchain via `-Porg.gradle.java.installations.fromEnv=JAVA_HOME_17_X64`), runs `-p core test`, then `-p bta build`, and uploads the mod jar as the `bta-json-extended` artifact (test reports on failure). A newer push to the same PR cancels the older run.
+
+## Releases
+
+1. Set `mod_version` in `bta/gradle.properties` (the jar is `bta-json-extended-<version>+8.0.1.jar`).
+2. Rename `## Unreleased` in `CHANGELOG.md` to `## <version>` and start a new empty `## Unreleased`.
+3. Merge that through a PR, then tag main: `git tag v<version> && git push origin v<version>`.
+
+`release.yml` then checks the tag matches `mod_version`, takes that version's CHANGELOG section as the notes, runs the tests, builds, and opens a **draft** GitHub release with the jar and sources jar. Dave reviews the draft and presses Publish; nothing is published automatically.
+
+Dependabot (`.github/dependabot.yml`) opens a monthly PR for GitHub Actions updates only. Mod and Gradle versions stay pinned by hand.
 
 ## Notes
 
