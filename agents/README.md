@@ -7,7 +7,8 @@ Each agent has one job. A brief says what it **owns** (may edit), what it **read
 | Platform | [platform.md](platform.md) | BTA integration everyone builds on: model interface, lighting, registration, all mixins |
 | Blockstates | [blockstates.md](blockstates.md) | Blockstate JSON, meta properties, neighbour hook |
 | Items | [items.md](items.md) | Item model JSON, display transforms |
-| OBJ | [obj.md](obj.md) | OBJ/MTL parser and the OBJ model type |
+| OBJ | [obj.md](obj.md) | Our own OBJ/MTL parser and the OBJ model type |
+| glTF | [gltf.md](gltf.md) | GLB/glTF models and their animations (after parity) |
 | Tile entities | [tile-entities.md](tile-entities.md) | Model-driven tile entity renderers |
 | Animation | [animation.md](animation.md) | Blockbench animations and the player |
 | Build and release | [build-release.md](build-release.md) | Gradle, GitHub Actions, versions, changelog, releases |
