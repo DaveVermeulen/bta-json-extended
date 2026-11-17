@@ -10,7 +10,7 @@ Modern-Minecraft-style models for Better Than Adventure 8.0.1: blockstate JSON, 
 | Library | HalpLibe 6.2.0+8.0.1 |
 | Mod id | `jsonextended` |
 | Package | `io.github.tryrodave.jsonextended` |
-| Licence | LGPL-2.1-only (the OBJ code is adapted from NeoForge) |
+| Licence | MIT |
 
 Contributors and AI agents: start with [CLAUDE.md](CLAUDE.md).
 

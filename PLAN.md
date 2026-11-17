@@ -1,6 +1,6 @@
 # BTA JSON Extended: plan
 
-2026-11-17. Also in the Claude Doc: https://claude.ai/artifact/J4XZrJNFQosT1wNuCNHBSX
+2026-11-17. This file is the current plan; decisions live in knowledge/decisions.md.
 
 ## Name
 
@@ -36,7 +36,8 @@ Entry point: `BlockModelDispatcher.loadDataModel("ns:block/name")`.
 | Blockstate JSON | Java subclasses | `assets/<ns>/blockstates/<block>.json`: `variants`, `multipart`, `x`/`y`/`uvlock`, weighted variants, named properties from metadata |
 | Meta to properties | none | Declarative bit map per block, Java `StateResolver` hook for neighbour-dependent blocks |
 | Item models | `ItemModel` subclasses, one icon | `models/item/*.json`: `item/generated`, `item/handheld`, 3D items, `display` |
-| OBJ | none | `"loader": "betafront:obj"` / `neoforge:obj` as a model type |
+| OBJ | none | `"loader": "jsonextended:obj"` (old ids accepted), our own parser |
+| GLB / glTF | none | Meshes and node animations as a model type |
 | Unread JSON keys | `texture_size`, `render_type`, `loader`, `gui_light` ignored, poor errors | Handle cleanly; one readable log line per bad file |
 | Model tile entity renderers | hand-written | Generic renderer for JSON/OBJ/geo models with code-driven bones |
 | Animation | none at runtime (`pig.animation.json` is unused) | Bedrock `.animation.json` for entities and tile entities |
@@ -67,20 +68,24 @@ Mixins only where HalpLibe has no hook (likely the item display transform).
 
 ## Phases
 
+Priority: work like modern Minecraft first (phases 0 to 3), then extend on top (phases 4 to 7).
+
 | Phase | Scope | Done when | Size |
 | --- | --- | --- | --- |
-| 0. Repo + spike | New repo from Betafront `core/` + `bta/`; drop StationAPI. Block using `BlockModelGeneric` with a Blockbench JSON | A Blockbench "Java Block" export renders with no new code | 2-3 days |
+| **Parity** | | | |
+| 0. Build + spike | Gradle build (`core/` + `bta/`), GitHub Actions. Block using `BlockModelGeneric` with a Blockbench JSON | A Blockbench "Java Block" export renders with no new code; CI green | 2-3 days |
 | 1. Blockstates | variants, multipart, x/y/uvlock, weighted, meta property map, `StateResolver`, cache, errors | Rotatable, slab-like, fence-like examples driven only by JSON | 1.5-2 weeks |
-| 2. OBJ model type | Port OBJ core into a `StaticBlockModel`; `loader` key; usable from blockstates; smooth lighting | Crystal and ramp via blockstates. First public release | 1 week |
-| 3. Item models | generated/handheld layers, 3D items, display, gui_light | Example items right in hand, GUI, ground | 1.5-2 weeks |
-| 4. Model TE renderers | Generic renderer, bone transforms from code | Chest-style lid opens from code with a Blockbench model | 1-1.5 weeks |
-| 5. Animation | Bedrock keyframes (rot/pos/scale, linear + catmull-rom), loop/one-shot, controller API | Animated entity and tile entity from Blockbench | 2 weeks |
-
-Phases 1 and 2 can swap.
+| 2. Item models | generated/handheld layers, 3D items, display, gui_light | Example items right in hand, GUI, ground. **First public release** | 1.5-2 weeks |
+| 3. Model JSON polish | Blockbench keys BTA ignores (`texture_size`, `render_type`, `gui_light`), readable load errors, `loader` dispatch for custom model types | A set of real Blockbench exports load with no warnings | 3-5 days |
+| **Extensions** | | | |
+| 4. OBJ model type | Our own OBJ/MTL parser (MIT, from the spec), as a `StaticBlockModel` behind `loader` | Betafront's crystal and ramp work through blockstates | 1.5 weeks |
+| 5. Model TE renderers | Generic renderer for any model type, bone transforms from code | Chest-style lid opens from code with a Blockbench model | 1-1.5 weeks |
+| 6. Animation | Bedrock keyframes (rot/pos/scale, linear + catmull-rom), loop/one-shot, controller API | Animated entity and tile entity from Blockbench | 2 weeks |
+| 7. GLB / glTF | glTF 2.0 meshes and materials as a model type; node animations through the phase 6 player | A static GLB block and an animated GLB tile entity | 2-3 weeks (skinning later, separate) |
 
 ## Reuse, risks, open questions
 
-Reused from Betafront: `core/` OBJ parser + 15 tests, texture-pack loading, smooth lighting (or BTA's own), KNOWLEDGE.md API table, Gradle build and release steps. Dropped: StationAPI build, `ObjModels.block(..., yRotation)` API.
+Licence: MIT. Reused from Betafront: OBJ test models and tests (not the NeoForge-derived LGPL parser), texture-pack loading, smooth lighting (or BTA's own), KNOWLEDGE.md API table, Gradle build and release steps. Dropped: StationAPI build, `ObjModels.block(..., yRotation)` API.
 
 Risks:
 - BTA's model code can change in an update; keep ours behind one small adapter.
@@ -89,7 +94,6 @@ Risks:
 - Visual checks need Dave in game every phase.
 
 Open questions:
-- [ ] Mod name and id?
-- [ ] New repo or a branch of betafront?
-- [ ] Blockstates or OBJ first?
+- [x] Name, repo, licence, order: see knowledge/decisions.md
+- [ ] GLB textures: atlas ids in the model JSON, or stitch embedded images? (decide in the phase 7 spike)
 - [ ] Let resource packs restyle vanilla BTA blocks via our blockstates? (needs a mixin into `BlockModelDispatcher`)
