@@ -1,0 +1,20 @@
+{
+  "note": "Each file in blockstate/invalid must fail to load with one log line naming the file and the key. The reason is what the message should say, not its exact text.",
+  "cases": [
+    {
+      "file": "invalid/unknown_property.json",
+      "error": "variant key names property 'color', which the file doesn't declare"
+    },
+    {"file": "invalid/unknown_value.json", "error": "'up' is not one of facing's values"},
+    {"file": "invalid/unknown_value_in_when.json", "error": "'maybe' is not one of open's values"},
+    {"file": "invalid/bad_rotation.json", "error": "y must be 0, 90, 180 or 270"},
+    {"file": "invalid/overlapping_bits.json", "error": "facing and half both use bit 1"},
+    {"file": "invalid/too_many_values.json", "error": "3 values don't fit in 1 bit"},
+    {"file": "invalid/bits_out_of_range.json", "error": "BTA block metadata has 4 bits (0-3)"},
+    {"file": "invalid/variants_and_multipart.json", "error": "a file has either variants or multipart, not both"},
+    {"file": "invalid/neither_variants_nor_multipart.json", "error": "a file needs variants or multipart"},
+    {"file": "invalid/missing_model_key.json", "error": "every variant needs a model"},
+    {"file": "invalid/zero_weight.json", "error": "weight must be 1 or more"},
+    {"file": "invalid/empty_variant_list.json", "error": "a weighted list needs at least one variant"}
+  ]
+}

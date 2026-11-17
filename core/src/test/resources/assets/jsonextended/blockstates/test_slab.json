@@ -1,0 +1,8 @@
+{
+  "properties": {"type": {"bits": "0-1", "values": ["bottom", "top", "double"]}},
+  "variants": {
+    "type=bottom": {"model": "jsonextended:block/test_slab"},
+    "type=top": {"model": "jsonextended:block/test_slab_top"},
+    "type=double": {"model": "jsonextended:block/test_slab_double"}
+  }
+}

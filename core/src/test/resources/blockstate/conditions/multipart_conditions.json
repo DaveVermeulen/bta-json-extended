@@ -1,0 +1,17 @@
+{
+  "properties": {
+    "facing": {"bits": "0-1", "values": ["south", "west", "north", "east"]},
+    "half": {"bits": "2", "values": ["bottom", "top"]},
+    "open": {"bits": "3", "values": ["false", "true"]}
+  },
+  "multipart": [
+    {"apply": {"model": "jsonextended:block/test_slab"}},
+    {"when": {"facing": "north|south"}, "apply": {"model": "jsonextended:block/test_fence_side"}},
+    {"when": {"facing": "east", "half": "top"}, "apply": {"model": "jsonextended:block/test_fence_side", "y": 90}},
+    {
+      "when": {"OR": [{"open": "true"}, {"facing": "west", "half": "bottom"}]},
+      "apply": {"model": "jsonextended:block/test_fence_post"}
+    },
+    {"when": {"AND": [{"half": "top"}, {"open": "false"}]}, "apply": {"model": "jsonextended:block/test_slab_top"}}
+  ]
+}

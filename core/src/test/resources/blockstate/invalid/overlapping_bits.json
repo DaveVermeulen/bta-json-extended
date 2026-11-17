@@ -1,0 +1,7 @@
+{
+  "properties": {
+    "facing": {"bits": "0-1", "values": ["south", "west", "north", "east"]},
+    "half": {"bits": "1", "values": ["bottom", "top"]}
+  },
+  "variants": {"facing=north,half=bottom": {"model": "jsonextended:block/test_slab"}}
+}

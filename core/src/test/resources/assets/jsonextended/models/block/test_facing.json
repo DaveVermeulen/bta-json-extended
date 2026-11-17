@@ -1,0 +1,9 @@
+{
+  "parent": "jsonextended:block/template/orientable",
+  "textures": {
+    "front": "jsonextended:block/test_facing_front",
+    "side": "jsonextended:block/test_facing_side",
+    "top": "jsonextended:block/test_facing_top",
+    "bottom": "jsonextended:block/test_facing_bottom"
+  }
+}
