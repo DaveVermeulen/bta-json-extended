@@ -1,0 +1,212 @@
+# javap -public, BTA 8.0.1 / HalpLibe 6.2.0+8.0.1. Generated 2026-11-17 on the maintainer's Mac.
+public abstract class net.minecraft.client.render.block.model.BlockModel<T extends net.minecraft.core.block.BlockLogic> {
+  public static final float[] SIDE_LIGHT_MULTIPLIER;
+  public static final float FULL_CUBE_THRESHOLD;
+  public final net.minecraft.core.block.Block<T> block;
+  public net.minecraft.client.render.block.model.BlockModel(net.minecraft.core.block.Block<T>);
+  public abstract boolean render(net.minecraft.client.render.tessellator.TessellatorGeneral, net.minecraft.core.world.WorldSource, net.minecraft.core.world.pos.TilePosc);
+  public abstract boolean renderNoCulling(net.minecraft.client.render.tessellator.TessellatorGeneral, net.minecraft.core.world.WorldSource, net.minecraft.core.world.pos.TilePosc);
+  public abstract boolean renderWithOverrideTexture(net.minecraft.client.render.tessellator.TessellatorGeneral, net.minecraft.core.world.WorldSource, net.minecraft.core.world.pos.TilePosc, net.minecraft.client.render.texture.stitcher.IconCoordinate);
+  public abstract void renderStandalone(net.minecraft.client.render.tessellator.TessellatorGeneral, int, byte);
+  public abstract boolean shouldItemRender3d();
+  public abstract org.useless.dragonfly.DisplayPos getItemDisplayPos(java.lang.String);
+  public int renderLayer();
+  public abstract net.minecraft.client.render.texture.stitcher.IconCoordinate getParticleTexture(net.minecraft.core.util.helper.Side, int);
+  public abstract net.minecraft.client.render.texture.stitcher.IconCoordinate getOverlayTexture(int);
+  public abstract int particleColorIndex(net.minecraft.core.world.WorldSource, net.minecraft.core.world.pos.TilePosc, net.minecraft.core.util.helper.Side, int);
+  public void onWorldChanged(net.minecraft.core.world.World);
+  public boolean isRetro();
+  public long getPositionalSeed(net.minecraft.core.world.pos.TilePosc);
+}
+
+public class net.minecraft.client.render.block.model.BlockModelStandard<T extends net.minecraft.core.block.BlockLogic> extends net.minecraft.client.render.block.model.BlockModel<T> {
+  public static final net.minecraft.client.render.texture.stitcher.IconCoordinate BLOCK_TEXTURE_MISSING;
+  public static final net.minecraft.client.render.texture.stitcher.IconCoordinate BLOCK_TEXTURE_UNASSIGNED;
+  public org.joml.primitives.AABBdc itemRenderBounds;
+  public int renderLayer;
+  public net.minecraft.client.render.block.model.BlockModelStandard(net.minecraft.core.block.Block<T>);
+  public boolean renderNoCulling(net.minecraft.client.render.tessellator.TessellatorGeneral, net.minecraft.core.world.WorldSource, net.minecraft.core.world.pos.TilePosc);
+  public boolean renderWithOverrideTexture(net.minecraft.client.render.tessellator.TessellatorGeneral, net.minecraft.core.world.WorldSource, net.minecraft.core.world.pos.TilePosc, net.minecraft.client.render.texture.stitcher.IconCoordinate);
+  public boolean render(net.minecraft.client.render.tessellator.TessellatorGeneral, net.minecraft.core.world.WorldSource, net.minecraft.core.world.pos.TilePosc);
+  public void renderStandalone(net.minecraft.client.render.tessellator.TessellatorGeneral, int, byte);
+  public final void renderBlockWithBounds(net.minecraft.client.render.tessellator.TessellatorGeneral, org.joml.primitives.AABBdc, int, byte, int);
+  public boolean shouldItemRender3d();
+  public org.useless.dragonfly.DisplayPos getItemDisplayPos(java.lang.String);
+  public net.minecraft.client.render.block.model.BlockModelStandard<T> setDisplayPos(java.lang.String, org.useless.dragonfly.DisplayPos);
+  public final net.minecraft.client.render.texture.stitcher.IconCoordinate getBlockTexture(net.minecraft.core.world.WorldSource, int, int, int, net.minecraft.core.util.helper.Side);
+  public net.minecraft.client.render.texture.stitcher.IconCoordinate getBlockTexture(net.minecraft.core.world.WorldSource, net.minecraft.core.world.pos.TilePosc, net.minecraft.core.util.helper.Side);
+  public int getStandaloneTintColor(int);
+  public net.minecraft.client.render.texture.stitcher.IconCoordinate getBlockTextureFromSideAndMetadata(net.minecraft.core.util.helper.Side, int);
+  public net.minecraft.client.render.texture.stitcher.IconCoordinate getParticleTexture(net.minecraft.core.util.helper.Side, int);
+  public net.minecraft.client.render.texture.stitcher.IconCoordinate getOverlayTexture(int);
+  public final boolean shouldSideBeRendered(net.minecraft.core.world.WorldSource, org.joml.primitives.AABBdc, int, int, int, net.minecraft.core.util.helper.Side, int);
+  public boolean shouldSideBeRendered(net.minecraft.core.world.WorldSource, org.joml.primitives.AABBdc, net.minecraft.core.world.pos.TilePos, net.minecraft.core.util.helper.Side, int);
+  public final boolean shouldSideBeRendered(net.minecraft.core.world.WorldSource, org.joml.primitives.AABBdc, int, int, int, net.minecraft.core.util.helper.Side);
+  public boolean shouldSideBeRendered(net.minecraft.core.world.WorldSource, org.joml.primitives.AABBdc, net.minecraft.core.world.pos.TilePosc, net.minecraft.core.util.helper.Side);
+  public boolean shouldSideBeColored(net.minecraft.core.world.WorldSource, net.minecraft.core.world.pos.TilePosc, net.minecraft.core.util.helper.Side, int);
+  public int particleColorIndex(net.minecraft.core.world.WorldSource, net.minecraft.core.world.pos.TilePosc, net.minecraft.core.util.helper.Side, int);
+  public org.joml.primitives.AABBdc getBlockBoundsForItemRender();
+  public int renderLayer();
+  public net.minecraft.client.render.block.model.BlockModelStandard<T> onRenderLayer(int);
+  public net.minecraft.client.render.block.model.BlockModelStandard<T> withCustomItemBounds(double, double, double, double, double, double);
+  public net.minecraft.client.render.block.model.BlockModelStandard<T> setTex(net.minecraft.client.render.texture.stitcher.IconCoordinate, net.minecraft.core.util.helper.Side...);
+  public net.minecraft.client.render.block.model.BlockModelStandard<T> setTex(java.lang.String, net.minecraft.core.util.helper.Side...);
+  public net.minecraft.client.render.block.model.BlockModelStandard<T> setAllTextures(net.minecraft.client.render.texture.stitcher.IconCoordinate);
+  public net.minecraft.client.render.block.model.BlockModelStandard<T> setAllTextures(java.lang.String);
+  public net.minecraft.client.render.block.model.BlockModelStandard<T> withTextures(java.lang.String);
+  public net.minecraft.client.render.block.model.BlockModelStandard<T> withTextures(java.lang.String, java.lang.String);
+  public net.minecraft.client.render.block.model.BlockModelStandard<T> withTextures(java.lang.String, java.lang.String, java.lang.String);
+  public net.minecraft.client.render.block.model.BlockModelStandard<T> withTextures(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String);
+}
+
+public class net.minecraft.client.render.block.model.generic.BlockModelGeneric<T extends net.minecraft.core.block.BlockLogic> extends net.minecraft.client.render.block.model.BlockModel<T> {
+  public final org.useless.dragonfly.models.block.StaticBlockModel staticModel;
+  public boolean render3d;
+  public boolean forceCullSelf;
+  public net.minecraft.client.render.block.model.generic.BlockModelGeneric(net.minecraft.core.block.Block<T>, org.useless.dragonfly.models.block.StaticBlockModel);
+  public net.minecraft.client.render.block.model.generic.BlockModelGeneric(net.minecraft.core.block.Block<T>, org.useless.dragonfly.data.block.BlockModelData);
+  public net.minecraft.client.render.block.model.generic.BlockModelGeneric<T> render3D(boolean);
+  public net.minecraft.client.render.block.model.generic.BlockModelGeneric<T> forceCullSelf(boolean);
+  public final boolean renderNoCulling(net.minecraft.client.render.tessellator.TessellatorGeneral, net.minecraft.core.world.WorldSource, net.minecraft.core.world.pos.TilePosc);
+  public boolean render(net.minecraft.client.render.tessellator.TessellatorGeneral, net.minecraft.core.world.WorldSource, net.minecraft.core.world.pos.TilePosc);
+  public final boolean renderWithOverrideTexture(net.minecraft.client.render.tessellator.TessellatorGeneral, net.minecraft.core.world.WorldSource, net.minecraft.core.world.pos.TilePosc, net.minecraft.client.render.texture.stitcher.IconCoordinate);
+  public boolean renderAttached(net.minecraft.client.render.tessellator.TessellatorGeneral, net.minecraft.core.world.WorldSource, net.minecraft.core.world.pos.TilePosc, boolean, net.minecraft.client.render.texture.stitcher.IconCoordinate);
+  public void renderStandalone(net.minecraft.client.render.tessellator.TessellatorGeneral, int, byte);
+  public org.useless.dragonfly.models.block.StaticBlockModel getModel(net.minecraft.core.world.WorldSource, net.minecraft.core.world.pos.TilePosc);
+  public org.useless.dragonfly.models.block.StaticBlockModel getModelFromData(int);
+  public boolean shouldItemRender3d();
+  public org.useless.dragonfly.DisplayPos getItemDisplayPos(java.lang.String);
+  public int renderLayer();
+  public boolean cullSide(net.minecraft.core.world.WorldSource, net.minecraft.core.world.pos.TilePosc, net.minecraft.core.util.helper.Direction);
+  public net.minecraft.client.render.texture.stitcher.IconCoordinate getParticleTexture(net.minecraft.core.util.helper.Side, int);
+  public net.minecraft.client.render.texture.stitcher.IconCoordinate getOverlayTexture(int);
+  public int particleColorIndex(net.minecraft.core.world.WorldSource, net.minecraft.core.world.pos.TilePosc, net.minecraft.core.util.helper.Side, int);
+}
+
+public class net.minecraft.client.render.block.model.generic.BlockModelGenericRotatable<T extends net.minecraft.core.block.BlockLogic> extends net.minecraft.client.render.block.model.generic.BlockModelGeneric<T> {
+  public net.minecraft.client.render.block.model.generic.BlockModelGenericRotatable(net.minecraft.core.block.Block<T>, org.useless.dragonfly.models.block.StaticBlockModel);
+  public net.minecraft.client.render.block.model.generic.BlockModelGenericRotatable(net.minecraft.core.block.Block<T>, org.useless.dragonfly.data.block.BlockModelData);
+  public boolean renderAttached(net.minecraft.client.render.tessellator.TessellatorGeneral, net.minecraft.core.world.WorldSource, net.minecraft.core.world.pos.TilePosc, boolean, net.minecraft.client.render.texture.stitcher.IconCoordinate);
+}
+
+public class net.minecraft.client.render.block.model.generic.BlockModelGenericAxis<T extends net.minecraft.core.block.BlockLogic> extends net.minecraft.client.render.block.model.generic.BlockModelGeneric<T> {
+  public net.minecraft.client.render.block.model.generic.BlockModelGenericAxis(net.minecraft.core.block.Block<T>, org.useless.dragonfly.models.block.StaticBlockModel);
+  public net.minecraft.client.render.block.model.generic.BlockModelGenericAxis(net.minecraft.core.block.Block<T>, org.useless.dragonfly.data.block.BlockModelData);
+  public boolean renderAttached(net.minecraft.client.render.tessellator.TessellatorGeneral, net.minecraft.core.world.WorldSource, net.minecraft.core.world.pos.TilePosc, boolean, net.minecraft.client.render.texture.stitcher.IconCoordinate);
+}
+
+public class net.minecraft.client.render.block.model.generic.BlockModelGenericFullyRotatable<T extends net.minecraft.core.block.BlockLogic> extends net.minecraft.client.render.block.model.generic.BlockModelGeneric<T> {
+  public net.minecraft.client.render.block.model.generic.BlockModelGenericFullyRotatable(net.minecraft.core.block.Block<T>, org.useless.dragonfly.models.block.StaticBlockModel);
+  public net.minecraft.client.render.block.model.generic.BlockModelGenericFullyRotatable(net.minecraft.core.block.Block<T>, org.useless.dragonfly.data.block.BlockModelData);
+  public boolean renderAttached(net.minecraft.client.render.tessellator.TessellatorGeneral, net.minecraft.core.world.WorldSource, net.minecraft.core.world.pos.TilePosc, boolean, net.minecraft.client.render.texture.stitcher.IconCoordinate);
+}
+
+public class net.minecraft.client.render.block.model.generic.BlockModelGenericStairs<T extends net.minecraft.core.block.BlockLogic> extends net.minecraft.client.render.block.model.generic.BlockModelGeneric<T> {
+  public net.minecraft.client.render.block.model.generic.BlockModelGenericStairs(net.minecraft.core.block.Block<T>, org.useless.dragonfly.models.block.StaticBlockModel);
+  public net.minecraft.client.render.block.model.generic.BlockModelGenericStairs(net.minecraft.core.block.Block<T>, org.useless.dragonfly.data.block.BlockModelData);
+  public boolean renderAttached(net.minecraft.client.render.tessellator.TessellatorGeneral, net.minecraft.core.world.WorldSource, net.minecraft.core.world.pos.TilePosc, boolean, net.minecraft.client.render.texture.stitcher.IconCoordinate);
+}
+
+public class net.minecraft.client.render.block.model.generic.BlockModelGenericFence<T extends net.minecraft.core.block.BlockLogicFence> extends net.minecraft.client.render.block.model.generic.BlockModelGeneric<T> {
+  public final org.useless.dragonfly.models.block.StaticBlockModel post;
+  public final org.useless.dragonfly.models.block.StaticBlockModel side;
+  public net.minecraft.client.render.block.model.generic.BlockModelGenericFence(net.minecraft.core.block.Block<T>, java.lang.String);
+  public boolean renderAttached(net.minecraft.client.render.tessellator.TessellatorGeneral, net.minecraft.core.world.WorldSource, net.minecraft.core.world.pos.TilePosc, boolean, net.minecraft.client.render.texture.stitcher.IconCoordinate);
+}
+
+public final class net.minecraft.client.render.block.model.BlockModelDispatcher extends net.minecraft.client.util.dispatch.Dispatcher<net.minecraft.core.block.Block<?>, net.minecraft.client.render.block.model.BlockModel<?>> {
+  public static net.minecraft.client.render.block.model.BlockModelEmpty<?> modelEmpty;
+  public static net.minecraft.client.render.block.model.BlockModelDispatcher getInstance();
+  public void addDispatch(net.minecraft.client.render.block.model.BlockModel<?>);
+  public void addDispatch(net.minecraft.core.block.Block<?>, net.minecraft.client.render.block.model.BlockModel<?>);
+  public static org.useless.dragonfly.data.block.mojang.BlockModelMojangData loadDataModel(java.lang.String);
+  public void onWorldChanged(net.minecraft.core.world.World);
+  public void reload();
+  public void addDispatch(java.lang.Object, java.lang.Object);
+}
+
+public final class net.minecraft.client.render.block.model.RenderBlocks {
+  public final net.minecraft.client.Minecraft mc;
+  public net.minecraft.client.render.texture.stitcher.IconCoordinate overrideBlockTexture;
+  public java.lang.Integer overrideLightmap;
+  public boolean flipTexture;
+  public boolean renderAllFaces;
+  public byte renderBitMask;
+  public boolean useInventoryTint;
+  public int uvRotateEast;
+  public int uvRotateWest;
+  public int uvRotateSouth;
+  public int uvRotateNorth;
+  public int uvRotateTop;
+  public int uvRotateBottom;
+  public boolean enableAO;
+  public float colorRedTopLeft;
+  public float colorRedBottomLeft;
+  public float colorRedBottomRight;
+  public float colorRedTopRight;
+  public float colorGreenTopLeft;
+  public float colorGreenBottomLeft;
+  public float colorGreenBottomRight;
+  public float colorGreenTopRight;
+  public float colorBlueTopLeft;
+  public float colorBlueBottomLeft;
+  public float colorBlueBottomRight;
+  public float colorBlueTopRight;
+  public float shadeTopLeft;
+  public float shadeBottomLeft;
+  public float shadeBottomRight;
+  public float shadeTopRight;
+  public int lightIndexTopLeft;
+  public int lightIndexBottomLeft;
+  public int lightIndexBottomRight;
+  public int lightIndexTopRight;
+  public net.minecraft.client.render.LightingCache cache;
+  public net.minecraft.client.render.block.model.RenderBlocks();
+  public void resetRenderBlocks();
+  public void setRenderSide(net.minecraft.core.util.helper.Side, boolean);
+  public float getBlockBrightness(net.minecraft.core.world.WorldSource, int, int, int);
+  public float getBlockBrightness(net.minecraft.core.world.WorldSource, net.minecraft.core.world.pos.TilePosc);
+  public boolean renderStandardBlock(net.minecraft.client.render.tessellator.TessellatorGeneral, net.minecraft.core.world.WorldSource, net.minecraft.client.render.block.model.BlockModelStandard<?>, org.joml.primitives.AABBdc, int, int, int);
+  public boolean renderStandardBlock(net.minecraft.client.render.tessellator.TessellatorGeneral, net.minecraft.core.world.WorldSource, net.minecraft.client.render.block.model.BlockModelStandard<?>, org.joml.primitives.AABBdc, net.minecraft.core.world.pos.TilePosc);
+  public boolean renderStandardBlock(net.minecraft.client.render.tessellator.TessellatorGeneral, net.minecraft.core.world.WorldSource, net.minecraft.client.render.block.model.BlockModelStandard<?>, org.joml.primitives.AABBdc, int, int, int, float, float, float);
+  public boolean renderStandardBlock(net.minecraft.client.render.tessellator.TessellatorGeneral, net.minecraft.core.world.WorldSource, net.minecraft.client.render.block.model.BlockModelStandard<?>, org.joml.primitives.AABBdc, net.minecraft.core.world.pos.TilePosc, float, float, float);
+  public boolean renderSide(net.minecraft.client.render.tessellator.TessellatorGeneral, net.minecraft.core.world.WorldSource, net.minecraft.client.render.block.model.BlockModelStandard<?>, org.joml.primitives.AABBdc, int, int, int, float, float, float, net.minecraft.core.util.helper.Side, int);
+  public boolean renderSide(net.minecraft.client.render.tessellator.TessellatorGeneral, net.minecraft.core.world.WorldSource, net.minecraft.client.render.block.model.BlockModelStandard<?>, org.joml.primitives.AABBdc, net.minecraft.core.world.pos.TilePosc, float, float, float, net.minecraft.core.util.helper.Side, int);
+  public boolean renderSide(net.minecraft.client.render.tessellator.TessellatorGeneral, net.minecraft.core.world.WorldSource, net.minecraft.client.render.block.model.BlockModelStandard<?>, org.joml.primitives.AABBdc, net.minecraft.core.world.pos.TilePosc, float, float, float, net.minecraft.core.util.helper.Side, int, int, int, int, float, int, int, int, float, float, int, int, int, float, float);
+  public void setupLighting(net.minecraft.core.world.WorldSource, net.minecraft.core.block.Block<?>, net.minecraft.core.world.pos.TilePosc, float, float, float, net.minecraft.core.util.helper.Side, int, int, int, float, int, int, int, float, float, int, int, int, float, float);
+  public void renderBottomFace(net.minecraft.client.render.tessellator.TessellatorGeneral, org.joml.primitives.AABBdc, net.minecraft.core.world.pos.TilePosc, net.minecraft.client.render.texture.stitcher.IconCoordinate);
+  public void renderBottomFace(net.minecraft.client.render.tessellator.TessellatorGeneral, org.joml.primitives.AABBdc, double, double, double, net.minecraft.client.render.texture.stitcher.IconCoordinate);
+  public void renderTopFace(net.minecraft.client.render.tessellator.TessellatorGeneral, org.joml.primitives.AABBdc, net.minecraft.core.world.pos.TilePosc, net.minecraft.client.render.texture.stitcher.IconCoordinate);
+  public void renderTopFace(net.minecraft.client.render.tessellator.TessellatorGeneral, org.joml.primitives.AABBdc, double, double, double, net.minecraft.client.render.texture.stitcher.IconCoordinate);
+  public void renderNorthFace(net.minecraft.client.render.tessellator.TessellatorGeneral, org.joml.primitives.AABBdc, net.minecraft.core.world.pos.TilePosc, net.minecraft.client.render.texture.stitcher.IconCoordinate);
+  public void renderNorthFace(net.minecraft.client.render.tessellator.TessellatorGeneral, org.joml.primitives.AABBdc, double, double, double, net.minecraft.client.render.texture.stitcher.IconCoordinate);
+  public void renderSouthFace(net.minecraft.client.render.tessellator.TessellatorGeneral, org.joml.primitives.AABBdc, net.minecraft.core.world.pos.TilePosc, net.minecraft.client.render.texture.stitcher.IconCoordinate);
+  public void renderSouthFace(net.minecraft.client.render.tessellator.TessellatorGeneral, org.joml.primitives.AABBdc, double, double, double, net.minecraft.client.render.texture.stitcher.IconCoordinate);
+  public void renderWestFace(net.minecraft.client.render.tessellator.TessellatorGeneral, org.joml.primitives.AABBdc, net.minecraft.core.world.pos.TilePosc, net.minecraft.client.render.texture.stitcher.IconCoordinate);
+  public void renderWestFace(net.minecraft.client.render.tessellator.TessellatorGeneral, org.joml.primitives.AABBdc, double, double, double, net.minecraft.client.render.texture.stitcher.IconCoordinate);
+  public void renderEastFace(net.minecraft.client.render.tessellator.TessellatorGeneral, org.joml.primitives.AABBdc, net.minecraft.core.world.pos.TilePosc, net.minecraft.client.render.texture.stitcher.IconCoordinate);
+  public void renderEastFace(net.minecraft.client.render.tessellator.TessellatorGeneral, org.joml.primitives.AABBdc, double, double, double, net.minecraft.client.render.texture.stitcher.IconCoordinate);
+}
+
+public final class net.minecraft.client.render.LightingCache {
+  public net.minecraft.client.render.LightingCache();
+  public void setupCache(net.minecraft.core.block.Block<?>, net.minecraft.core.world.WorldSource, int, int, int);
+  public void setupCache(net.minecraft.core.block.Block<?>, net.minecraft.core.world.WorldSource, net.minecraft.core.world.pos.TilePosc);
+  public float getBrightness(int, int, int);
+  public boolean getOpacity(int, int, int);
+  public byte getLightIndex(int, int, int);
+}
+
+public abstract class net.minecraft.client.render.block.color.BlockColor {
+  public net.minecraft.client.render.block.color.BlockColor();
+  public abstract int getFallbackColor(int, int);
+  public abstract int getWorldColor(net.minecraft.core.world.WorldSource, net.minecraft.core.world.pos.TilePosc, int);
+  public final int getWorldColor(net.minecraft.core.world.WorldSource, int, int, int, int);
+}
+
+public final class net.minecraft.client.render.block.color.BlockColorDispatcher extends net.minecraft.client.util.dispatch.Dispatcher<net.minecraft.core.block.Block<?>, net.minecraft.client.render.block.color.BlockColor> {
+  public static net.minecraft.client.render.block.color.BlockColorDispatcher getInstance();
+  public void onWorldChanged(net.minecraft.core.world.World);
+  public void reload();
+}
+

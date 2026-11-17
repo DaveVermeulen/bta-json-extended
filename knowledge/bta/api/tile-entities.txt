@@ -1,0 +1,129 @@
+# javap -public, BTA 8.0.1 / HalpLibe 6.2.0+8.0.1. Generated 2026-11-17 on the maintainer's Mac.
+public abstract class net.minecraft.client.render.tileentity.TileEntityRenderer<T extends net.minecraft.core.block.entity.TileEntity> {
+  public net.minecraft.client.render.tileentity.TileEntityRenderer();
+  public void tick();
+  public abstract void doRender(net.minecraft.client.render.tessellator.TessellatorGeneral, T, double, double, double, float);
+  public void init(java.lang.Class<? extends T>, net.minecraft.client.render.TileEntityRenderDispatcher);
+  public void onWorldChanged(net.minecraft.core.world.World);
+  public final net.minecraft.client.render.tileentity.TileEntityRenderer<T> setModel(java.lang.String, java.lang.String, double);
+  public net.minecraft.client.render.font.FontRenderer getFont();
+  public boolean isVisible(T, net.minecraft.client.render.camera.ICamera, float);
+}
+
+public final class net.minecraft.client.render.TileEntityRenderDispatcher {
+  public static final net.minecraft.client.render.TileEntityRenderDispatcher instance;
+  public static double renderPosX;
+  public static double renderPosY;
+  public static double renderPosZ;
+  public final net.minecraft.client.render.TextureManager textureManager;
+  public final net.minecraft.client.render.texturepack.TexturePackList packList;
+  public net.minecraft.client.render.camera.ICamera camera;
+  public float viewLerpYaw;
+  public float viewLerpPitch;
+  public double viewLerpPosX;
+  public double viewLerpPosY;
+  public double viewLerpPosZ;
+  public void reload();
+  public <T extends net.minecraft.core.block.entity.TileEntity> void assignRenderer(java.lang.Class<? extends T>, net.minecraft.client.render.tileentity.TileEntityRenderer<T>);
+  public <T extends net.minecraft.core.block.entity.TileEntity> net.minecraft.client.render.tileentity.TileEntityRenderer<T> getRenderer(java.lang.Class<? extends net.minecraft.core.block.entity.TileEntity>);
+  public <T extends net.minecraft.core.block.entity.TileEntity> net.minecraft.client.render.tileentity.TileEntityRenderer<T> getRenderer(T);
+  public <T extends net.minecraft.core.block.entity.TileEntity> boolean hasRenderer(T);
+  public void cacheActiveRenderInfo(net.minecraft.client.render.camera.ICamera, float);
+  public void onWorldChanged(net.minecraft.core.world.World);
+  public <T extends net.minecraft.core.block.entity.TileEntity> void renderTileEntity(net.minecraft.client.render.tessellator.TessellatorGeneral, net.minecraft.client.render.camera.ICamera, net.minecraft.core.world.World, T, float);
+  public <T extends net.minecraft.core.block.entity.TileEntity> void renderTileEntity(net.minecraft.client.render.tessellator.TessellatorGeneral, T, double, double, double, float);
+  public void tick();
+  public net.minecraft.client.render.font.FontRenderer getFont();
+}
+
+public class net.minecraft.client.render.tileentity.TileEntityRendererSign extends net.minecraft.client.render.tileentity.TileEntityRenderer<net.minecraft.core.block.entity.TileEntitySign> {
+  public static final net.minecraft.client.render.tileentity.TileEntityRendererSign$BufferedTextMeshRenderer textMeshRenderer;
+  public net.minecraft.client.render.tileentity.TileEntityRendererSign();
+  public void doRender(net.minecraft.client.render.tessellator.TessellatorGeneral, net.minecraft.core.block.entity.TileEntitySign, double, double, double, float);
+  public void tick();
+  public boolean isVisible(net.minecraft.core.block.entity.TileEntitySign, net.minecraft.client.render.camera.ICamera, float);
+  public boolean isVisible(net.minecraft.core.block.entity.TileEntity, net.minecraft.client.render.camera.ICamera, float);
+  public void doRender(net.minecraft.client.render.tessellator.TessellatorGeneral, net.minecraft.core.block.entity.TileEntity, double, double, double, float);
+}
+
+public abstract class net.minecraft.client.render.entity.EntityRenderer<T extends net.minecraft.core.entity.Entity> {
+  public static boolean renderShadows;
+  public net.minecraft.client.render.entity.EntityRenderer(float);
+  public net.minecraft.client.render.entity.EntityRenderer();
+  public float getShadowSize(T);
+  public abstract void render(net.minecraft.client.render.tessellator.TessellatorGeneral, T, double, double, double, float, float);
+  public void renderPreview(net.minecraft.client.render.tessellator.TessellatorGeneral, T, double, double, double, float, float);
+  public boolean bindDownloadableTexture(java.lang.String, java.lang.String, net.minecraft.client.render.ImageParser);
+  public final net.minecraft.client.render.entity.EntityRenderer<T> setModel(java.lang.String, java.lang.String, double);
+  public void onWorldChanged(net.minecraft.core.world.World);
+  public static void renderOffsetAABB(net.minecraft.client.render.tessellator.TessellatorGeneral, org.joml.primitives.AABBdc, double, double, double);
+  public static void renderFlatAABB(org.joml.primitives.AABBdc);
+  public void init(java.lang.Class<? extends T>, net.minecraft.client.render.EntityRendererDispatcher);
+  public void postRender(net.minecraft.client.render.tessellator.TessellatorGeneral, T, double, double, double, float, float);
+  public net.minecraft.client.render.font.FontRenderer getFont();
+  public org.joml.primitives.AABBdc entityViewBox(T);
+}
+
+public abstract class net.minecraft.client.render.entity.MobRenderer<T extends net.minecraft.core.entity.Mob> extends net.minecraft.client.render.entity.EntityRenderer<T> {
+  public static final float ENTITY_RENDER_SCALE;
+  public net.minecraft.client.render.entity.MobRenderer(float);
+  public void render(net.minecraft.client.render.tessellator.TessellatorGeneral, T, double, double, double, float, float);
+  public float getShadowSize(T);
+  public void loadEntityTexture(T);
+  public org.joml.primitives.AABBdc entityViewBox(T);
+  public org.joml.primitives.AABBdc entityViewBox(net.minecraft.core.entity.Entity);
+  public void render(net.minecraft.client.render.tessellator.TessellatorGeneral, net.minecraft.core.entity.Entity, double, double, double, float, float);
+  public float getShadowSize(net.minecraft.core.entity.Entity);
+}
+
+public final class net.minecraft.client.render.EntityRendererDispatcher {
+  public static final net.minecraft.client.render.EntityRendererDispatcher instance;
+  public static double renderPosX;
+  public static double renderPosY;
+  public static double renderPosZ;
+  public final net.minecraft.client.render.TextureManager textureManager;
+  public final net.minecraft.client.render.texturepack.TexturePackList packList;
+  public final net.minecraft.client.render.font.FontRenderer font;
+  public float viewLerpYaw;
+  public float viewLerpPitch;
+  public double viewLerpPosX;
+  public double viewLerpPosY;
+  public double viewLerpPosZ;
+  public void reload();
+  public <T extends net.minecraft.core.entity.Entity> void assignRenderer(java.lang.Class<? extends T>, net.minecraft.client.render.entity.EntityRenderer<T>);
+  public <T extends net.minecraft.core.entity.Entity> net.minecraft.client.render.entity.EntityRenderer<T> getRenderer(java.lang.Class<T>);
+  public <T extends net.minecraft.core.entity.Entity> net.minecraft.client.render.entity.EntityRenderer<T> getRenderer(T);
+  public void onWorldChanged(net.minecraft.core.world.World);
+  public void cacheActiveRenderInfo(net.minecraft.client.render.camera.ICamera, float);
+  public <T extends net.minecraft.core.entity.Entity> void renderEntity(net.minecraft.client.render.tessellator.TessellatorGeneral, T, float);
+  public <T extends net.minecraft.core.entity.Entity> void renderEntityWithPosYaw(net.minecraft.client.render.tessellator.TessellatorGeneral, T, double, double, double, float, float);
+  public <T extends net.minecraft.core.entity.Entity> void renderEntityPreviewWithPosYaw(net.minecraft.client.render.tessellator.TessellatorGeneral, T, double, double, double, float, float);
+  public double distanceToLerpSquared(double, double, double);
+}
+
+public abstract class net.minecraft.core.block.entity.TileEntity implements net.minecraft.core.world.ICarriable {
+  public net.minecraft.core.world.World worldObj;
+  public net.minecraft.core.block.motion.CarriedBlock carriedBlock;
+  public net.minecraft.core.world.pos.TilePos tilePos;
+  public net.minecraft.core.block.entity.TileEntity();
+  public void tick();
+  public void setChanged();
+  public net.minecraft.core.net.packet.Packet getDescriptionPacket();
+  public int getBlockId();
+  public net.minecraft.core.block.Block<?> getBlock();
+  public int getBlockMeta();
+  public double getDistanceFrom(double, double, double);
+  public boolean isInvalid();
+  public void invalidate();
+  public void validate();
+  public final void readFromNBT(com.mojang.nbt.tags.CompoundTag);
+  public abstract void readAdditionalData(com.mojang.nbt.tags.CompoundTag);
+  public final void writeToNBT(com.mojang.nbt.tags.CompoundTag);
+  public abstract void writeAdditionalData(com.mojang.nbt.tags.CompoundTag);
+  public void heldTick(net.minecraft.core.world.World, net.minecraft.core.entity.Entity);
+  public void dropContents(net.minecraft.core.world.World, int, int, int);
+  public boolean tryPlace(net.minecraft.core.world.World, net.minecraft.core.entity.Entity, int, int, int, net.minecraft.core.util.helper.Side, double, double);
+  public void drop(net.minecraft.core.world.World, net.minecraft.core.entity.Entity);
+  public net.minecraft.core.block.motion.CarriedBlock getCarriedEntry(net.minecraft.core.world.World, net.minecraft.core.entity.Entity, net.minecraft.core.block.Block<?>, int);
+}
+

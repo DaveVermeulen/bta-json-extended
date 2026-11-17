@@ -1,0 +1,217 @@
+# javap -public, BTA 8.0.1 / HalpLibe 6.2.0+8.0.1. Generated 2026-11-17 on the maintainer's Mac.
+public abstract class net.minecraft.client.render.item.model.ItemModel {
+  public net.minecraft.core.item.Item item;
+  public net.minecraft.client.render.item.model.ItemModel(net.minecraft.core.item.Item);
+  public abstract void render(net.minecraft.client.render.tessellator.TessellatorGeneral, net.minecraft.core.entity.Entity, net.minecraft.core.item.ItemStack, java.lang.String, boolean, int, byte, float, boolean);
+  public abstract void renderItemOverlayIntoGUI(net.minecraft.client.render.tessellator.TessellatorGeneral, net.minecraft.client.render.font.FontRenderer, net.minecraft.client.render.TextureManager, net.minecraft.core.item.ItemStack, int, int, java.lang.String, float);
+  public void renderGui(net.minecraft.client.render.tessellator.TessellatorGeneral, net.minecraft.core.entity.Entity, net.minecraft.core.item.ItemStack, int, int, byte, float);
+  public void renderItemEntity(net.minecraft.client.render.tessellator.TessellatorGeneral, net.minecraft.core.item.ItemStack, boolean, int, int, float, byte, float);
+  public void renderFirstPerson(net.minecraft.client.render.tessellator.TessellatorGeneral, net.minecraft.client.render.ItemRenderer, net.minecraft.core.entity.player.Player, net.minecraft.core.item.ItemStack, byte, float);
+  public abstract net.minecraft.client.render.texture.stitcher.IconCoordinate getIcon(net.minecraft.core.entity.Entity, net.minecraft.core.item.ItemStack);
+}
+
+public class net.minecraft.client.render.item.model.ItemModelStandard extends net.minecraft.client.render.item.model.ItemModel {
+  public static final net.minecraft.client.render.texture.stitcher.IconCoordinate ITEM_TEXTURE_MISSING;
+  public static final net.minecraft.client.render.texture.stitcher.IconCoordinate ITEM_TEXTURE_UNASSIGNED;
+  public net.minecraft.client.render.texture.stitcher.IconCoordinate icon;
+  public static final org.useless.dragonfly.DisplayPos DEFAULT_ITEM_GROUND;
+  public static final org.useless.dragonfly.DisplayPos DEFAULT_ITEM_HEAD;
+  public static final org.useless.dragonfly.DisplayPos DEFAULT_ITEM_THIRD_PERSON_RIGHT_HAND;
+  public static final org.useless.dragonfly.DisplayPos DEFAULT_ITEM_THIRD_PERSON_LEFT_HAND;
+  public static final org.useless.dragonfly.DisplayPos DEFAULT_ITEM_FIRST_PERSON_RIGHT_HAND;
+  public static final org.useless.dragonfly.DisplayPos DEFAULT_ITEM_FIRST_PERSON_LEFT_HAND;
+  public static final org.useless.dragonfly.DisplayPos DEFAULT_ITEM_FIXED;
+  public net.minecraft.client.render.item.model.ItemModelStandard(net.minecraft.core.item.Item);
+  public net.minecraft.client.render.item.model.ItemModelStandard(net.minecraft.core.item.Item, java.lang.String);
+  public net.minecraft.client.render.item.model.ItemModelStandard(net.minecraft.core.item.Item, boolean);
+  public void render(net.minecraft.client.render.tessellator.TessellatorGeneral, net.minecraft.core.entity.Entity, net.minecraft.core.item.ItemStack, java.lang.String, boolean, int, byte, float, boolean);
+  public org.useless.dragonfly.DisplayPos getDisplayPos(java.lang.String);
+  public net.minecraft.client.render.item.model.ItemModelStandard setDisplayPos(java.lang.String, org.useless.dragonfly.DisplayPos);
+  public void renderItemOverlayIntoGUI(net.minecraft.client.render.tessellator.TessellatorGeneral, net.minecraft.client.render.font.FontRenderer, net.minecraft.client.render.TextureManager, net.minecraft.core.item.ItemStack, int, int, java.lang.String, float);
+  public net.minecraft.client.render.texture.stitcher.IconCoordinate getIcon(net.minecraft.core.entity.Entity, net.minecraft.core.item.ItemStack);
+  public int getColor(net.minecraft.core.item.ItemStack);
+  public int getColorFromMeta(int);
+  public net.minecraft.client.render.item.model.ItemModelStandard setFullBright();
+  public net.minecraft.client.render.item.model.ItemModelStandard setIcon(net.minecraft.core.util.collection.NamespaceID);
+  public net.minecraft.client.render.item.model.ItemModelStandard setIcon(java.lang.String);
+}
+
+public class net.minecraft.client.render.item.model.ItemModelBlock extends net.minecraft.client.render.item.model.ItemModelStandard {
+  public net.minecraft.client.render.item.model.ItemModelBlock(net.minecraft.core.item.block.ItemBlock<?>);
+  public net.minecraft.client.render.texture.stitcher.IconCoordinate getIcon(net.minecraft.core.entity.Entity, net.minecraft.core.item.ItemStack);
+  public org.useless.dragonfly.DisplayPos getDisplayPos(java.lang.String);
+  public void render(net.minecraft.client.render.tessellator.TessellatorGeneral, net.minecraft.core.entity.Entity, net.minecraft.core.item.ItemStack, java.lang.String, boolean, int, byte, float, boolean);
+  public void renderGui(net.minecraft.client.render.tessellator.TessellatorGeneral, net.minecraft.core.entity.Entity, net.minecraft.core.item.ItemStack, int, int, byte, float);
+  public void renderItemEntity(net.minecraft.client.render.tessellator.TessellatorGeneral, net.minecraft.core.item.ItemStack, boolean, int, int, float, byte, float);
+  public int getColor(net.minecraft.core.item.ItemStack);
+}
+
+public class net.minecraft.client.render.item.model.ItemModelDispatcher extends net.minecraft.client.util.dispatch.Dispatcher<net.minecraft.core.item.Item, net.minecraft.client.render.item.model.ItemModel> {
+  public static final org.useless.dragonfly.DisplayPos HANDHELD_FIRST_PERSON_RIGHT_HAND;
+  public static final org.useless.dragonfly.DisplayPos HANDHELD_FIRST_PERSON_LEFT_HAND;
+  public static final org.useless.dragonfly.DisplayPos HANDHELD_THIRD_PERSON_RIGHT_HAND;
+  public static final org.useless.dragonfly.DisplayPos HANDHELD_THIRD_PERSON_LEFT_HAND;
+  public static final org.useless.dragonfly.DisplayPos HANDHELD_ROD_FIRST_PERSON_RIGHT_HAND;
+  public static final org.useless.dragonfly.DisplayPos HANDHELD_ROD_FIRST_PERSON_LEFT_HAND;
+  public static final org.useless.dragonfly.DisplayPos HANDHELD_ROD_THIRD_PERSON_RIGHT_HAND;
+  public static final org.useless.dragonfly.DisplayPos HANDHELD_ROD_THIRD_PERSON_LEFT_HAND;
+  public static final net.minecraft.client.render.item.model.ItemModel emptyModel;
+  public static net.minecraft.client.render.item.model.ItemModelDispatcher getInstance();
+  public net.minecraft.client.render.item.model.ItemModel getDefault();
+  public net.minecraft.client.render.item.model.ItemModel getDispatch(net.minecraft.core.item.ItemStack);
+  public void addDispatch(net.minecraft.client.render.item.model.ItemModel);
+  public void reload();
+  public java.lang.Object getDefault();
+}
+
+public class net.minecraft.client.render.ItemRenderer {
+  public net.minecraft.client.render.ItemRenderer(net.minecraft.client.Minecraft);
+  public float getEquippedProgress(float);
+  public void renderItemInFirstPerson(float);
+  public void renderOverlays(float);
+  public void updateEquippedItem();
+  public void resetEquippedProgress();
+}
+
+public class net.minecraft.core.item.Item implements net.minecraft.core.data.tag.ITaggable<net.minecraft.core.item.Item>, net.minecraft.core.item.IItemConvertible {
+  public static final it.unimi.dsi.fastutil.objects.Object2IntMap<java.lang.String> nameToIdMap;
+  public static final net.minecraft.core.item.Item[] itemsList;
+  public static final java.util.Map<net.minecraft.core.util.collection.NamespaceID, net.minecraft.core.item.Item> itemsMap;
+  public static int highestItemId;
+  public final int id;
+  public final net.minecraft.core.util.collection.NamespaceID namespaceID;
+  public net.minecraft.core.item.Item(net.minecraft.core.util.collection.NamespaceID, java.lang.String, int);
+  public net.minecraft.core.item.Item(java.lang.String, java.lang.String, int);
+  public net.minecraft.core.item.Item setStatParent(java.util.function.Supplier<net.minecraft.core.item.IItemConvertible>);
+  public net.minecraft.core.item.Item setMaxStackSize(int);
+  public net.minecraft.core.item.Item withTags(net.minecraft.core.data.tag.Tag<net.minecraft.core.item.Item>...);
+  public net.minecraft.core.item.Item setContainerItem(net.minecraft.core.item.Item);
+  public boolean hasContainerItem();
+  public boolean isSilkTouch();
+  public boolean hasInventoryInteraction();
+  public boolean showFullDurability();
+  public boolean getHasSubtypes();
+  public boolean isDamagable();
+  public boolean hasTag(net.minecraft.core.data.tag.Tag<net.minecraft.core.item.Item>);
+  public boolean isIn(net.minecraft.core.data.tag.Tag<net.minecraft.core.item.Item>);
+  public net.minecraft.core.item.Item getContainerItem();
+  public net.minecraft.core.achievement.stat.Stat createStat(java.lang.String, java.lang.String);
+  public void putStat(java.lang.String, net.minecraft.core.achievement.stat.Stat);
+  public net.minecraft.core.achievement.stat.Stat getStat(java.lang.String);
+  public net.minecraft.core.item.Item getStatParent();
+  public static java.util.List<net.minecraft.core.achievement.stat.Stat> getStats(java.lang.String);
+  public int getItemStackLimit(net.minecraft.core.item.ItemStack);
+  public int getMaxDamage();
+  public int getMaxDamageForStack(net.minecraft.core.item.ItemStack);
+  public boolean interactsWithFluid(net.minecraft.core.item.ItemStack);
+  public boolean interactsWithEntity(net.minecraft.core.item.ItemStack, net.minecraft.core.entity.Entity);
+  public final boolean onUseItemOnBlock(net.minecraft.core.item.ItemStack, net.minecraft.core.entity.player.Player, net.minecraft.core.world.World, int, int, int, net.minecraft.core.util.helper.Side, double, double);
+  public boolean onUseOnBlock(net.minecraft.core.item.ItemStack, net.minecraft.core.world.World, net.minecraft.core.entity.player.Player, net.minecraft.core.world.pos.TilePosc, net.minecraft.core.util.helper.Side, double, double);
+  public final void onUseByActivator(net.minecraft.core.item.ItemStack, net.minecraft.core.block.entity.TileEntityActivator, net.minecraft.core.world.World, java.util.Random, int, int, int, double, double, double, net.minecraft.core.util.helper.Direction);
+  public void onUseByActivator(net.minecraft.core.item.ItemStack, net.minecraft.core.world.World, net.minecraft.core.block.entity.TileEntityActivator, java.util.Random, net.minecraft.core.world.pos.TilePosc, net.minecraft.core.util.helper.Direction, double, double, double);
+  public float getStrVsBlock(net.minecraft.core.item.ItemStack, net.minecraft.core.block.Block<?>);
+  public final net.minecraft.core.item.ItemStack onUseItem(net.minecraft.core.item.ItemStack, net.minecraft.core.world.World, net.minecraft.core.entity.player.Player);
+  public net.minecraft.core.item.ItemStack onUse(net.minecraft.core.item.ItemStack, net.minecraft.core.world.World, net.minecraft.core.entity.player.Player);
+  public boolean hitEntity(net.minecraft.core.item.ItemStack, net.minecraft.core.entity.Mob, net.minecraft.core.entity.Mob);
+  public final boolean beforeDestroyBlock(net.minecraft.core.world.World, net.minecraft.core.item.ItemStack, int, int, int, int, net.minecraft.core.util.helper.Side, net.minecraft.core.entity.player.Player);
+  public boolean beforeBlockDestroyed(net.minecraft.core.item.ItemStack, net.minecraft.core.world.World, net.minecraft.core.entity.player.Player, net.minecraft.core.block.Block<?>, net.minecraft.core.world.pos.TilePosc, net.minecraft.core.util.helper.Side);
+  public final boolean onBlockDestroyed(net.minecraft.core.world.World, net.minecraft.core.item.ItemStack, int, int, int, int, net.minecraft.core.util.helper.Side, net.minecraft.core.entity.Mob);
+  public boolean onBlockDestroyed(net.minecraft.core.item.ItemStack, net.minecraft.core.world.World, net.minecraft.core.entity.Mob, net.minecraft.core.block.Block<?>, net.minecraft.core.world.pos.TilePosc, net.minecraft.core.util.helper.Side);
+  public final int getDamageVsEntity(net.minecraft.core.entity.Entity, net.minecraft.core.item.ItemStack);
+  public int getDamageVsEntity(net.minecraft.core.item.ItemStack, net.minecraft.core.entity.Entity);
+  public final boolean canHarvestBlock(net.minecraft.core.entity.Mob, net.minecraft.core.item.ItemStack, net.minecraft.core.block.Block<?>);
+  public boolean canHarvestBlock(net.minecraft.core.item.ItemStack, net.minecraft.core.entity.Mob, net.minecraft.core.block.Block<?>);
+  public final boolean useItemOnEntity(net.minecraft.core.item.ItemStack, net.minecraft.core.entity.Mob, net.minecraft.core.entity.player.Player);
+  public boolean useOnEntity(net.minecraft.core.item.ItemStack, net.minecraft.core.entity.player.Player, net.minecraft.core.entity.Mob);
+  public void inventoryTick(net.minecraft.core.item.ItemStack, net.minecraft.core.world.World, net.minecraft.core.entity.Entity, int, boolean);
+  public void onCraftedBy(net.minecraft.core.item.ItemStack, net.minecraft.core.world.World, net.minecraft.core.entity.player.Player);
+  public net.minecraft.core.item.ItemStack onInventoryInteract(net.minecraft.core.entity.player.Player, net.minecraft.core.player.inventory.slot.Slot, net.minecraft.core.item.ItemStack, boolean);
+  public java.lang.String getKey();
+  public java.lang.String getLanguageKey(net.minecraft.core.item.ItemStack);
+  public java.lang.String getTranslatedName(net.minecraft.core.item.ItemStack);
+  public java.lang.String getTranslatedDescription(net.minecraft.core.item.ItemStack);
+  public java.lang.String getStatName();
+  public net.minecraft.core.item.Item asItem();
+  public net.minecraft.core.item.ItemStack getDefaultStack();
+  public com.mojang.nbt.tags.CompoundTag getDefaultTag();
+  public static net.minecraft.core.item.Item getItem(int);
+  public static boolean hasTag(net.minecraft.core.item.ItemStack, net.minecraft.core.data.tag.Tag<net.minecraft.core.item.Item>);
+}
+
+public final class net.minecraft.core.item.ItemStack {
+  public int stackSize;
+  public int animationsToGo;
+  public int itemID;
+  public net.minecraft.core.item.ItemStack(net.minecraft.core.item.IItemConvertible);
+  public net.minecraft.core.item.ItemStack(net.minecraft.core.item.IItemConvertible, int);
+  public net.minecraft.core.item.ItemStack(net.minecraft.core.item.IItemConvertible, int, int);
+  public net.minecraft.core.item.ItemStack(net.minecraft.core.block.Block<?>);
+  public net.minecraft.core.item.ItemStack(net.minecraft.core.block.Block<?>, int);
+  public net.minecraft.core.item.ItemStack(net.minecraft.core.block.Block<?>, int, int);
+  public net.minecraft.core.item.ItemStack(net.minecraft.core.block.Block<?>, int, int, com.mojang.nbt.tags.CompoundTag);
+  public net.minecraft.core.item.ItemStack(net.minecraft.core.item.Item);
+  public net.minecraft.core.item.ItemStack(net.minecraft.core.item.Item, int);
+  public net.minecraft.core.item.ItemStack(net.minecraft.core.item.Item, int, int);
+  public net.minecraft.core.item.ItemStack(net.minecraft.core.item.Item, int, int, com.mojang.nbt.tags.CompoundTag);
+  public net.minecraft.core.item.ItemStack(int, int, int);
+  public net.minecraft.core.item.ItemStack(net.minecraft.core.item.ItemStack);
+  public net.minecraft.core.item.ItemStack(int, int, int, com.mojang.nbt.tags.CompoundTag);
+  public net.minecraft.core.item.ItemStack splitStack(int);
+  public net.minecraft.core.item.Item getItem();
+  public boolean useItem(net.minecraft.core.entity.player.Player, net.minecraft.core.world.World, int, int, int, net.minecraft.core.util.helper.Side, double, double);
+  public boolean useItemOnBlock(net.minecraft.core.entity.player.Player, net.minecraft.core.world.World, net.minecraft.core.world.pos.TilePosc, net.minecraft.core.util.helper.Side, double, double);
+  public float getStrVsBlock(net.minecraft.core.block.Block<?>);
+  public net.minecraft.core.item.ItemStack useItemRightClick(net.minecraft.core.world.World, net.minecraft.core.entity.player.Player);
+  public net.minecraft.core.item.ItemStack useItem(net.minecraft.core.world.World, net.minecraft.core.entity.player.Player);
+  public com.mojang.nbt.tags.CompoundTag writeToNBT(com.mojang.nbt.tags.CompoundTag);
+  public void readFromNBT(com.mojang.nbt.tags.CompoundTag);
+  public int getMaxStackSize();
+  public int getMaxStackSize(net.minecraft.core.player.inventory.container.Container);
+  public boolean isStackable();
+  public boolean isItemStackDamageable();
+  public boolean getHasSubtypes();
+  public boolean isItemDamaged();
+  public int getItemDamageForDisplay();
+  public int getMetadata();
+  public void setMetadata(int);
+  public int getMaxDamage();
+  public void damageItem(int, net.minecraft.core.entity.Entity);
+  public void hitEntity(net.minecraft.core.entity.Mob, net.minecraft.core.entity.player.Player);
+  public boolean beforeDestroyBlock(net.minecraft.core.world.World, int, int, int, int, net.minecraft.core.util.helper.Side, net.minecraft.core.entity.player.Player);
+  public boolean beforeBlockDestroyed(net.minecraft.core.world.World, net.minecraft.core.entity.player.Player, net.minecraft.core.block.Block<?>, net.minecraft.core.world.pos.TilePosc, net.minecraft.core.util.helper.Side);
+  public void onDestroyBlock(net.minecraft.core.world.World, int, int, int, int, net.minecraft.core.util.helper.Side, net.minecraft.core.entity.player.Player);
+  public void onBlockDestroyed(net.minecraft.core.world.World, net.minecraft.core.entity.player.Player, net.minecraft.core.block.Block<?>, net.minecraft.core.world.pos.TilePosc, net.minecraft.core.util.helper.Side);
+  public boolean consumeItem(net.minecraft.core.entity.player.Player);
+  public int getDamageVsEntity(net.minecraft.core.entity.Entity);
+  public boolean canHarvestBlock(net.minecraft.core.entity.Mob, net.minecraft.core.block.Block<?>);
+  public boolean useItemOnEntity(net.minecraft.core.entity.player.Player, net.minecraft.core.entity.Mob);
+  public net.minecraft.core.item.ItemStack copy();
+  public static boolean areItemStacksEqual(net.minecraft.core.item.ItemStack, net.minecraft.core.item.ItemStack);
+  public boolean isItemStackEqual(net.minecraft.core.item.ItemStack);
+  public static boolean areItemsEqual(net.minecraft.core.item.ItemStack, net.minecraft.core.item.ItemStack);
+  public boolean isItemEqual(net.minecraft.core.item.ItemStack);
+  public java.lang.String getItemKey();
+  public java.lang.String getItemDescription();
+  public static net.minecraft.core.item.ItemStack copyItemStack(net.minecraft.core.item.ItemStack);
+  public java.lang.String toString();
+  public void updateAnimation(net.minecraft.core.world.World, net.minecraft.core.entity.Entity, int, boolean);
+  public void onCrafting(net.minecraft.core.world.World, net.minecraft.core.entity.player.Player);
+  public boolean isStackEqual(net.minecraft.core.item.ItemStack);
+  public boolean canStackWith(net.minecraft.core.item.ItemStack);
+  public static net.minecraft.core.item.ItemStack readItemStackFromNbt(com.mojang.nbt.tags.CompoundTag);
+  public boolean hasCustomName();
+  public boolean hasCustomColor();
+  public java.lang.String getCustomName();
+  public byte getCustomColor();
+  public java.lang.String getDisplayName();
+  public byte getDisplayColor();
+  public void setCustomName(java.lang.String);
+  public void setCustomColor(byte);
+  public void removeCustomName();
+  public void removeCustomColor();
+  public com.mojang.nbt.tags.CompoundTag getData();
+  public void setData(com.mojang.nbt.tags.CompoundTag);
+  public boolean interactsWithFluid();
+  public boolean interactsWithEntity(net.minecraft.core.entity.Entity);
+}
+

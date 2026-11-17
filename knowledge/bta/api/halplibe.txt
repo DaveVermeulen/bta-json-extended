@@ -1,0 +1,105 @@
+# javap -public, BTA 8.0.1 / HalpLibe 6.2.0+8.0.1. Generated 2026-11-17 on the maintainer's Mac.
+public class turniplabs.halplibe.HalpLibe implements net.fabricmc.api.ModInitializer {
+  public static final boolean isClient;
+  public static final java.lang.String MOD_ID;
+  public static final org.slf4j.Logger LOGGER;
+  public static final turniplabs.halplibe.util.TomlConfigHandler CONFIG;
+  public turniplabs.halplibe.HalpLibe();
+  public void onInitialize();
+  public static java.lang.String registerMod(java.lang.String);
+  public static java.lang.String registerMod(java.lang.String, boolean);
+}
+
+public final class turniplabs.halplibe.event.defs.ClientEvents {
+  public static final turniplabs.halplibe.event.impl.SortedSingleEvent<java.lang.Runnable> BEFORE_CLIENT_START;
+  public static final turniplabs.halplibe.event.impl.SortedSingleEvent<java.lang.Runnable> AFTER_CLIENT_START;
+  public static final turniplabs.halplibe.event.impl.SortedBaseEvent<java.util.function.Consumer<net.minecraft.client.render.block.model.BlockModelDispatcher>> BLOCK_MODEL_RELOAD;
+  public static final turniplabs.halplibe.event.impl.SortedBaseEvent<java.util.function.Consumer<net.minecraft.client.render.item.model.ItemModelDispatcher>> ITEM_MODEL_RELOAD;
+  public static final turniplabs.halplibe.event.impl.SortedBaseEvent<java.util.function.Consumer<net.minecraft.client.render.EntityRendererDispatcher>> ENTITY_RENDERER_RELOAD;
+  public static final turniplabs.halplibe.event.impl.SortedBaseEvent<java.util.function.Consumer<net.minecraft.client.render.TileEntityRenderDispatcher>> TILE_ENTITY_RENDERER_RELOAD;
+  public static final turniplabs.halplibe.event.impl.SortedBaseEvent<java.util.function.Consumer<net.minecraft.client.render.block.color.BlockColorDispatcher>> BLOCK_COLOR_RELOAD;
+}
+
+public class turniplabs.halplibe.helper.ModelHelper {
+  public static net.minecraft.client.render.block.model.BlockModelDispatcher blockModelDispatcher;
+  public static net.minecraft.client.render.item.model.ItemModelDispatcher itemModelDispatcher;
+  public static net.minecraft.client.render.EntityRendererDispatcher entityRendererDispatcher;
+  public static net.minecraft.client.render.TileEntityRenderDispatcher tileEntityRenderDispatcher;
+  public static net.minecraft.client.render.block.color.BlockColorDispatcher blockColorDispatcher;
+  public turniplabs.halplibe.helper.ModelHelper();
+  public static void setBlockModel(net.minecraft.core.block.Block<? extends net.minecraft.core.block.BlockLogic>, java.util.function.Supplier<net.minecraft.client.render.block.model.BlockModel<?>>);
+  public static void setBlockColor(net.minecraft.core.block.Block<? extends net.minecraft.core.block.BlockLogic>, java.util.function.Supplier<net.minecraft.client.render.block.color.BlockColor>);
+  public static void setItemModel(net.minecraft.core.item.Item, java.util.function.Supplier<net.minecraft.client.render.item.model.ItemModel>);
+  public static <T extends net.minecraft.core.entity.Entity> void setEntityModel(java.lang.Class<? extends T>, net.minecraft.client.render.entity.EntityRenderer<T>);
+  public static <T extends net.minecraft.core.block.entity.TileEntity> void setTileEntityModel(java.lang.Class<? extends T>, net.minecraft.client.render.tileentity.TileEntityRenderer<T>);
+}
+
+public interface turniplabs.halplibe.util.ModelEntrypoint {
+  public abstract void initBlockModels(net.minecraft.client.render.block.model.BlockModelDispatcher);
+  public abstract void initItemModels(net.minecraft.client.render.item.model.ItemModelDispatcher);
+  public abstract void initEntityModels(net.minecraft.client.render.EntityRendererDispatcher);
+  public abstract void initTileEntityModels(net.minecraft.client.render.TileEntityRenderDispatcher);
+  public abstract void initBlockColors(net.minecraft.client.render.block.color.BlockColorDispatcher);
+}
+
+public final class turniplabs.halplibe.helper.BlockBuilder implements java.lang.Cloneable {
+  public turniplabs.halplibe.helper.BlockBuilder(java.lang.String);
+  public turniplabs.halplibe.helper.BlockBuilder clone();
+  public turniplabs.halplibe.helper.BlockBuilder setTileEntity(java.util.function.Supplier<net.minecraft.core.block.entity.TileEntity>);
+  public turniplabs.halplibe.helper.BlockBuilder setHardness(float);
+  public turniplabs.halplibe.helper.BlockBuilder setResistance(float);
+  public turniplabs.halplibe.helper.BlockBuilder setLuminance(int);
+  public turniplabs.halplibe.helper.BlockBuilder setLightOpacity(int);
+  public turniplabs.halplibe.helper.BlockBuilder setSlipperiness(float);
+  public turniplabs.halplibe.helper.BlockBuilder setFlammability(int, int);
+  public turniplabs.halplibe.helper.BlockBuilder setUnbreakable();
+  public turniplabs.halplibe.helper.BlockBuilder setInfiniburn();
+  public turniplabs.halplibe.helper.BlockBuilder setUseInternalLight();
+  public turniplabs.halplibe.helper.BlockBuilder setTicking(boolean);
+  public turniplabs.halplibe.helper.BlockBuilder setBlockSound(net.minecraft.core.sound.BlockSound);
+  public turniplabs.halplibe.helper.BlockBuilder setBlockItem(turniplabs.halplibe.helper.BlockBuilder$BlockLambda<net.minecraft.core.item.block.ItemBlock<?>>);
+  public final turniplabs.halplibe.helper.BlockBuilder setTags(net.minecraft.core.data.tag.Tag<net.minecraft.core.block.Block<?>>...);
+  public final turniplabs.halplibe.helper.BlockBuilder addTags(net.minecraft.core.data.tag.Tag<net.minecraft.core.block.Block<?>>...);
+  public turniplabs.halplibe.helper.BlockBuilder setDisableStats();
+  public turniplabs.halplibe.helper.BlockBuilder setParticleGravity(float);
+  public turniplabs.halplibe.helper.BlockBuilder setOverrideColor(net.minecraft.core.block.material.MaterialColor);
+  public turniplabs.halplibe.helper.BlockBuilder setStatParent(java.util.function.Supplier<net.minecraft.core.item.IItemConvertible>);
+  public turniplabs.halplibe.helper.BlockBuilder setCreativeInventoryPlacement(turniplabs.halplibe.helper.creativeInventory.CreativeInventoryPlacement);
+  public <T extends net.minecraft.core.block.BlockLogic> net.minecraft.core.block.Block<T> build(java.lang.String, java.lang.String, int, net.minecraft.core.block.BlockLogicSupplier<T>);
+  public <T extends net.minecraft.core.block.BlockLogic> net.minecraft.core.block.Block<T> build(java.lang.String, int, net.minecraft.core.block.BlockLogicSupplier<T>);
+  public java.lang.Object clone() throws java.lang.CloneNotSupportedException;
+}
+
+public final class turniplabs.halplibe.helper.ItemBuilder implements java.lang.Cloneable {
+  public net.minecraft.core.data.tag.Tag<net.minecraft.core.item.Item>[] tags;
+  public turniplabs.halplibe.helper.ItemBuilder(java.lang.String);
+  public turniplabs.halplibe.helper.ItemBuilder clone();
+  public turniplabs.halplibe.helper.ItemBuilder setKey(java.lang.String);
+  public turniplabs.halplibe.helper.ItemBuilder setStackSize(int);
+  public turniplabs.halplibe.helper.ItemBuilder setMaxDamage(int);
+  public turniplabs.halplibe.helper.ItemBuilder setContainerItem(java.util.function.Supplier<net.minecraft.core.item.Item>);
+  public final turniplabs.halplibe.helper.ItemBuilder setTags(net.minecraft.core.data.tag.Tag<net.minecraft.core.item.Item>...);
+  public final turniplabs.halplibe.helper.ItemBuilder addTags(net.minecraft.core.data.tag.Tag<net.minecraft.core.item.Item>...);
+  public turniplabs.halplibe.helper.ItemBuilder setCreativeInventoryPlacement(turniplabs.halplibe.helper.creativeInventory.CreativeInventoryPlacement);
+  public <T extends net.minecraft.core.item.Item> T build(T);
+  public java.lang.Object clone() throws java.lang.CloneNotSupportedException;
+}
+
+public final class turniplabs.halplibe.util.dependency.Key extends java.lang.Record {
+  public turniplabs.halplibe.util.dependency.Key(java.lang.String, java.lang.String);
+  public static turniplabs.halplibe.util.dependency.Key of(java.lang.String);
+  public static turniplabs.halplibe.util.dependency.Key of(java.lang.String, java.lang.String);
+  public final java.lang.String toString();
+  public final int hashCode();
+  public final boolean equals(java.lang.Object);
+  public java.lang.String modId();
+  public java.lang.String dependsOn();
+}
+
+public class turniplabs.halplibe.event.impl.SortedBaseEvent<L> implements turniplabs.halplibe.event.EventSorted<L>, turniplabs.halplibe.event.Emitter<L> {
+  public turniplabs.halplibe.event.impl.SortedBaseEvent();
+  public void emit(java.util.function.Consumer<L>);
+  public void listen(turniplabs.halplibe.util.dependency.Key, L);
+  public void remove(L);
+}
+
