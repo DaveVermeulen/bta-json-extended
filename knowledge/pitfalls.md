@@ -7,6 +7,7 @@
 | Cached textures wrong after a pack change | Invalidate on `TextureRegistry.reloadGeneration` changes |
 | BlockBuilder setting has no effect | `set...` returns a copy; use the return value |
 | Block missing from creative menu | Needs `setCreativeInventoryPlacement(...)` |
+| NPE `ModelHelper.blockModelDispatcher is null` at startup | `ModelHelper.setBlockModel` called from the `client` entrypoint, before HalpLibe builds the dispatcher. Add models in `ClientEvents.BLOCK_MODEL_RELOAD.listen(Key.of(MOD_ID), dispatcher -> dispatcher.addDispatch(block, model))` |
 | "GLFW may only be used on the main thread" on macOS | `-XstartOnFirstThread` |
 | "Java heap space" configuring the BTA build | 4 GB heap in root `gradle.properties`, then `gradlew --stop` |
 | `Can't connect to Mojang API ... Player123` | Harmless |

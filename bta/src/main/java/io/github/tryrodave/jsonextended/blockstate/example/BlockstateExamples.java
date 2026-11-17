@@ -15,7 +15,6 @@ import net.minecraft.core.util.helper.Side;
 import net.minecraft.core.world.World;
 import net.minecraft.core.world.pos.TilePosc;
 import turniplabs.halplibe.helper.BlockBuilder;
-import turniplabs.halplibe.helper.ModelHelper;
 import turniplabs.halplibe.helper.creativeInventory.CreativeInventoryCategory;
 import turniplabs.halplibe.helper.creativeInventory.CreativeInventoryPlacement;
 
@@ -58,17 +57,17 @@ public final class BlockstateExamples {
 
     /** Placeholder models until blockstate rendering lands: the blockstate code will replace these. */
     @Environment(EnvType.CLIENT)
-    public static void registerModels() {
-        fixedModel(testFacing, "jsonextended:block/test_facing");
-        fixedModel(testStairs, "jsonextended:block/test_stairs");
-        fixedModel(testSlab, "jsonextended:block/test_slab");
-        fixedModel(testFence, "jsonextended:block/test_fence_inventory");
-        fixedModel(testWeighted, "jsonextended:block/test_weighted_a");
+    public static void addModels(BlockModelDispatcher dispatcher) {
+        fixedModel(dispatcher, testFacing, "jsonextended:block/test_facing");
+        fixedModel(dispatcher, testStairs, "jsonextended:block/test_stairs");
+        fixedModel(dispatcher, testSlab, "jsonextended:block/test_slab");
+        fixedModel(dispatcher, testFence, "jsonextended:block/test_fence_inventory");
+        fixedModel(dispatcher, testWeighted, "jsonextended:block/test_weighted_a");
     }
 
     @Environment(EnvType.CLIENT)
-    private static <T extends BlockLogic> void fixedModel(Block<T> block, String model) {
-        ModelHelper.setBlockModel(block, () -> new BlockModelGeneric<>(block, BlockModelDispatcher.loadDataModel(model)));
+    private static <T extends BlockLogic> void fixedModel(BlockModelDispatcher dispatcher, Block<T> block, String model) {
+        dispatcher.addDispatch(block, new BlockModelGeneric<>(block, BlockModelDispatcher.loadDataModel(model)));
     }
 
     /** Horizontal index of the way the mob looks: 0 south, 1 west, 2 north, 3 east (as in Betafront's ramp). */
