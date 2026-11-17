@@ -1,0 +1,36 @@
+// Pure Java parsing and logic for every format. No game code, no HalpLibe.
+// The bta/ build compiles these sources into the mod jar, so this build only
+// exists to compile and test them on their own: ./gradlew -p core test
+plugins {
+    id 'java'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.11.4')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+test {
+    useJUnitPlatform()
+    // Fixtures (Blockbench exports) live in core/src/test/resources.
+    testLogging {
+        events = ['failed']
+        exceptionFormat = 'full'
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.release = 17
+}
