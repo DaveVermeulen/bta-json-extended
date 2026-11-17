@@ -96,4 +96,4 @@ Risks:
 Open questions:
 - [x] Name, repo, licence, order: see knowledge/decisions.md
 - [ ] GLB textures: atlas ids in the model JSON, or stitch embedded images? (decide in the phase 7 spike)
-- [ ] Let resource packs restyle vanilla BTA blocks via our blockstates? (needs a mixin into `BlockModelDispatcher`)
+- [x] Let resource packs restyle vanilla BTA blocks via our blockstates: yes, through a mixin into `BlockModelDispatcher` (see knowledge/decisions.md)
