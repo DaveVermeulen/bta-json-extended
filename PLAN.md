@@ -95,5 +95,5 @@ Risks:
 
 Open questions:
 - [x] Name, repo, licence, order: see knowledge/decisions.md
-- [ ] GLB textures: atlas ids in the model JSON, or stitch embedded images? (decide in the phase 7 spike)
+- [x] GLB textures: start with atlas ids in the model JSON, like OBJ; stitching embedded images may come later (see knowledge/decisions.md)
 - [x] Let resource packs restyle vanilla BTA blocks via our blockstates: yes, through a mixin into `BlockModelDispatcher` (see knowledge/decisions.md)
