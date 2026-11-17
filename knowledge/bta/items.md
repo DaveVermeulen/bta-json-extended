@@ -13,4 +13,6 @@ Subclasses: `ItemModelStandard` (one icon), `ItemModelBlock`, `ItemModelBow`, `I
 
 Block items already use the block model's `display` via `BlockModel.getItemDisplayPos(id)`; missing left-hand poses copy the right-hand ones.
 
-**Open (Platform, phase 3 day 1):** where `DisplayPos` is applied for block items, and whether `ItemModel` can apply it itself or a mixin is needed. Fill in the full signatures above from the jar.
+## Display transforms: no mixin needed
+
+`ItemModel` has an overridable `DisplayPos getDisplayPos(String id)`. `ItemModelBlock` overrides it to return the block model's `getItemDisplayPos(id)` when the block renders 3D, and applies it as: translate (x mirrored for the left hand), rotate X, Y, Z in degrees (Y and Z mirrored for the left hand), then scale. So a JSON item model only has to override `getDisplayPos` with its `display` entries. Full signatures: [api/items.txt](api/items.txt).

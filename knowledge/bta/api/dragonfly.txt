@@ -1,0 +1,539 @@
+# javap -protected, org.useless.dragonfly in BTA 8.0.1. Generated 2026-11-17.
+public interface org.useless.dragonfly.data.block.BlockModelData {
+  public abstract net.minecraft.core.util.collection.NamespaceID modelId();
+  public abstract org.useless.dragonfly.models.block.StaticBlockModel asModel();
+}
+
+public class org.useless.dragonfly.DisplayPos$Serializer implements com.google.gson.JsonSerializer<org.useless.dragonfly.DisplayPos>, com.google.gson.JsonDeserializer<org.useless.dragonfly.DisplayPos> {
+  public org.useless.dragonfly.DisplayPos$Serializer();
+  public org.useless.dragonfly.DisplayPos deserialize(com.google.gson.JsonElement, java.lang.reflect.Type, com.google.gson.JsonDeserializationContext) throws com.google.gson.JsonParseException;
+  public com.google.gson.JsonElement serialize(org.useless.dragonfly.DisplayPos, java.lang.reflect.Type, com.google.gson.JsonSerializationContext);
+  public com.google.gson.JsonElement serialize(java.lang.Object, java.lang.reflect.Type, com.google.gson.JsonSerializationContext);
+  public java.lang.Object deserialize(com.google.gson.JsonElement, java.lang.reflect.Type, com.google.gson.JsonDeserializationContext) throws com.google.gson.JsonParseException;
+}
+
+public class org.useless.dragonfly.data.block.mojang.BlockModelMojangData$Builder$Serializer implements com.google.gson.JsonSerializer<org.useless.dragonfly.data.block.mojang.BlockModelMojangData$Builder>, com.google.gson.JsonDeserializer<org.useless.dragonfly.data.block.mojang.BlockModelMojangData$Builder> {
+  public org.useless.dragonfly.data.block.mojang.BlockModelMojangData$Builder$Serializer();
+  public org.useless.dragonfly.data.block.mojang.BlockModelMojangData$Builder deserialize(com.google.gson.JsonElement, java.lang.reflect.Type, com.google.gson.JsonDeserializationContext) throws com.google.gson.JsonParseException;
+  public com.google.gson.JsonElement serialize(org.useless.dragonfly.data.block.mojang.BlockModelMojangData$Builder, java.lang.reflect.Type, com.google.gson.JsonSerializationContext);
+  public com.google.gson.JsonElement serialize(java.lang.Object, java.lang.reflect.Type, com.google.gson.JsonSerializationContext);
+  public java.lang.Object deserialize(com.google.gson.JsonElement, java.lang.reflect.Type, com.google.gson.JsonDeserializationContext) throws com.google.gson.JsonParseException;
+}
+
+public class org.useless.dragonfly.data.block.mojang.BlockModelMojangData$Builder {
+  protected java.lang.String parent;
+  protected java.lang.Boolean ambientOcclusion;
+  protected java.lang.Integer renderLayer;
+  protected java.util.Map<java.lang.String, org.useless.dragonfly.DisplayPos> displayPosMap;
+  protected java.util.Map<java.lang.String, java.lang.String> textures;
+  protected it.unimi.dsi.fastutil.objects.Object2IntMap<net.minecraft.core.util.helper.Direction> particleIndices;
+  protected java.util.List<org.useless.dragonfly.data.block.mojang.Element$Builder> elements;
+  public org.useless.dragonfly.data.block.mojang.BlockModelMojangData$Builder();
+  public org.useless.dragonfly.data.block.mojang.BlockModelMojangData$Builder setParent(java.lang.String);
+  public org.useless.dragonfly.data.block.mojang.BlockModelMojangData$Builder setAO(java.lang.Boolean);
+  public org.useless.dragonfly.data.block.mojang.BlockModelMojangData$Builder setRenderLayer(int);
+  public org.useless.dragonfly.data.block.mojang.BlockModelMojangData$Builder setDisplay(java.lang.String, org.useless.dragonfly.DisplayPos);
+  public org.useless.dragonfly.data.block.mojang.BlockModelMojangData$Builder setTexture(java.lang.String, java.lang.String);
+  public org.useless.dragonfly.data.block.mojang.BlockModelMojangData$Builder setParticleIndex(net.minecraft.core.util.helper.Direction, int);
+  public org.useless.dragonfly.data.block.mojang.BlockModelMojangData$Builder addElement(org.useless.dragonfly.data.block.mojang.Element$Builder);
+  protected org.useless.dragonfly.data.block.mojang.BlockModelMojangData build(net.minecraft.client.render.texturepack.TexturePackList, java.lang.String);
+}
+
+public class org.useless.dragonfly.data.block.mojang.BlockModelMojangData$Cache {
+  protected static final java.util.Map<java.lang.String, org.useless.dragonfly.data.block.mojang.BlockModelMojangData> modelDataCache;
+  protected static final java.lang.String RESOURCE_PATH;
+  public org.useless.dragonfly.data.block.mojang.BlockModelMojangData$Cache();
+  public static org.useless.dragonfly.data.block.mojang.BlockModelMojangData loadModelData(net.minecraft.client.render.texturepack.TexturePackList, net.minecraft.core.util.collection.NamespaceID);
+  public static org.useless.dragonfly.data.block.mojang.BlockModelMojangData loadModelData(net.minecraft.client.render.texturepack.TexturePackList, java.lang.String);
+  public static org.useless.dragonfly.data.block.mojang.BlockModelMojangData getMissingModel();
+  public static void resetCache();
+  protected static org.useless.dragonfly.data.block.mojang.BlockModelMojangData$Builder loadFromStream(java.io.InputStream);
+}
+
+class org.useless.dragonfly.data.block.mojang.CompiledBlockModelMojangData$1 {
+}
+
+public class org.useless.dragonfly.data.block.mojang.BlockModelMojangData implements org.useless.dragonfly.data.block.BlockModelData {
+  public static final float UNITS_PER_BLOCK;
+  public static final float BLOCKS_PER_UNIT;
+  protected static final org.slf4j.Logger LOGGER;
+  protected static final com.google.gson.Gson gson;
+  protected static final java.lang.String DEFAULT_NAMESPACE;
+  protected static final java.lang.String DEFAULT_PARENT;
+  protected static final boolean DEFAULT_AMBIENT_OCCLUSION;
+  protected static final int DEFAULT_RENDER_LAYER;
+  protected final net.minecraft.core.util.collection.NamespaceID modelId;
+  public final java.lang.String parent;
+  public final boolean ambientOcclusion;
+  public final java.lang.Integer renderLayer;
+  public final java.util.Map<java.lang.String, org.useless.dragonfly.DisplayPos> displayPositions;
+  public final java.util.Map<java.lang.String, java.lang.String> textures;
+  public final it.unimi.dsi.fastutil.objects.Object2IntMap<net.minecraft.core.util.helper.Direction> particleIndices;
+  public final java.util.List<org.useless.dragonfly.data.block.mojang.Element> elements;
+  protected static com.google.gson.GsonBuilder builder();
+  protected org.useless.dragonfly.data.block.mojang.BlockModelMojangData(net.minecraft.client.render.texturepack.TexturePackList, net.minecraft.core.util.collection.NamespaceID, java.lang.String, java.lang.Boolean, java.lang.Integer, java.util.Map<java.lang.String, org.useless.dragonfly.DisplayPos>, java.util.Map<java.lang.String, java.lang.String>, it.unimi.dsi.fastutil.objects.Object2IntMap<net.minecraft.core.util.helper.Direction>, java.util.List<org.useless.dragonfly.data.block.mojang.Element>);
+  public net.minecraft.core.util.collection.NamespaceID modelId();
+  public org.useless.dragonfly.models.block.StaticBlockModel asModel();
+  public java.lang.String toString();
+}
+
+public class org.useless.dragonfly.data.block.mojang.CompiledBlockModelMojangData$C_Element {
+  public static final int VERTEX_TOP_LEFT;
+  public static final int VERTEX_TOP_RIGHT;
+  public static final int VERTEX_BOTTOM_RIGHT;
+  public static final int VERTEX_BOTTOM_LEFT;
+  public final int lightEmission;
+  public final boolean shade;
+  public final boolean flip;
+  public final float minX;
+  public final float minY;
+  public final float minZ;
+  public final float maxX;
+  public final float maxY;
+  public final float maxZ;
+  public final int faces;
+  public final org.useless.dragonfly.data.block.mojang.Element sourceElement;
+  public final org.joml.Vector3dc[] vertexPoses;
+  public final org.joml.Vector2fc[] vertexUvs;
+  public final org.joml.Vector3fc[] faceNormals;
+  public final org.joml.Vector3fc[] faceUps;
+  public final org.joml.Vector3fc[] faceLefts;
+  public final int[] tintIndices;
+  public final net.minecraft.core.util.helper.Direction[] cullfaces;
+  public final net.minecraft.core.util.helper.Direction[] directions;
+  public final net.minecraft.client.render.texture.stitcher.IconCoordinate[] textures;
+  public org.useless.dragonfly.data.block.mojang.CompiledBlockModelMojangData$C_Element(org.useless.dragonfly.data.block.mojang.CompiledBlockModelMojangData, org.useless.dragonfly.data.block.mojang.Element);
+}
+
+public class org.useless.dragonfly.data.block.mojang.CompiledBlockModelMojangData {
+  protected static final org.slf4j.Logger LOGGER;
+  public final org.useless.dragonfly.data.block.mojang.BlockModelMojangData data;
+  public final java.util.Map<java.lang.String, net.minecraft.client.render.texture.stitcher.IconCoordinate> textures;
+  public final org.useless.dragonfly.data.block.mojang.CompiledBlockModelMojangData$C_Element[] elements;
+  public final int[] particleIndices;
+  public final java.util.Map<java.lang.String, org.useless.dragonfly.DisplayPos> displayPosMap;
+  public final int renderLayer;
+  public org.useless.dragonfly.data.block.mojang.CompiledBlockModelMojangData(org.useless.dragonfly.data.block.mojang.BlockModelMojangData);
+  protected net.minecraft.client.render.texture.stitcher.IconCoordinate getTexture(java.lang.String, net.minecraft.client.render.texture.stitcher.IconCoordinate, boolean);
+}
+
+public class org.useless.dragonfly.data.block.mojang.Element$Builder$Serializer implements com.google.gson.JsonSerializer<org.useless.dragonfly.data.block.mojang.Element$Builder>, com.google.gson.JsonDeserializer<org.useless.dragonfly.data.block.mojang.Element$Builder> {
+  public org.useless.dragonfly.data.block.mojang.Element$Builder$Serializer();
+  public org.useless.dragonfly.data.block.mojang.Element$Builder deserialize(com.google.gson.JsonElement, java.lang.reflect.Type, com.google.gson.JsonDeserializationContext) throws com.google.gson.JsonParseException;
+  public com.google.gson.JsonElement serialize(org.useless.dragonfly.data.block.mojang.Element$Builder, java.lang.reflect.Type, com.google.gson.JsonSerializationContext);
+  public com.google.gson.JsonElement serialize(java.lang.Object, java.lang.reflect.Type, com.google.gson.JsonSerializationContext);
+  public java.lang.Object deserialize(com.google.gson.JsonElement, java.lang.reflect.Type, com.google.gson.JsonDeserializationContext) throws com.google.gson.JsonParseException;
+}
+
+public class org.useless.dragonfly.data.block.mojang.Element$Builder {
+  protected final float fromX;
+  protected final float fromY;
+  protected final float fromZ;
+  protected final float toX;
+  protected final float toY;
+  protected final float toZ;
+  protected org.useless.dragonfly.data.block.mojang.Rotation rotation;
+  protected boolean shade;
+  protected int lightEmission;
+  protected final java.util.Map<net.minecraft.core.util.helper.Direction, org.useless.dragonfly.data.block.mojang.Face$Builder> faces;
+  public org.useless.dragonfly.data.block.mojang.Element$Builder(float, float, float, float, float, float);
+  public org.useless.dragonfly.data.block.mojang.Element$Builder setRotation(org.useless.dragonfly.data.block.mojang.Rotation$Builder);
+  public org.useless.dragonfly.data.block.mojang.Element$Builder setShade(boolean);
+  public org.useless.dragonfly.data.block.mojang.Element$Builder setLightEmission(int);
+  public org.useless.dragonfly.data.block.mojang.Element$Builder addFace(net.minecraft.core.util.helper.Direction, org.useless.dragonfly.data.block.mojang.Face$Builder);
+  protected org.useless.dragonfly.data.block.mojang.Element build();
+}
+
+public class org.useless.dragonfly.data.block.mojang.Element {
+  protected static final boolean DEFAULT_SHADE;
+  protected static final int DEFAULT_LIGHT_EMISSION;
+  public final float fromX;
+  public final float fromY;
+  public final float fromZ;
+  public final float toX;
+  public final float toY;
+  public final float toZ;
+  public final org.useless.dragonfly.data.block.mojang.Rotation rotation;
+  public final boolean shade;
+  public final int lightEmission;
+  public final java.util.Map<net.minecraft.core.util.helper.Direction, org.useless.dragonfly.data.block.mojang.Face> faces;
+  protected org.useless.dragonfly.data.block.mojang.Element(float, float, float, float, float, float, org.useless.dragonfly.data.block.mojang.Rotation, boolean, int, java.util.Map<net.minecraft.core.util.helper.Direction, org.useless.dragonfly.data.block.mojang.Face>);
+  public java.lang.String toString();
+}
+
+class org.useless.dragonfly.data.block.mojang.Face$1 {
+}
+
+public class org.useless.dragonfly.data.block.mojang.Face$Builder$Serializer implements com.google.gson.JsonSerializer<org.useless.dragonfly.data.block.mojang.Face$Builder>, com.google.gson.JsonDeserializer<org.useless.dragonfly.data.block.mojang.Face$Builder> {
+  public org.useless.dragonfly.data.block.mojang.Face$Builder$Serializer();
+  public org.useless.dragonfly.data.block.mojang.Face$Builder deserialize(com.google.gson.JsonElement, java.lang.reflect.Type, com.google.gson.JsonDeserializationContext) throws com.google.gson.JsonParseException;
+  public com.google.gson.JsonElement serialize(org.useless.dragonfly.data.block.mojang.Face$Builder, java.lang.reflect.Type, com.google.gson.JsonSerializationContext);
+  public com.google.gson.JsonElement serialize(java.lang.Object, java.lang.reflect.Type, com.google.gson.JsonSerializationContext);
+  public java.lang.Object deserialize(com.google.gson.JsonElement, java.lang.reflect.Type, com.google.gson.JsonDeserializationContext) throws com.google.gson.JsonParseException;
+}
+
+public class org.useless.dragonfly.data.block.mojang.Face {
+  protected static final int DEFAULT_ROTATION;
+  protected static final int DEFAULT_TINT_INDEX;
+  public final float u1;
+  public final float u2;
+  public final float v1;
+  public final float v2;
+  public final java.lang.String texture;
+  public final net.minecraft.core.util.helper.Direction cullFace;
+  public final int rotation;
+  public final int tintIndex;
+  protected org.useless.dragonfly.data.block.mojang.Face(float, float, float, float, java.lang.String, net.minecraft.core.util.helper.Direction, int, int);
+  public java.lang.String toString();
+}
+
+public class org.useless.dragonfly.data.block.mojang.Face$Builder {
+  protected java.lang.Float u1;
+  protected java.lang.Float u2;
+  protected java.lang.Float v1;
+  protected java.lang.Float v2;
+  protected boolean mirrorU;
+  protected boolean mirrorV;
+  protected final java.lang.String texture;
+  protected net.minecraft.core.util.helper.Direction cullFace;
+  protected int rotation;
+  protected int tintIndex;
+  public org.useless.dragonfly.data.block.mojang.Face$Builder(java.lang.String);
+  public org.useless.dragonfly.data.block.mojang.Face$Builder setUVs(float, float, float, float);
+  public org.useless.dragonfly.data.block.mojang.Face$Builder setMirrorU(boolean);
+  public org.useless.dragonfly.data.block.mojang.Face$Builder setMirrorV(boolean);
+  public org.useless.dragonfly.data.block.mojang.Face$Builder setCullFace(net.minecraft.core.util.helper.Direction);
+  public org.useless.dragonfly.data.block.mojang.Face$Builder setRotation(int);
+  public org.useless.dragonfly.data.block.mojang.Face$Builder setTintIndex(int);
+  protected org.useless.dragonfly.data.block.mojang.Face build(float, float, float, float, float, float, net.minecraft.core.util.helper.Direction);
+}
+
+public class org.useless.dragonfly.data.block.mojang.Rotation$Builder$Serializer implements com.google.gson.JsonSerializer<org.useless.dragonfly.data.block.mojang.Rotation$Builder>, com.google.gson.JsonDeserializer<org.useless.dragonfly.data.block.mojang.Rotation$Builder> {
+  public org.useless.dragonfly.data.block.mojang.Rotation$Builder$Serializer();
+  public org.useless.dragonfly.data.block.mojang.Rotation$Builder deserialize(com.google.gson.JsonElement, java.lang.reflect.Type, com.google.gson.JsonDeserializationContext) throws com.google.gson.JsonParseException;
+  public com.google.gson.JsonElement serialize(org.useless.dragonfly.data.block.mojang.Rotation$Builder, java.lang.reflect.Type, com.google.gson.JsonSerializationContext);
+  public com.google.gson.JsonElement serialize(java.lang.Object, java.lang.reflect.Type, com.google.gson.JsonSerializationContext);
+  public java.lang.Object deserialize(com.google.gson.JsonElement, java.lang.reflect.Type, com.google.gson.JsonDeserializationContext) throws com.google.gson.JsonParseException;
+}
+
+public class org.useless.dragonfly.data.block.mojang.Rotation$Builder {
+  protected final float originX;
+  protected final float originY;
+  protected final float originZ;
+  protected final net.minecraft.core.util.helper.Axis axis;
+  protected final float angle;
+  public boolean rescale;
+  public org.useless.dragonfly.data.block.mojang.Rotation$Builder(float, float, float, net.minecraft.core.util.helper.Axis, float);
+  public org.useless.dragonfly.data.block.mojang.Rotation$Builder setRescale(boolean);
+  protected org.useless.dragonfly.data.block.mojang.Rotation build();
+}
+
+public final class org.useless.dragonfly.DisplayPos {
+  public static final java.lang.String NONE;
+  public static final java.lang.String THIRD_PERSON_RIGHT_HAND;
+  public static final java.lang.String THIRD_PERSON_LEFT_HAND;
+  public static final java.lang.String FIRST_PERSON_RIGHT_HAND;
+  public static final java.lang.String FIRST_PERSON_LEFT_HAND;
+  public static final java.lang.String GUI;
+  public static final java.lang.String HEAD;
+  public static final java.lang.String GROUND;
+  public static final java.lang.String FIXED;
+  public static final java.lang.String JAR;
+  public static final org.useless.dragonfly.DisplayPos DEFAULT_DISPLAY_POS;
+  public final float tx;
+  public final float ty;
+  public final float tz;
+  public final float rx;
+  public final float ry;
+  public final float rz;
+  public final float sx;
+  public final float sy;
+  public final float sz;
+  public org.useless.dragonfly.DisplayPos(float, float, float, float, float, float, float, float, float);
+  public java.lang.String toString();
+}
+
+public class org.useless.dragonfly.data.block.mojang.Rotation {
+  protected static final boolean DEFAULT_RESCALE;
+  public final float originX;
+  public final float originY;
+  public final float originZ;
+  public final net.minecraft.core.util.helper.Axis axis;
+  public final float angle;
+  public final boolean rescale;
+  protected org.useless.dragonfly.data.block.mojang.Rotation(float, float, float, net.minecraft.core.util.helper.Axis, float, boolean);
+  public java.lang.String toString();
+}
+
+public class org.useless.dragonfly.data.entity.mojang.Bone$Builder$Serializer implements com.google.gson.JsonSerializer<org.useless.dragonfly.data.entity.mojang.Bone$Builder>, com.google.gson.JsonDeserializer<org.useless.dragonfly.data.entity.mojang.Bone$Builder> {
+  public org.useless.dragonfly.data.entity.mojang.Bone$Builder$Serializer();
+  public org.useless.dragonfly.data.entity.mojang.Bone$Builder deserialize(com.google.gson.JsonElement, java.lang.reflect.Type, com.google.gson.JsonDeserializationContext) throws com.google.gson.JsonParseException;
+  public com.google.gson.JsonElement serialize(org.useless.dragonfly.data.entity.mojang.Bone$Builder, java.lang.reflect.Type, com.google.gson.JsonSerializationContext);
+  public com.google.gson.JsonElement serialize(java.lang.Object, java.lang.reflect.Type, com.google.gson.JsonSerializationContext);
+  public java.lang.Object deserialize(com.google.gson.JsonElement, java.lang.reflect.Type, com.google.gson.JsonDeserializationContext) throws com.google.gson.JsonParseException;
+}
+
+public class org.useless.dragonfly.data.entity.mojang.Bone {
+  public final java.lang.String name;
+  public final java.lang.String parent;
+  public final double[] pivot;
+  public final double[] rotation;
+  public final org.useless.dragonfly.data.entity.mojang.Cube[] cubes;
+  public final double inflate;
+  protected org.useless.dragonfly.data.entity.mojang.Bone(java.lang.String, java.lang.String, double[], double[], double, java.util.Collection<org.useless.dragonfly.data.entity.mojang.Cube$Builder>);
+}
+
+public class org.useless.dragonfly.data.entity.mojang.Bone$Builder {
+  public org.useless.dragonfly.data.entity.mojang.Bone$Builder(java.lang.String);
+  public org.useless.dragonfly.data.entity.mojang.Bone$Builder setParent(java.lang.String);
+  public org.useless.dragonfly.data.entity.mojang.Bone$Builder setPivot(double, double, double);
+  public org.useless.dragonfly.data.entity.mojang.Bone$Builder setRotation(double, double, double);
+  public org.useless.dragonfly.data.entity.mojang.Bone$Builder setInflation(double);
+  public org.useless.dragonfly.data.entity.mojang.Bone$Builder setMirror(boolean);
+  public org.useless.dragonfly.data.entity.mojang.Bone$Builder addCube(org.useless.dragonfly.data.entity.mojang.Cube$Builder);
+  protected org.useless.dragonfly.data.entity.mojang.Bone build();
+}
+
+public interface org.useless.dragonfly.data.entity.EntityModelData {
+  public abstract java.lang.String modelId();
+  public abstract org.useless.dragonfly.models.entity.StaticEntityModel asModel(double);
+}
+
+public class org.useless.dragonfly.data.entity.mojang.Cube$Builder$Serializer implements com.google.gson.JsonSerializer<org.useless.dragonfly.data.entity.mojang.Cube$Builder>, com.google.gson.JsonDeserializer<org.useless.dragonfly.data.entity.mojang.Cube$Builder> {
+  public org.useless.dragonfly.data.entity.mojang.Cube$Builder$Serializer();
+  public org.useless.dragonfly.data.entity.mojang.Cube$Builder deserialize(com.google.gson.JsonElement, java.lang.reflect.Type, com.google.gson.JsonDeserializationContext) throws com.google.gson.JsonParseException;
+  public com.google.gson.JsonElement serialize(org.useless.dragonfly.data.entity.mojang.Cube$Builder, java.lang.reflect.Type, com.google.gson.JsonSerializationContext);
+  public com.google.gson.JsonElement serialize(java.lang.Object, java.lang.reflect.Type, com.google.gson.JsonSerializationContext);
+  public java.lang.Object deserialize(com.google.gson.JsonElement, java.lang.reflect.Type, com.google.gson.JsonDeserializationContext) throws com.google.gson.JsonParseException;
+}
+
+public class org.useless.dragonfly.data.entity.mojang.EntityGeometryMojangData$Builder$Serializer implements com.google.gson.JsonSerializer<org.useless.dragonfly.data.entity.mojang.EntityGeometryMojangData$Builder>, com.google.gson.JsonDeserializer<org.useless.dragonfly.data.entity.mojang.EntityGeometryMojangData$Builder> {
+  public org.useless.dragonfly.data.entity.mojang.EntityGeometryMojangData$Builder$Serializer();
+  public org.useless.dragonfly.data.entity.mojang.EntityGeometryMojangData$Builder deserialize(com.google.gson.JsonElement, java.lang.reflect.Type, com.google.gson.JsonDeserializationContext) throws com.google.gson.JsonParseException;
+  public com.google.gson.JsonElement serialize(org.useless.dragonfly.data.entity.mojang.EntityGeometryMojangData$Builder, java.lang.reflect.Type, com.google.gson.JsonSerializationContext);
+  public com.google.gson.JsonElement serialize(java.lang.Object, java.lang.reflect.Type, com.google.gson.JsonSerializationContext);
+  public java.lang.Object deserialize(com.google.gson.JsonElement, java.lang.reflect.Type, com.google.gson.JsonDeserializationContext) throws com.google.gson.JsonParseException;
+}
+
+public class org.useless.dragonfly.data.entity.mojang.EntityGeometryMojangData$Builder {
+  public org.useless.dragonfly.data.entity.mojang.EntityGeometryMojangData$Builder(double, double);
+  public org.useless.dragonfly.data.entity.mojang.EntityGeometryMojangData$Builder setVersion(java.lang.String);
+  public org.useless.dragonfly.data.entity.mojang.EntityGeometryMojangData$Builder setVisualBoundsOffset(double, double, double);
+  public org.useless.dragonfly.data.entity.mojang.EntityGeometryMojangData$Builder setTextureSize(int, int);
+  public org.useless.dragonfly.data.entity.mojang.EntityGeometryMojangData$Builder addBone(org.useless.dragonfly.data.entity.mojang.Bone$Builder);
+  public org.useless.dragonfly.data.entity.mojang.EntityGeometryMojangData build(java.lang.String);
+}
+
+public class org.useless.dragonfly.data.entity.mojang.Cube {
+  public final double[] origin;
+  public final double[] size;
+  public final org.useless.dragonfly.data.entity.mojang.Face[] faces;
+  public final double inflate;
+  public final org.joml.Vector3dc pivot;
+  public final org.joml.Vector3dc rotation;
+  protected org.useless.dragonfly.data.entity.mojang.Cube(double[], double[], org.useless.dragonfly.data.entity.mojang.Face$Builder[], double, org.joml.Vector3d, org.joml.Vector3d);
+}
+
+public class org.useless.dragonfly.data.entity.mojang.Cube$Builder {
+  public org.useless.dragonfly.data.entity.mojang.Cube$Builder(double, double, double, double, double, double);
+  public org.useless.dragonfly.data.entity.mojang.Cube$Builder(double[], double[]);
+  public org.useless.dragonfly.data.entity.mojang.Cube$Builder setFaces(double, double);
+  public org.useless.dragonfly.data.entity.mojang.Cube$Builder setFace(net.minecraft.core.util.helper.Direction, org.useless.dragonfly.data.entity.mojang.Face$Builder);
+  public org.useless.dragonfly.data.entity.mojang.Cube$Builder setInflation(double);
+  public org.useless.dragonfly.data.entity.mojang.Cube$Builder setPivot(double, double, double);
+  public org.useless.dragonfly.data.entity.mojang.Cube$Builder setRotation(double, double, double);
+  public org.useless.dragonfly.data.entity.mojang.Cube$Builder setMirror();
+  protected void mirror();
+  protected org.useless.dragonfly.data.entity.mojang.Cube build();
+}
+
+public final class org.useless.dragonfly.data.entity.mojang.EntityGeometryMojangData$PlayerModelOverrideComponent extends java.lang.Enum<org.useless.dragonfly.data.entity.mojang.EntityGeometryMojangData$PlayerModelOverrideComponent> {
+  public static final org.useless.dragonfly.data.entity.mojang.EntityGeometryMojangData$PlayerModelOverrideComponent MAIN;
+  public static final org.useless.dragonfly.data.entity.mojang.EntityGeometryMojangData$PlayerModelOverrideComponent ARMS;
+  public static final org.useless.dragonfly.data.entity.mojang.EntityGeometryMojangData$PlayerModelOverrideComponent CAPE;
+  public static final org.useless.dragonfly.data.entity.mojang.EntityGeometryMojangData$PlayerModelOverrideComponent HELMET;
+  public static final org.useless.dragonfly.data.entity.mojang.EntityGeometryMojangData$PlayerModelOverrideComponent CHEST_PLATE;
+  public static final org.useless.dragonfly.data.entity.mojang.EntityGeometryMojangData$PlayerModelOverrideComponent LEGGINGS;
+  public static final org.useless.dragonfly.data.entity.mojang.EntityGeometryMojangData$PlayerModelOverrideComponent BOOTS;
+  public final java.lang.String refString;
+  public static org.useless.dragonfly.data.entity.mojang.EntityGeometryMojangData$PlayerModelOverrideComponent[] values();
+  public static org.useless.dragonfly.data.entity.mojang.EntityGeometryMojangData$PlayerModelOverrideComponent valueOf(java.lang.String);
+}
+
+public final class org.useless.dragonfly.data.entity.mojang.EntityGeometryMojangData$PlayerModelOverrides extends java.lang.Record {
+  public org.useless.dragonfly.data.entity.mojang.EntityGeometryMojangData$PlayerModelOverrides(java.util.UUID, net.minecraft.core.util.collection.Pair<java.lang.String, java.lang.Double>, net.minecraft.core.util.collection.Pair<java.lang.String, java.lang.Double>, net.minecraft.core.util.collection.Pair<java.lang.String, java.lang.Double>, net.minecraft.core.util.collection.Pair<java.lang.String, java.lang.Double>, net.minecraft.core.util.collection.Pair<java.lang.String, java.lang.Double>, net.minecraft.core.util.collection.Pair<java.lang.String, java.lang.Double>, net.minecraft.core.util.collection.Pair<java.lang.String, java.lang.Double>);
+  public final java.lang.String toString();
+  public final int hashCode();
+  public final boolean equals(java.lang.Object);
+  public java.util.UUID uuid();
+  public net.minecraft.core.util.collection.Pair<java.lang.String, java.lang.Double> mainOverride();
+  public net.minecraft.core.util.collection.Pair<java.lang.String, java.lang.Double> armsOverride();
+  public net.minecraft.core.util.collection.Pair<java.lang.String, java.lang.Double> capeOverride();
+  public net.minecraft.core.util.collection.Pair<java.lang.String, java.lang.Double> bootsOverride();
+  public net.minecraft.core.util.collection.Pair<java.lang.String, java.lang.Double> leggingsOverride();
+  public net.minecraft.core.util.collection.Pair<java.lang.String, java.lang.Double> chestPlateOverride();
+  public net.minecraft.core.util.collection.Pair<java.lang.String, java.lang.Double> helmetOverride();
+}
+
+public class org.useless.dragonfly.data.entity.mojang.Face$Builder$Serializer implements com.google.gson.JsonSerializer<org.useless.dragonfly.data.entity.mojang.Face$Builder>, com.google.gson.JsonDeserializer<org.useless.dragonfly.data.entity.mojang.Face$Builder> {
+  public org.useless.dragonfly.data.entity.mojang.Face$Builder$Serializer();
+  public org.useless.dragonfly.data.entity.mojang.Face$Builder deserialize(com.google.gson.JsonElement, java.lang.reflect.Type, com.google.gson.JsonDeserializationContext) throws com.google.gson.JsonParseException;
+  public com.google.gson.JsonElement serialize(org.useless.dragonfly.data.entity.mojang.Face$Builder, java.lang.reflect.Type, com.google.gson.JsonSerializationContext);
+  public com.google.gson.JsonElement serialize(java.lang.Object, java.lang.reflect.Type, com.google.gson.JsonSerializationContext);
+  public java.lang.Object deserialize(com.google.gson.JsonElement, java.lang.reflect.Type, com.google.gson.JsonDeserializationContext) throws com.google.gson.JsonParseException;
+}
+
+public class org.useless.dragonfly.data.entity.mojang.Face {
+  public final double[] uv;
+  public final double[] uv_size;
+  public final int uv_rotation;
+  protected org.useless.dragonfly.data.entity.mojang.Face(double[], double[], int);
+}
+
+public class org.useless.dragonfly.data.entity.mojang.EntityGeometryMojangData implements org.useless.dragonfly.data.entity.EntityModelData {
+  public static final java.lang.String CURRENT_VERSION;
+  public static final int DEFAULT_TEX_WIDTH;
+  public static final int DEFAULT_TEX_HEIGHT;
+  protected static final org.slf4j.Logger LOGGER;
+  protected static final com.google.gson.Gson gson;
+  protected final java.lang.String modelId;
+  public final java.lang.String version;
+  public final double vBoundsWidth;
+  public final double vBoundsHeight;
+  public final double[] vBoundsOffset;
+  public final int textureWidth;
+  public final int textureHeight;
+  public final java.util.Map<java.lang.String, org.useless.dragonfly.data.entity.mojang.Bone> bones;
+  protected static com.google.gson.GsonBuilder builder();
+  protected org.useless.dragonfly.data.entity.mojang.EntityGeometryMojangData(java.lang.String, java.lang.String, double, double, double[], int, int, java.lang.Iterable<org.useless.dragonfly.data.entity.mojang.Bone$Builder>);
+  public java.lang.String modelId();
+  public org.useless.dragonfly.models.entity.StaticEntityModel asModel(double);
+}
+
+class org.useless.dragonfly.models.block.mojang.StaticBlockModelMojang$1 {
+}
+
+public class org.useless.dragonfly.data.entity.mojang.EntityGeometryMojangData$Cache {
+  protected static final java.util.Map<java.lang.String, org.useless.dragonfly.data.entity.mojang.EntityGeometryMojangData> modelDataCache;
+  protected static final java.util.Map<java.util.UUID, org.useless.dragonfly.data.entity.mojang.EntityGeometryMojangData$PlayerModelOverrides> playerModelOverrides;
+  protected static final java.util.Map<java.util.UUID, java.util.Map<org.useless.dragonfly.data.entity.mojang.EntityGeometryMojangData$PlayerModelOverrideComponent, org.useless.dragonfly.models.entity.StaticEntityModel>> playerModelOverridesCache;
+  protected static final java.util.Map<net.minecraft.core.util.collection.NamespaceID, java.util.Map<java.lang.String, net.minecraft.core.util.collection.Pair<java.lang.String, java.lang.Double>>> localModelMappings;
+  public org.useless.dragonfly.data.entity.mojang.EntityGeometryMojangData$Cache();
+  public static org.useless.dragonfly.models.entity.StaticEntityModel getPlayerModelOverride(java.util.UUID, org.useless.dragonfly.data.entity.mojang.EntityGeometryMojangData$PlayerModelOverrideComponent);
+  public static org.useless.dragonfly.models.entity.StaticEntityModel getFallbackModel();
+  public static org.useless.dragonfly.models.entity.StaticEntityModel getModel(java.lang.String, double);
+  public static org.useless.dragonfly.models.entity.StaticEntityModel getModelForEntity(net.minecraft.core.util.collection.NamespaceID, java.lang.String);
+  public static org.useless.dragonfly.data.entity.mojang.EntityGeometryMojangData getGeometry(java.lang.String);
+  public static void loadModelsFromResource(java.io.InputStream);
+  public static void reload(net.minecraft.client.render.texturepack.TexturePackList);
+}
+
+public final class org.useless.dragonfly.models.entity.BoneTransform {
+  public double posX;
+  public double posY;
+  public double posZ;
+  public double rotX;
+  public double rotY;
+  public double rotZ;
+  public double scaleX;
+  public double scaleY;
+  public double scaleZ;
+  public boolean visible;
+  public org.useless.dragonfly.models.entity.BoneTransform();
+  public void reset();
+}
+
+public class org.useless.dragonfly.data.entity.mojang.Face$Builder {
+  public org.useless.dragonfly.data.entity.mojang.Face$Builder(double, double, double, double);
+  public org.useless.dragonfly.data.entity.mojang.Face$Builder(double[], double[]);
+  public org.useless.dragonfly.data.entity.mojang.Face$Builder setUVRotation(int);
+  protected void setMirror();
+  protected org.useless.dragonfly.data.entity.mojang.Face build();
+}
+
+public interface org.useless.dragonfly.models.entity.StaticEntityModel {
+  public abstract void resetBones();
+  public abstract org.useless.dragonfly.models.entity.BoneTransform getTransform(java.lang.String);
+  public abstract org.joml.primitives.AABBdc visibleBounds();
+  public abstract void translateToBone(java.lang.String);
+  public abstract void render();
+  public abstract void delete();
+}
+
+public final class org.useless.dragonfly.models.entity.mojang.StaticEntityModelMojang$BoneEntry extends java.lang.Record {
+  public org.useless.dragonfly.models.entity.mojang.StaticEntityModelMojang$BoneEntry(org.useless.dragonfly.data.entity.mojang.Bone, int);
+  public final java.lang.String toString();
+  public final int hashCode();
+  public final boolean equals(java.lang.Object);
+  public org.useless.dragonfly.data.entity.mojang.Bone bone();
+  public int index();
+}
+
+public interface org.useless.dragonfly.models.block.StaticBlockModel {
+  public abstract boolean renderStandalone(net.minecraft.client.render.block.model.generic.BlockModelGeneric<? extends net.minecraft.core.block.BlockLogic>, net.minecraft.client.render.tessellator.TessellatorGeneral, double, double, double, int, byte, net.minecraft.client.render.block.color.BlockColor);
+  public abstract boolean renderAttached(net.minecraft.client.render.block.model.generic.BlockModelGeneric<? extends net.minecraft.core.block.BlockLogic>, net.minecraft.client.render.tessellator.TessellatorGeneral, net.minecraft.core.world.WorldSource, net.minecraft.core.world.pos.TilePosc, int, int, int, double, double, double, boolean, boolean, net.minecraft.client.render.texture.stitcher.IconCoordinate);
+  public abstract net.minecraft.client.render.texture.stitcher.IconCoordinate getOverlay();
+  public abstract net.minecraft.client.render.texture.stitcher.IconCoordinate getParticle(net.minecraft.core.util.helper.Side);
+  public abstract int particleColorIndex(net.minecraft.core.util.helper.Side);
+  public abstract int renderLayer();
+  public abstract org.useless.dragonfly.DisplayPos getItemDisplayPos(java.lang.String);
+}
+
+public class org.useless.dragonfly.models.entity.mojang.StaticEntityModelMojang$TessellatorEntity {
+  public java.nio.ByteBuffer data;
+  public boolean drawing;
+  public int boneIndex;
+  public byte normalX;
+  public byte normalY;
+  public byte normalZ;
+  public final int vao;
+  public final int vbo;
+  public int vertexCount;
+  public org.useless.dragonfly.models.entity.mojang.StaticEntityModelMojang$TessellatorEntity(int);
+  public void startDrawingQuads();
+  public void addVertexWithUV(org.joml.Vector3dc, double, double);
+  public void addVertexWithUV(double, double, double, double, double);
+  public void checkCanFit(int);
+  public void setBone(int);
+  public void setNormal(double, double, double);
+  public net.minecraft.client.render.tessellator.RenderBuffer record(int, int);
+  public void enable(int, int);
+}
+
+public class org.useless.dragonfly.models.block.mojang.StaticBlockModelMojang implements org.useless.dragonfly.models.block.StaticBlockModel {
+  protected static final net.minecraft.client.Minecraft MC;
+  protected static final net.minecraft.client.render.LightingCache LIGHTING_CACHE;
+  protected final org.useless.dragonfly.data.block.mojang.CompiledBlockModelMojangData compiled;
+  public org.useless.dragonfly.models.block.mojang.StaticBlockModelMojang(org.useless.dragonfly.data.block.mojang.BlockModelMojangData);
+  public boolean renderStandalone(net.minecraft.client.render.block.model.generic.BlockModelGeneric<? extends net.minecraft.core.block.BlockLogic>, net.minecraft.client.render.tessellator.TessellatorGeneral, double, double, double, int, byte, net.minecraft.client.render.block.color.BlockColor);
+  public boolean renderAttached(net.minecraft.client.render.block.model.generic.BlockModelGeneric<? extends net.minecraft.core.block.BlockLogic>, net.minecraft.client.render.tessellator.TessellatorGeneral, net.minecraft.core.world.WorldSource, net.minecraft.core.world.pos.TilePosc, int, int, int, double, double, double, boolean, boolean, net.minecraft.client.render.texture.stitcher.IconCoordinate);
+  public org.joml.Vector2f rotateUV(org.joml.Vector2fc, int, int, int, net.minecraft.core.util.helper.Direction, org.joml.Vector2f);
+  public net.minecraft.client.render.texture.stitcher.IconCoordinate getOverlay();
+  public net.minecraft.client.render.texture.stitcher.IconCoordinate getParticle(net.minecraft.core.util.helper.Side);
+  public int particleColorIndex(net.minecraft.core.util.helper.Side);
+  public int renderLayer();
+  public org.useless.dragonfly.DisplayPos getItemDisplayPos(java.lang.String);
+  protected float getBrightness(int, int, int, float);
+  protected byte getLightIndex(int, int, int, int);
+}
+
+public class org.useless.dragonfly.models.entity.mojang.StaticEntityModelMojang implements org.useless.dragonfly.models.entity.StaticEntityModel {
+  public static final int MAX_BONES;
+  public final java.util.Map<java.lang.String, org.useless.dragonfly.models.entity.BoneTransform> transformMap;
+  public final org.useless.dragonfly.models.entity.BoneTransform[] transforms;
+  public final org.useless.dragonfly.models.entity.mojang.StaticEntityModelMojang$BoneEntry[] bones;
+  public final org.useless.dragonfly.data.entity.mojang.EntityGeometryMojangData data;
+  public final double inflation;
+  protected final org.joml.primitives.AABBd visBounds;
+  public org.useless.dragonfly.models.entity.mojang.StaticEntityModelMojang(org.useless.dragonfly.data.entity.mojang.EntityGeometryMojangData, double);
+  public void resetBones();
+  public org.useless.dragonfly.models.entity.BoneTransform getTransform(java.lang.String);
+  public org.joml.primitives.AABBdc visibleBounds();
+  public void translateToBone(java.lang.String);
+  public void render();
+  public void delete();
+  protected boolean boneTransform(org.useless.dragonfly.data.entity.mojang.Bone, org.joml.Matrix4f);
+  protected void renderBone(org.useless.dragonfly.models.entity.mojang.StaticEntityModelMojang$TessellatorEntity, org.useless.dragonfly.models.entity.mojang.StaticEntityModelMojang$BoneEntry);
+  protected static void addRotatedVertex(org.useless.dragonfly.models.entity.mojang.StaticEntityModelMojang$TessellatorEntity, double, double, double, double, double, org.joml.Vector3dc, org.joml.Vector3dc);
+}
+
