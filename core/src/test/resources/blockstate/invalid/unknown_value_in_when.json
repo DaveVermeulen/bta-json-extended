@@ -1,0 +1,4 @@
+{
+  "properties": {"open": {"bits": "0", "values": ["false", "true"]}},
+  "multipart": [{"when": {"open": "maybe"}, "apply": {"model": "jsonextended:block/test_slab"}}]
+}

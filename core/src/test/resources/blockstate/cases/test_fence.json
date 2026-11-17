@@ -1,0 +1,164 @@
+{
+  "blockstate": "jsonextended:test_fence",
+  "note": "Expected results for a blockstate file. 'meta' is the block metadata, 'resolved' are the properties a StateResolver supplies, 'properties' is the full decoded state, 'parts' are the models drawn in order. 'bta' is the same rotation as BTA renderAttached quarter turns [rotX, rotY, rotZ] = [-x/90, -y/90, 0] mod 4 (derived from the maths, to confirm in game). Fence state comes only from the resolver; meta is ignored.",
+  "cases": [
+    {
+      "meta": 0,
+      "resolved": {"north": "false", "east": "false", "south": "false", "west": "false"},
+      "properties": {"north": "false", "east": "false", "south": "false", "west": "false"},
+      "parts": [{"model": "jsonextended:block/test_fence_post", "x": 0, "y": 0, "uvlock": false, "bta": [0, 0, 0]}]
+    },
+    {
+      "meta": 0,
+      "resolved": {"north": "true", "east": "false", "south": "false", "west": "false"},
+      "properties": {"north": "true", "east": "false", "south": "false", "west": "false"},
+      "parts": [
+        {"model": "jsonextended:block/test_fence_post", "x": 0, "y": 0, "uvlock": false, "bta": [0, 0, 0]},
+        {"model": "jsonextended:block/test_fence_side", "x": 0, "y": 0, "uvlock": true, "bta": [0, 0, 0]}
+      ]
+    },
+    {
+      "meta": 0,
+      "resolved": {"north": "false", "east": "true", "south": "false", "west": "false"},
+      "properties": {"north": "false", "east": "true", "south": "false", "west": "false"},
+      "parts": [
+        {"model": "jsonextended:block/test_fence_post", "x": 0, "y": 0, "uvlock": false, "bta": [0, 0, 0]},
+        {"model": "jsonextended:block/test_fence_side", "x": 0, "y": 90, "uvlock": true, "bta": [0, 3, 0]}
+      ]
+    },
+    {
+      "meta": 0,
+      "resolved": {"north": "true", "east": "true", "south": "false", "west": "false"},
+      "properties": {"north": "true", "east": "true", "south": "false", "west": "false"},
+      "parts": [
+        {"model": "jsonextended:block/test_fence_post", "x": 0, "y": 0, "uvlock": false, "bta": [0, 0, 0]},
+        {"model": "jsonextended:block/test_fence_side", "x": 0, "y": 0, "uvlock": true, "bta": [0, 0, 0]},
+        {"model": "jsonextended:block/test_fence_side", "x": 0, "y": 90, "uvlock": true, "bta": [0, 3, 0]}
+      ]
+    },
+    {
+      "meta": 0,
+      "resolved": {"north": "false", "east": "false", "south": "true", "west": "false"},
+      "properties": {"north": "false", "east": "false", "south": "true", "west": "false"},
+      "parts": [
+        {"model": "jsonextended:block/test_fence_post", "x": 0, "y": 0, "uvlock": false, "bta": [0, 0, 0]},
+        {"model": "jsonextended:block/test_fence_side", "x": 0, "y": 180, "uvlock": true, "bta": [0, 2, 0]}
+      ]
+    },
+    {
+      "meta": 0,
+      "resolved": {"north": "true", "east": "false", "south": "true", "west": "false"},
+      "properties": {"north": "true", "east": "false", "south": "true", "west": "false"},
+      "parts": [
+        {"model": "jsonextended:block/test_fence_post", "x": 0, "y": 0, "uvlock": false, "bta": [0, 0, 0]},
+        {"model": "jsonextended:block/test_fence_side", "x": 0, "y": 0, "uvlock": true, "bta": [0, 0, 0]},
+        {"model": "jsonextended:block/test_fence_side", "x": 0, "y": 180, "uvlock": true, "bta": [0, 2, 0]}
+      ]
+    },
+    {
+      "meta": 0,
+      "resolved": {"north": "false", "east": "true", "south": "true", "west": "false"},
+      "properties": {"north": "false", "east": "true", "south": "true", "west": "false"},
+      "parts": [
+        {"model": "jsonextended:block/test_fence_post", "x": 0, "y": 0, "uvlock": false, "bta": [0, 0, 0]},
+        {"model": "jsonextended:block/test_fence_side", "x": 0, "y": 90, "uvlock": true, "bta": [0, 3, 0]},
+        {"model": "jsonextended:block/test_fence_side", "x": 0, "y": 180, "uvlock": true, "bta": [0, 2, 0]}
+      ]
+    },
+    {
+      "meta": 0,
+      "resolved": {"north": "true", "east": "true", "south": "true", "west": "false"},
+      "properties": {"north": "true", "east": "true", "south": "true", "west": "false"},
+      "parts": [
+        {"model": "jsonextended:block/test_fence_post", "x": 0, "y": 0, "uvlock": false, "bta": [0, 0, 0]},
+        {"model": "jsonextended:block/test_fence_side", "x": 0, "y": 0, "uvlock": true, "bta": [0, 0, 0]},
+        {"model": "jsonextended:block/test_fence_side", "x": 0, "y": 90, "uvlock": true, "bta": [0, 3, 0]},
+        {"model": "jsonextended:block/test_fence_side", "x": 0, "y": 180, "uvlock": true, "bta": [0, 2, 0]}
+      ]
+    },
+    {
+      "meta": 0,
+      "resolved": {"north": "false", "east": "false", "south": "false", "west": "true"},
+      "properties": {"north": "false", "east": "false", "south": "false", "west": "true"},
+      "parts": [
+        {"model": "jsonextended:block/test_fence_post", "x": 0, "y": 0, "uvlock": false, "bta": [0, 0, 0]},
+        {"model": "jsonextended:block/test_fence_side", "x": 0, "y": 270, "uvlock": true, "bta": [0, 1, 0]}
+      ]
+    },
+    {
+      "meta": 0,
+      "resolved": {"north": "true", "east": "false", "south": "false", "west": "true"},
+      "properties": {"north": "true", "east": "false", "south": "false", "west": "true"},
+      "parts": [
+        {"model": "jsonextended:block/test_fence_post", "x": 0, "y": 0, "uvlock": false, "bta": [0, 0, 0]},
+        {"model": "jsonextended:block/test_fence_side", "x": 0, "y": 0, "uvlock": true, "bta": [0, 0, 0]},
+        {"model": "jsonextended:block/test_fence_side", "x": 0, "y": 270, "uvlock": true, "bta": [0, 1, 0]}
+      ]
+    },
+    {
+      "meta": 0,
+      "resolved": {"north": "false", "east": "true", "south": "false", "west": "true"},
+      "properties": {"north": "false", "east": "true", "south": "false", "west": "true"},
+      "parts": [
+        {"model": "jsonextended:block/test_fence_post", "x": 0, "y": 0, "uvlock": false, "bta": [0, 0, 0]},
+        {"model": "jsonextended:block/test_fence_side", "x": 0, "y": 90, "uvlock": true, "bta": [0, 3, 0]},
+        {"model": "jsonextended:block/test_fence_side", "x": 0, "y": 270, "uvlock": true, "bta": [0, 1, 0]}
+      ]
+    },
+    {
+      "meta": 0,
+      "resolved": {"north": "true", "east": "true", "south": "false", "west": "true"},
+      "properties": {"north": "true", "east": "true", "south": "false", "west": "true"},
+      "parts": [
+        {"model": "jsonextended:block/test_fence_post", "x": 0, "y": 0, "uvlock": false, "bta": [0, 0, 0]},
+        {"model": "jsonextended:block/test_fence_side", "x": 0, "y": 0, "uvlock": true, "bta": [0, 0, 0]},
+        {"model": "jsonextended:block/test_fence_side", "x": 0, "y": 90, "uvlock": true, "bta": [0, 3, 0]},
+        {"model": "jsonextended:block/test_fence_side", "x": 0, "y": 270, "uvlock": true, "bta": [0, 1, 0]}
+      ]
+    },
+    {
+      "meta": 0,
+      "resolved": {"north": "false", "east": "false", "south": "true", "west": "true"},
+      "properties": {"north": "false", "east": "false", "south": "true", "west": "true"},
+      "parts": [
+        {"model": "jsonextended:block/test_fence_post", "x": 0, "y": 0, "uvlock": false, "bta": [0, 0, 0]},
+        {"model": "jsonextended:block/test_fence_side", "x": 0, "y": 180, "uvlock": true, "bta": [0, 2, 0]},
+        {"model": "jsonextended:block/test_fence_side", "x": 0, "y": 270, "uvlock": true, "bta": [0, 1, 0]}
+      ]
+    },
+    {
+      "meta": 0,
+      "resolved": {"north": "true", "east": "false", "south": "true", "west": "true"},
+      "properties": {"north": "true", "east": "false", "south": "true", "west": "true"},
+      "parts": [
+        {"model": "jsonextended:block/test_fence_post", "x": 0, "y": 0, "uvlock": false, "bta": [0, 0, 0]},
+        {"model": "jsonextended:block/test_fence_side", "x": 0, "y": 0, "uvlock": true, "bta": [0, 0, 0]},
+        {"model": "jsonextended:block/test_fence_side", "x": 0, "y": 180, "uvlock": true, "bta": [0, 2, 0]},
+        {"model": "jsonextended:block/test_fence_side", "x": 0, "y": 270, "uvlock": true, "bta": [0, 1, 0]}
+      ]
+    },
+    {
+      "meta": 0,
+      "resolved": {"north": "false", "east": "true", "south": "true", "west": "true"},
+      "properties": {"north": "false", "east": "true", "south": "true", "west": "true"},
+      "parts": [
+        {"model": "jsonextended:block/test_fence_post", "x": 0, "y": 0, "uvlock": false, "bta": [0, 0, 0]},
+        {"model": "jsonextended:block/test_fence_side", "x": 0, "y": 90, "uvlock": true, "bta": [0, 3, 0]},
+        {"model": "jsonextended:block/test_fence_side", "x": 0, "y": 180, "uvlock": true, "bta": [0, 2, 0]},
+        {"model": "jsonextended:block/test_fence_side", "x": 0, "y": 270, "uvlock": true, "bta": [0, 1, 0]}
+      ]
+    },
+    {
+      "meta": 0,
+      "resolved": {"north": "true", "east": "true", "south": "true", "west": "true"},
+      "properties": {"north": "true", "east": "true", "south": "true", "west": "true"},
+      "parts": [
+        {"model": "jsonextended:block/test_fence_post", "x": 0, "y": 0, "uvlock": false, "bta": [0, 0, 0]},
+        {"model": "jsonextended:block/test_fence_side", "x": 0, "y": 0, "uvlock": true, "bta": [0, 0, 0]},
+        {"model": "jsonextended:block/test_fence_side", "x": 0, "y": 90, "uvlock": true, "bta": [0, 3, 0]},
+        {"model": "jsonextended:block/test_fence_side", "x": 0, "y": 180, "uvlock": true, "bta": [0, 2, 0]},
+        {"model": "jsonextended:block/test_fence_side", "x": 0, "y": 270, "uvlock": true, "bta": [0, 1, 0]}
+      ]
+    }
+  ]
+}

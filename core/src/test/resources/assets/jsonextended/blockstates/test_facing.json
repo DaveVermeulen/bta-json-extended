@@ -1,0 +1,20 @@
+{
+  "properties": {
+    "facing": {"bits": "0-2", "values": ["south", "west", "north", "east", "up", "down"]},
+    "lit": {"bits": "3", "values": ["false", "true"]}
+  },
+  "variants": {
+    "facing=north,lit=false": {"model": "jsonextended:block/test_facing"},
+    "facing=east,lit=false": {"model": "jsonextended:block/test_facing", "y": 90},
+    "facing=south,lit=false": {"model": "jsonextended:block/test_facing", "y": 180},
+    "facing=west,lit=false": {"model": "jsonextended:block/test_facing", "y": 270},
+    "facing=up,lit=false": {"model": "jsonextended:block/test_facing", "x": 270},
+    "facing=down,lit=false": {"model": "jsonextended:block/test_facing", "x": 90},
+    "facing=north,lit=true": {"model": "jsonextended:block/test_facing_lit"},
+    "facing=east,lit=true": {"model": "jsonextended:block/test_facing_lit", "y": 90},
+    "facing=south,lit=true": {"model": "jsonextended:block/test_facing_lit", "y": 180},
+    "facing=west,lit=true": {"model": "jsonextended:block/test_facing_lit", "y": 270},
+    "facing=up,lit=true": {"model": "jsonextended:block/test_facing_lit", "x": 270},
+    "facing=down,lit=true": {"model": "jsonextended:block/test_facing_lit", "x": 90}
+  }
+}

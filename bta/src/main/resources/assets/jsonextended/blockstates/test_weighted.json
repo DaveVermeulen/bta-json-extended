@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "": [
+      {"model": "jsonextended:block/test_weighted_a", "weight": 4},
+      {"model": "jsonextended:block/test_weighted_a", "y": 90},
+      {"model": "jsonextended:block/test_weighted_b", "weight": 2},
+      {"model": "jsonextended:block/test_weighted_c"}
+    ]
+  }
+}

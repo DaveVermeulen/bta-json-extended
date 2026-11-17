@@ -1,0 +1,4 @@
+{
+  "properties": {"half": {"bits": "0", "values": ["bottom", "top", "double"]}},
+  "variants": {"half=bottom": {"model": "jsonextended:block/test_slab"}}
+}

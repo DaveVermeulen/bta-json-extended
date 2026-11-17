@@ -1,0 +1,247 @@
+{
+  "blockstate": "jsonextended:test_stairs",
+  "note": "Expected results for a blockstate file. 'meta' is the block metadata, 'resolved' are the properties a StateResolver supplies, 'properties' is the full decoded state, 'parts' are the models drawn in order. 'bta' is the same rotation as BTA renderAttached quarter turns [rotX, rotY, rotZ] = [-x/90, -y/90, 0] mod 4 (derived from the maths, to confirm in game).",
+  "cases": [
+    {
+      "meta": 0,
+      "resolved": {"shape": "straight"},
+      "properties": {"facing": "south", "half": "bottom", "shape": "straight"},
+      "parts": [{"model": "jsonextended:block/test_stairs", "x": 0, "y": 90, "uvlock": true, "bta": [0, 3, 0]}]
+    },
+    {
+      "meta": 0,
+      "resolved": {"shape": "inner_left"},
+      "properties": {"facing": "south", "half": "bottom", "shape": "inner_left"},
+      "parts": [{"model": "jsonextended:block/test_stairs_inner", "x": 0, "y": 0, "uvlock": false, "bta": [0, 0, 0]}]
+    },
+    {
+      "meta": 0,
+      "resolved": {"shape": "inner_right"},
+      "properties": {"facing": "south", "half": "bottom", "shape": "inner_right"},
+      "parts": [{"model": "jsonextended:block/test_stairs_inner", "x": 0, "y": 90, "uvlock": true, "bta": [0, 3, 0]}]
+    },
+    {
+      "meta": 0,
+      "resolved": {"shape": "outer_left"},
+      "properties": {"facing": "south", "half": "bottom", "shape": "outer_left"},
+      "parts": [{"model": "jsonextended:block/test_stairs_outer", "x": 0, "y": 0, "uvlock": false, "bta": [0, 0, 0]}]
+    },
+    {
+      "meta": 0,
+      "resolved": {"shape": "outer_right"},
+      "properties": {"facing": "south", "half": "bottom", "shape": "outer_right"},
+      "parts": [{"model": "jsonextended:block/test_stairs_outer", "x": 0, "y": 90, "uvlock": true, "bta": [0, 3, 0]}]
+    },
+    {
+      "meta": 1,
+      "resolved": {"shape": "straight"},
+      "properties": {"facing": "west", "half": "bottom", "shape": "straight"},
+      "parts": [{"model": "jsonextended:block/test_stairs", "x": 0, "y": 180, "uvlock": true, "bta": [0, 2, 0]}]
+    },
+    {
+      "meta": 1,
+      "resolved": {"shape": "inner_left"},
+      "properties": {"facing": "west", "half": "bottom", "shape": "inner_left"},
+      "parts": [{"model": "jsonextended:block/test_stairs_inner", "x": 0, "y": 90, "uvlock": true, "bta": [0, 3, 0]}]
+    },
+    {
+      "meta": 1,
+      "resolved": {"shape": "inner_right"},
+      "properties": {"facing": "west", "half": "bottom", "shape": "inner_right"},
+      "parts": [{"model": "jsonextended:block/test_stairs_inner", "x": 0, "y": 180, "uvlock": true, "bta": [0, 2, 0]}]
+    },
+    {
+      "meta": 1,
+      "resolved": {"shape": "outer_left"},
+      "properties": {"facing": "west", "half": "bottom", "shape": "outer_left"},
+      "parts": [{"model": "jsonextended:block/test_stairs_outer", "x": 0, "y": 90, "uvlock": true, "bta": [0, 3, 0]}]
+    },
+    {
+      "meta": 1,
+      "resolved": {"shape": "outer_right"},
+      "properties": {"facing": "west", "half": "bottom", "shape": "outer_right"},
+      "parts": [{"model": "jsonextended:block/test_stairs_outer", "x": 0, "y": 180, "uvlock": true, "bta": [0, 2, 0]}]
+    },
+    {
+      "meta": 2,
+      "resolved": {"shape": "straight"},
+      "properties": {"facing": "north", "half": "bottom", "shape": "straight"},
+      "parts": [{"model": "jsonextended:block/test_stairs", "x": 0, "y": 270, "uvlock": true, "bta": [0, 1, 0]}]
+    },
+    {
+      "meta": 2,
+      "resolved": {"shape": "inner_left"},
+      "properties": {"facing": "north", "half": "bottom", "shape": "inner_left"},
+      "parts": [{"model": "jsonextended:block/test_stairs_inner", "x": 0, "y": 180, "uvlock": true, "bta": [0, 2, 0]}]
+    },
+    {
+      "meta": 2,
+      "resolved": {"shape": "inner_right"},
+      "properties": {"facing": "north", "half": "bottom", "shape": "inner_right"},
+      "parts": [{"model": "jsonextended:block/test_stairs_inner", "x": 0, "y": 270, "uvlock": true, "bta": [0, 1, 0]}]
+    },
+    {
+      "meta": 2,
+      "resolved": {"shape": "outer_left"},
+      "properties": {"facing": "north", "half": "bottom", "shape": "outer_left"},
+      "parts": [{"model": "jsonextended:block/test_stairs_outer", "x": 0, "y": 180, "uvlock": true, "bta": [0, 2, 0]}]
+    },
+    {
+      "meta": 2,
+      "resolved": {"shape": "outer_right"},
+      "properties": {"facing": "north", "half": "bottom", "shape": "outer_right"},
+      "parts": [{"model": "jsonextended:block/test_stairs_outer", "x": 0, "y": 270, "uvlock": true, "bta": [0, 1, 0]}]
+    },
+    {
+      "meta": 3,
+      "resolved": {"shape": "straight"},
+      "properties": {"facing": "east", "half": "bottom", "shape": "straight"},
+      "parts": [{"model": "jsonextended:block/test_stairs", "x": 0, "y": 0, "uvlock": false, "bta": [0, 0, 0]}]
+    },
+    {
+      "meta": 3,
+      "resolved": {"shape": "inner_left"},
+      "properties": {"facing": "east", "half": "bottom", "shape": "inner_left"},
+      "parts": [{"model": "jsonextended:block/test_stairs_inner", "x": 0, "y": 270, "uvlock": true, "bta": [0, 1, 0]}]
+    },
+    {
+      "meta": 3,
+      "resolved": {"shape": "inner_right"},
+      "properties": {"facing": "east", "half": "bottom", "shape": "inner_right"},
+      "parts": [{"model": "jsonextended:block/test_stairs_inner", "x": 0, "y": 0, "uvlock": false, "bta": [0, 0, 0]}]
+    },
+    {
+      "meta": 3,
+      "resolved": {"shape": "outer_left"},
+      "properties": {"facing": "east", "half": "bottom", "shape": "outer_left"},
+      "parts": [{"model": "jsonextended:block/test_stairs_outer", "x": 0, "y": 270, "uvlock": true, "bta": [0, 1, 0]}]
+    },
+    {
+      "meta": 3,
+      "resolved": {"shape": "outer_right"},
+      "properties": {"facing": "east", "half": "bottom", "shape": "outer_right"},
+      "parts": [{"model": "jsonextended:block/test_stairs_outer", "x": 0, "y": 0, "uvlock": false, "bta": [0, 0, 0]}]
+    },
+    {
+      "meta": 4,
+      "resolved": {"shape": "straight"},
+      "properties": {"facing": "south", "half": "top", "shape": "straight"},
+      "parts": [{"model": "jsonextended:block/test_stairs", "x": 180, "y": 90, "uvlock": true, "bta": [2, 3, 0]}]
+    },
+    {
+      "meta": 4,
+      "resolved": {"shape": "inner_left"},
+      "properties": {"facing": "south", "half": "top", "shape": "inner_left"},
+      "parts": [{"model": "jsonextended:block/test_stairs_inner", "x": 180, "y": 90, "uvlock": true, "bta": [2, 3, 0]}]
+    },
+    {
+      "meta": 4,
+      "resolved": {"shape": "inner_right"},
+      "properties": {"facing": "south", "half": "top", "shape": "inner_right"},
+      "parts": [{"model": "jsonextended:block/test_stairs_inner", "x": 180, "y": 180, "uvlock": true, "bta": [2, 2, 0]}]
+    },
+    {
+      "meta": 4,
+      "resolved": {"shape": "outer_left"},
+      "properties": {"facing": "south", "half": "top", "shape": "outer_left"},
+      "parts": [{"model": "jsonextended:block/test_stairs_outer", "x": 180, "y": 90, "uvlock": true, "bta": [2, 3, 0]}]
+    },
+    {
+      "meta": 4,
+      "resolved": {"shape": "outer_right"},
+      "properties": {"facing": "south", "half": "top", "shape": "outer_right"},
+      "parts": [{"model": "jsonextended:block/test_stairs_outer", "x": 180, "y": 180, "uvlock": true, "bta": [2, 2, 0]}]
+    },
+    {
+      "meta": 5,
+      "resolved": {"shape": "straight"},
+      "properties": {"facing": "west", "half": "top", "shape": "straight"},
+      "parts": [{"model": "jsonextended:block/test_stairs", "x": 180, "y": 180, "uvlock": true, "bta": [2, 2, 0]}]
+    },
+    {
+      "meta": 5,
+      "resolved": {"shape": "inner_left"},
+      "properties": {"facing": "west", "half": "top", "shape": "inner_left"},
+      "parts": [{"model": "jsonextended:block/test_stairs_inner", "x": 180, "y": 180, "uvlock": true, "bta": [2, 2, 0]}]
+    },
+    {
+      "meta": 5,
+      "resolved": {"shape": "inner_right"},
+      "properties": {"facing": "west", "half": "top", "shape": "inner_right"},
+      "parts": [{"model": "jsonextended:block/test_stairs_inner", "x": 180, "y": 270, "uvlock": true, "bta": [2, 1, 0]}]
+    },
+    {
+      "meta": 5,
+      "resolved": {"shape": "outer_left"},
+      "properties": {"facing": "west", "half": "top", "shape": "outer_left"},
+      "parts": [{"model": "jsonextended:block/test_stairs_outer", "x": 180, "y": 180, "uvlock": true, "bta": [2, 2, 0]}]
+    },
+    {
+      "meta": 5,
+      "resolved": {"shape": "outer_right"},
+      "properties": {"facing": "west", "half": "top", "shape": "outer_right"},
+      "parts": [{"model": "jsonextended:block/test_stairs_outer", "x": 180, "y": 270, "uvlock": true, "bta": [2, 1, 0]}]
+    },
+    {
+      "meta": 6,
+      "resolved": {"shape": "straight"},
+      "properties": {"facing": "north", "half": "top", "shape": "straight"},
+      "parts": [{"model": "jsonextended:block/test_stairs", "x": 180, "y": 270, "uvlock": true, "bta": [2, 1, 0]}]
+    },
+    {
+      "meta": 6,
+      "resolved": {"shape": "inner_left"},
+      "properties": {"facing": "north", "half": "top", "shape": "inner_left"},
+      "parts": [{"model": "jsonextended:block/test_stairs_inner", "x": 180, "y": 270, "uvlock": true, "bta": [2, 1, 0]}]
+    },
+    {
+      "meta": 6,
+      "resolved": {"shape": "inner_right"},
+      "properties": {"facing": "north", "half": "top", "shape": "inner_right"},
+      "parts": [{"model": "jsonextended:block/test_stairs_inner", "x": 180, "y": 0, "uvlock": true, "bta": [2, 0, 0]}]
+    },
+    {
+      "meta": 6,
+      "resolved": {"shape": "outer_left"},
+      "properties": {"facing": "north", "half": "top", "shape": "outer_left"},
+      "parts": [{"model": "jsonextended:block/test_stairs_outer", "x": 180, "y": 270, "uvlock": true, "bta": [2, 1, 0]}]
+    },
+    {
+      "meta": 6,
+      "resolved": {"shape": "outer_right"},
+      "properties": {"facing": "north", "half": "top", "shape": "outer_right"},
+      "parts": [{"model": "jsonextended:block/test_stairs_outer", "x": 180, "y": 0, "uvlock": true, "bta": [2, 0, 0]}]
+    },
+    {
+      "meta": 7,
+      "resolved": {"shape": "straight"},
+      "properties": {"facing": "east", "half": "top", "shape": "straight"},
+      "parts": [{"model": "jsonextended:block/test_stairs", "x": 180, "y": 0, "uvlock": true, "bta": [2, 0, 0]}]
+    },
+    {
+      "meta": 7,
+      "resolved": {"shape": "inner_left"},
+      "properties": {"facing": "east", "half": "top", "shape": "inner_left"},
+      "parts": [{"model": "jsonextended:block/test_stairs_inner", "x": 180, "y": 0, "uvlock": true, "bta": [2, 0, 0]}]
+    },
+    {
+      "meta": 7,
+      "resolved": {"shape": "inner_right"},
+      "properties": {"facing": "east", "half": "top", "shape": "inner_right"},
+      "parts": [{"model": "jsonextended:block/test_stairs_inner", "x": 180, "y": 90, "uvlock": true, "bta": [2, 3, 0]}]
+    },
+    {
+      "meta": 7,
+      "resolved": {"shape": "outer_left"},
+      "properties": {"facing": "east", "half": "top", "shape": "outer_left"},
+      "parts": [{"model": "jsonextended:block/test_stairs_outer", "x": 180, "y": 0, "uvlock": true, "bta": [2, 0, 0]}]
+    },
+    {
+      "meta": 7,
+      "resolved": {"shape": "outer_right"},
+      "properties": {"facing": "east", "half": "top", "shape": "outer_right"},
+      "parts": [{"model": "jsonextended:block/test_stairs_outer", "x": 180, "y": 90, "uvlock": true, "bta": [2, 3, 0]}]
+    },
+    {"meta": 0, "resolved": {}, "error": "property 'shape' has no bits and no StateResolver value", "parts": "missing"}
+  ]
+}

@@ -1,0 +1,4 @@
+{
+  "properties": {"level": {"bits": "3-4", "values": ["0", "1", "2", "3"]}},
+  "variants": {"level=0": {"model": "jsonextended:block/test_slab"}}
+}

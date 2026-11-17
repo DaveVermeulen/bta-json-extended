@@ -1,0 +1,22 @@
+{
+  "blockstate": "jsonextended:test_slab",
+  "note": "Expected results for a blockstate file. 'meta' is the block metadata, 'resolved' are the properties a StateResolver supplies, 'properties' is the full decoded state, 'parts' are the models drawn in order. 'bta' is the same rotation as BTA renderAttached quarter turns [rotX, rotY, rotZ] = [-x/90, -y/90, 0] mod 4 (derived from the maths, to confirm in game).",
+  "cases": [
+    {
+      "meta": 0,
+      "properties": {"type": "bottom"},
+      "parts": [{"model": "jsonextended:block/test_slab", "x": 0, "y": 0, "uvlock": false, "bta": [0, 0, 0]}]
+    },
+    {
+      "meta": 1,
+      "properties": {"type": "top"},
+      "parts": [{"model": "jsonextended:block/test_slab_top", "x": 0, "y": 0, "uvlock": false, "bta": [0, 0, 0]}]
+    },
+    {
+      "meta": 2,
+      "properties": {"type": "double"},
+      "parts": [{"model": "jsonextended:block/test_slab_double", "x": 0, "y": 0, "uvlock": false, "bta": [0, 0, 0]}]
+    },
+    {"meta": 3, "error": "type index 3 has no value", "parts": "missing"}
+  ]
+}

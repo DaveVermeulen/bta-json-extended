@@ -1,0 +1,16 @@
+{
+  "blockstate": "jsonextended:test_weighted",
+  "note": "Expected results for a blockstate file. 'meta' is the block metadata, 'resolved' are the properties a StateResolver supplies, 'properties' is the full decoded state, 'parts' are the models drawn in order. 'bta' is the same rotation as BTA renderAttached quarter turns [rotX, rotY, rotZ] = [-x/90, -y/90, 0] mod 4 (derived from the maths, to confirm in game). One variant is picked per block position, with chance weight / total weight (total 8). The pick must be stable for a position (BlockModel.getPositionalSeed) and the same for every meta.",
+  "cases": [
+    {
+      "meta": 0,
+      "properties": {},
+      "candidates": [
+        {"model": "jsonextended:block/test_weighted_a", "x": 0, "y": 0, "uvlock": false, "bta": [0, 0, 0], "weight": 4},
+        {"model": "jsonextended:block/test_weighted_a", "x": 0, "y": 90, "uvlock": false, "bta": [0, 3, 0], "weight": 1},
+        {"model": "jsonextended:block/test_weighted_b", "x": 0, "y": 0, "uvlock": false, "bta": [0, 0, 0], "weight": 2},
+        {"model": "jsonextended:block/test_weighted_c", "x": 0, "y": 0, "uvlock": false, "bta": [0, 0, 0], "weight": 1}
+      ]
+    }
+  ]
+}

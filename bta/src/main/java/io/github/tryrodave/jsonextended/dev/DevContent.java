@@ -1,6 +1,7 @@
 package io.github.tryrodave.jsonextended.dev;
 
 import io.github.tryrodave.jsonextended.JsonExtended;
+import io.github.tryrodave.jsonextended.blockstate.example.BlockstateExamples;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.render.block.model.BlockModelDispatcher;
@@ -33,12 +34,14 @@ public final class DevContent {
                 // BTA's creative menu only lists blocks that are given a placement
                 .setCreativeInventoryPlacement(new CreativeInventoryPlacement.Category(CreativeInventoryCategory.MISCELLANEOUS));
         blockbenchTest = builder.build("blockbench_test", FIRST_ID, ModelLogic::new);
+        BlockstateExamples.registerBlocks();
     }
 
     @Environment(EnvType.CLIENT)
     public static void registerModels() {
         ModelHelper.setBlockModel(blockbenchTest, () -> new BlockModelGeneric<>(blockbenchTest,
                 BlockModelDispatcher.loadDataModel("jsonextended:block/blockbench_test")));
+        BlockstateExamples.registerModels();
     }
 
     /** Model blocks aren't full cubes, so they must not hide their neighbours' faces. */

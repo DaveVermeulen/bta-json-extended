@@ -1,2 +1,12 @@
 tile.jsonextended.blockbench.test.name=Blockbench Test
 tile.jsonextended.blockbench.test.desc=A Blockbench "Java Block" export, drawn by BTA's own JSON model code.
+tile.jsonextended.test.facing.name=Test Facing
+tile.jsonextended.test.facing.desc=Blockstate test: six-way facing and lit. Right-click steps through every state.
+tile.jsonextended.test.stairs.name=Test Stairs
+tile.jsonextended.test.stairs.desc=Blockstate test: stairs facing and half. Right-click steps through every state.
+tile.jsonextended.test.slab.name=Test Slab
+tile.jsonextended.test.slab.desc=Blockstate test: bottom, top and double. Right-click steps through every state.
+tile.jsonextended.test.fence.name=Test Fence
+tile.jsonextended.test.fence.desc=Blockstate test: multipart fence, connections from neighbours.
+tile.jsonextended.test.weighted.name=Test Weighted
+tile.jsonextended.test.weighted.desc=Blockstate test: one of four weighted variants per position.

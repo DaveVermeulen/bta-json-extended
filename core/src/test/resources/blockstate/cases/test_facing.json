@@ -1,0 +1,70 @@
+{
+  "blockstate": "jsonextended:test_facing",
+  "note": "Expected results for a blockstate file. 'meta' is the block metadata, 'resolved' are the properties a StateResolver supplies, 'properties' is the full decoded state, 'parts' are the models drawn in order. 'bta' is the same rotation as BTA renderAttached quarter turns [rotX, rotY, rotZ] = [-x/90, -y/90, 0] mod 4 (derived from the maths, to confirm in game).",
+  "cases": [
+    {
+      "meta": 0,
+      "properties": {"facing": "south", "lit": "false"},
+      "parts": [{"model": "jsonextended:block/test_facing", "x": 0, "y": 180, "uvlock": false, "bta": [0, 2, 0]}]
+    },
+    {
+      "meta": 1,
+      "properties": {"facing": "west", "lit": "false"},
+      "parts": [{"model": "jsonextended:block/test_facing", "x": 0, "y": 270, "uvlock": false, "bta": [0, 1, 0]}]
+    },
+    {
+      "meta": 2,
+      "properties": {"facing": "north", "lit": "false"},
+      "parts": [{"model": "jsonextended:block/test_facing", "x": 0, "y": 0, "uvlock": false, "bta": [0, 0, 0]}]
+    },
+    {
+      "meta": 3,
+      "properties": {"facing": "east", "lit": "false"},
+      "parts": [{"model": "jsonextended:block/test_facing", "x": 0, "y": 90, "uvlock": false, "bta": [0, 3, 0]}]
+    },
+    {
+      "meta": 4,
+      "properties": {"facing": "up", "lit": "false"},
+      "parts": [{"model": "jsonextended:block/test_facing", "x": 270, "y": 0, "uvlock": false, "bta": [1, 0, 0]}]
+    },
+    {
+      "meta": 5,
+      "properties": {"facing": "down", "lit": "false"},
+      "parts": [{"model": "jsonextended:block/test_facing", "x": 90, "y": 0, "uvlock": false, "bta": [3, 0, 0]}]
+    },
+    {"meta": 6, "error": "facing index 6 has no value", "parts": "missing"},
+    {"meta": 7, "error": "facing index 7 has no value", "parts": "missing"},
+    {
+      "meta": 8,
+      "properties": {"facing": "south", "lit": "true"},
+      "parts": [{"model": "jsonextended:block/test_facing_lit", "x": 0, "y": 180, "uvlock": false, "bta": [0, 2, 0]}]
+    },
+    {
+      "meta": 9,
+      "properties": {"facing": "west", "lit": "true"},
+      "parts": [{"model": "jsonextended:block/test_facing_lit", "x": 0, "y": 270, "uvlock": false, "bta": [0, 1, 0]}]
+    },
+    {
+      "meta": 10,
+      "properties": {"facing": "north", "lit": "true"},
+      "parts": [{"model": "jsonextended:block/test_facing_lit", "x": 0, "y": 0, "uvlock": false, "bta": [0, 0, 0]}]
+    },
+    {
+      "meta": 11,
+      "properties": {"facing": "east", "lit": "true"},
+      "parts": [{"model": "jsonextended:block/test_facing_lit", "x": 0, "y": 90, "uvlock": false, "bta": [0, 3, 0]}]
+    },
+    {
+      "meta": 12,
+      "properties": {"facing": "up", "lit": "true"},
+      "parts": [{"model": "jsonextended:block/test_facing_lit", "x": 270, "y": 0, "uvlock": false, "bta": [1, 0, 0]}]
+    },
+    {
+      "meta": 13,
+      "properties": {"facing": "down", "lit": "true"},
+      "parts": [{"model": "jsonextended:block/test_facing_lit", "x": 90, "y": 0, "uvlock": false, "bta": [3, 0, 0]}]
+    },
+    {"meta": 14, "error": "facing index 6 has no value", "parts": "missing"},
+    {"meta": 15, "error": "facing index 7 has no value", "parts": "missing"}
+  ]
+}
