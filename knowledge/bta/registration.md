@@ -4,6 +4,7 @@
 
 - `ClientEvents.BLOCK_MODEL_RELOAD`, `ITEM_MODEL_RELOAD`, `ENTITY_RENDERER_RELOAD`, `TILE_ENTITY_RENDERER_RELOAD`, `BLOCK_COLOR_RELOAD`: `SortedBaseEvent<Consumer<Dispatcher>>`; listen with `.listen(Key.of(MOD_ID), consumer)`. Fired whenever the dispatcher is rebuilt.
 - `ModelHelper.setBlockModel(block, Supplier<BlockModel<?>>)`, `setItemModel(item, Supplier<ItemModel>)`, `setEntityModel(Class, EntityRenderer)`, `setTileEntityModel(Class, TileEntityRenderer)`, `setBlockColor(...)`.
+  **Deprecated for removal**, and `ModelHelper.blockModelDispatcher` is still null in the Fabric `client` entrypoint (NPE at startup). Use the `*_RELOAD` events above instead (as Betafront does).
 - `ModelEntrypoint` interface: `initBlockModels`, `initItemModels`, `initEntityModels`, `initTileEntityModels`, `initBlockColors`.
 - `HalpLibe.registerMod(id, true)`: the `true` stitches `assets/<id>/textures/block/*` into the atlas.
 - Fabric `client` entrypoint works in BTA's loader.

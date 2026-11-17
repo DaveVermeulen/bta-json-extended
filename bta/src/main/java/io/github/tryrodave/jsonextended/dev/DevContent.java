@@ -10,9 +10,10 @@ import net.minecraft.core.block.Block;
 import net.minecraft.core.block.BlockLogic;
 import net.minecraft.core.block.material.Materials;
 import turniplabs.halplibe.helper.BlockBuilder;
-import turniplabs.halplibe.helper.ModelHelper;
 import turniplabs.halplibe.helper.creativeInventory.CreativeInventoryCategory;
 import turniplabs.halplibe.helper.creativeInventory.CreativeInventoryPlacement;
+import turniplabs.halplibe.event.defs.ClientEvents;
+import turniplabs.halplibe.util.dependency.Key;
 
 /**
  * Test blocks for the development client ({@code ./gradlew runClient}). Not registered in a normal game.
@@ -37,11 +38,21 @@ public final class DevContent {
         BlockstateExamples.registerBlocks();
     }
 
+    /**
+     * Called from the client entrypoint. The block model dispatcher doesn't exist yet at that point
+     * (HalpLibe's deprecated {@code ModelHelper.setBlockModel} crashes there), so add the models whenever
+     * HalpLibe (re)builds the dispatcher: at startup and on every texture pack change.
+     */
     @Environment(EnvType.CLIENT)
     public static void registerModels() {
-        ModelHelper.setBlockModel(blockbenchTest, () -> new BlockModelGeneric<>(blockbenchTest,
+        ClientEvents.BLOCK_MODEL_RELOAD.listen(Key.of(JsonExtended.MOD_ID), DevContent::addModels);
+    }
+
+    @Environment(EnvType.CLIENT)
+    private static void addModels(BlockModelDispatcher dispatcher) {
+        dispatcher.addDispatch(blockbenchTest, new BlockModelGeneric<>(blockbenchTest,
                 BlockModelDispatcher.loadDataModel("jsonextended:block/blockbench_test")));
-        BlockstateExamples.registerModels();
+        BlockstateExamples.addModels(dispatcher);
     }
 
     /** Model blocks aren't full cubes, so they must not hide their neighbours' faces. */
