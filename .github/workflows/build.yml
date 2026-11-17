@@ -1,0 +1,50 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Java 17 compiles the mod; Java 21 runs Gradle (the last one listed becomes JAVA_HOME).
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: |
+            17
+            21
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Core tests
+        run: ./gradlew -p core test --stacktrace -Porg.gradle.java.installations.fromEnv=JAVA_HOME_17_X64
+
+      - name: Build the mod
+        run: ./gradlew -p bta build --stacktrace -Porg.gradle.java.installations.fromEnv=JAVA_HOME_17_X64
+
+      - name: Upload test reports
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports
+          path: |
+            core/build/reports/tests/
+            bta/build/reports/tests/
+          if-no-files-found: ignore
+
+      - name: Upload mod jar
+        uses: actions/upload-artifact@v4
+        with:
+          name: bta-json-extended
+          path: bta/build/libs/*.jar
+          if-no-files-found: error

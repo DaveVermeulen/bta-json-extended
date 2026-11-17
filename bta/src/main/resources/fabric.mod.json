@@ -1,0 +1,33 @@
+{
+	"schemaVersion": 1,
+	"id": "jsonextended",
+	"version": "${version}",
+	"name": "BTA JSON Extended",
+	"description": "Modern-Minecraft-style models for Better Than Adventure: blockstates, item models, OBJ, model tile entities and animation.",
+	"authors": [
+		"Dave"
+	],
+	"contact": {
+		"sources": "https://github.com/DaveVermeulen/bta-json-extended",
+		"issues": "https://github.com/DaveVermeulen/bta-json-extended/issues"
+	},
+	"license": "MIT",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"io.github.tryrodave.jsonextended.JsonExtended"
+		],
+		"client": [
+			"io.github.tryrodave.jsonextended.client.JsonExtendedClient"
+		]
+	},
+	"depends": {
+		"fabricloader": ">=${fabricloader}",
+		"minecraft": "*",
+		"halplibe": ">=${halplibe}",
+		"java": ">=${java}"
+	},
+	"suggests": {
+		"modmenu": ">=${modmenu}"
+	}
+}

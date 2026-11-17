@@ -1,0 +1,29 @@
+// Shortcut tasks for the included builds. They show up under
+// "bta-json-extended" in IntelliJ's Gradle tool window and back the run configurations in .run/.
+def included(String build, String path) {
+    gradle.includedBuild(build).task(path)
+}
+
+tasks.register('runClient') {
+    group = 'jsonextended'
+    description = 'Starts the BTA dev client with the dev-only test blocks.'
+    dependsOn included('bta', ':runClient')
+}
+
+tasks.register('testCore') {
+    group = 'jsonextended'
+    description = 'Runs the core/ unit tests.'
+    dependsOn included('core', ':test')
+}
+
+tasks.register('buildAll') {
+    group = 'jsonextended'
+    description = 'Runs the core/ tests and builds the mod jar.'
+    dependsOn included('core', ':build'), included('bta', ':build')
+}
+
+tasks.register('cleanAll') {
+    group = 'jsonextended'
+    description = 'Deletes the build output of both builds.'
+    dependsOn included('core', ':clean'), included('bta', ':clean')
+}

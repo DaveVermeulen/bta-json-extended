@@ -1,0 +1,7 @@
+// Opening this folder in IntelliJ imports both builds at once.
+// core/ (pure Java, tests) and bta/ (the mod, Loom) are separate Gradle builds,
+// joined here as included builds.
+rootProject.name = 'bta-json-extended'
+
+includeBuild 'core'
+includeBuild 'bta'

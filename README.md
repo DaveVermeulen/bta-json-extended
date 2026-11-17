@@ -2,7 +2,7 @@
 
 Modern-Minecraft-style models for Better Than Adventure 8.0.1: blockstate JSON, JSON item models, OBJ models, model-driven tile entity renderers and Blockbench animations, built on the JSON block models BTA already ships.
 
-**Status:** planning. No mod code yet. See [PLAN.md](PLAN.md).
+**Status:** phase 0 (build and CI). See [PLAN.md](PLAN.md); build commands in [knowledge/build.md](knowledge/build.md).
 
 | | |
 | --- | --- |

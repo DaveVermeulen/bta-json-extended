@@ -1,12 +1,36 @@
 # Building and testing
 
-Status: the build doesn't exist yet. Build and release agent: fill this in when it does.
+## Layout
 
-- Gradle needs Java 21+; the mod compiles for Java 17. Planned layout (as Betafront): separate Gradle builds for `core/` and `bta/`, joined by a root composite build.
-- BTA's macOS dev client needs `-XstartOnFirstThread`.
-- Composite builds need a 4 GB Gradle heap in the root `gradle.properties`; run `gradlew --stop` after a failed run.
-- Claude cloud sessions can't reach the BTA, Fabric, Signalum or Mojang hosts: they can only compile `core/` with plain `javac` and a JUnit console jar from Maven Central.
-- GitHub Actions builds everything on every push and PR.
+| Path | What |
+| --- | --- |
+| `settings.gradle`, `build.gradle` | Root composite build for IntelliJ: `includeBuild 'core'`, `includeBuild 'bta'`, plus shortcut tasks |
+| `core/` | Plain Java 17 build, JUnit 5. Only compiles and tests `core/src`; no game code |
+| `bta/` | Loom build of the mod (Kotlin DSL, from Turnip-Labs/bta-example-mod via Betafront). Compiles `../core/src/main/java` into the mod jar |
+| `bta/gradle/libs.versions.toml` | All versions (table below) |
+| `.github/workflows/build.yml` | CI |
+| `.run/` | IntelliJ run configurations: Build All, Core Tests, Run Client |
+
+## Commands
+
+| Command | Does |
+| --- | --- |
+| `./gradlew buildAll` | Core tests + mod jar (`bta/build/libs/`) |
+| `./gradlew testCore` or `./gradlew -p core test` | Core tests only (works in cloud sessions) |
+| `./gradlew runClient` or `./gradlew -p bta runClient` | Dev client with the dev-only test blocks (`FabricLoader.isDevelopmentEnvironment()`) |
+| `./gradlew cleanAll` | Deletes both builds' output |
+
+## CI (GitHub Actions)
+
+`build.yml` runs on every pull request, every push to `main`, and by hand (`workflow_dispatch`). It installs Temurin 17 and 21 (21 runs Gradle, 17 is the toolchain via `-Porg.gradle.java.installations.fromEnv=JAVA_HOME_17_X64`), runs `-p core test`, then `-p bta build`, and uploads the mod jar as the `bta-json-extended` artifact (test reports on failure). A newer push to the same PR cancels the older run.
+
+## Notes
+
+- Gradle 9.5.1 (wrapper) needs Java 21+; the mod compiles for Java 17.
+- BTA's macOS dev client needs `-XstartOnFirstThread` (set in `bta/build.gradle.kts`).
+- Composite builds need a 4 GB Gradle heap: the root `gradle.properties` sets it. Run `./gradlew --stop` after a failed run.
+- Claude cloud sessions can't reach the BTA, Fabric, Signalum or Mojang hosts: they can run `./gradlew -p core test` (Gradle and Maven Central work) but not build `bta/`. CI is the build check.
+- Groovy DSL in `core/`: use `prop = value`; the space syntax is deprecated in Gradle 9.
 - Game logs from the dev client: `bta/run/logs/latest.log`. Only one dev client at a time.
 
 ## Versions and repositories (from Betafront's working BTA build, 2026-11-17)
