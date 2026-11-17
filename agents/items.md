@@ -4,6 +4,6 @@
 
 **Owns:** `core/.../item/` and its tests, `bta/.../item/`, item examples.
 
-**Reads first:** `knowledge/bta/items.md`, `knowledge/formats/blockstates.md` (model JSON section only).
+**Reads first:** `knowledge/bta/model-behaviour.md`, `knowledge/bta/items.md`, `knowledge/formats/blockstates.md` (model JSON section only).
 
 **Never touches:** mixins (if display transforms need one, Platform writes it), other features.
