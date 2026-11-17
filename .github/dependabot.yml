@@ -1,0 +1,10 @@
+# Keeps the GitHub Actions in .github/workflows up to date. Gradle and mod
+# versions are pinned by hand in bta/gradle/libs.versions.toml (BTA needs exact matches).
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: ci
