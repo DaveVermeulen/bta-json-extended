@@ -7,4 +7,5 @@
 - Tag `v<version>` to build the jar into a draft GitHub release, with notes from this file.
 - Dev-only "Blockbench Test" block: a Blockbench Java Block model drawn by BTA's own JSON model code.
 - Fix: the dev client crashed at startup registering the test block model; models are now added on HalpLibe's block model reload event.
-- Dev-only blockstate test blocks (facing, stairs, slab, fence, weighted) with blockstate JSON, models, textures and expected-result fixtures for the phase 1 parser. They draw one fixed model until blockstate rendering lands.
+- Dev-only blockstate test blocks (facing, stairs, slab, fence, weighted) with blockstate JSON, models, textures and expected-result fixtures for the phase 1 parser.
+- Blockstate JSON (phase 1): `variants` and `multipart` (`a|b`, `OR`, `AND`), `x`/`y`/`uvlock`, weighted variants, named properties from metadata bits, and `StateResolver` for neighbour-dependent properties (stair shape and fence sides built in). Every file is checked when loaded, with one log line naming the file and key. The dev test blocks are now drawn from their blockstate files.

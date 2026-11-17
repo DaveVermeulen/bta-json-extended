@@ -1,10 +1,11 @@
 package io.github.tryrodave.jsonextended.blockstate.example;
 
 import io.github.tryrodave.jsonextended.JsonExtended;
+import io.github.tryrodave.jsonextended.blockstate.Blockstates;
+import io.github.tryrodave.jsonextended.blockstate.NeighbourResolvers;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.render.block.model.BlockModelDispatcher;
-import net.minecraft.client.render.block.model.generic.BlockModelGeneric;
 import net.minecraft.core.block.Block;
 import net.minecraft.core.block.BlockLogic;
 import net.minecraft.core.block.material.Materials;
@@ -24,8 +25,8 @@ import turniplabs.halplibe.helper.creativeInventory.CreativeInventoryPlacement;
  * {@code core/src/test/resources/blockstate/cases/}.
  * <p>
  * Placement sets the metadata the way the vanilla block would, and right-clicking steps through every valid
- * metadata value, so each variant can be checked in game. Until blockstate rendering lands they are drawn with
- * BTA's {@link BlockModelGeneric} and one fixed model, so they don't turn yet.
+ * metadata value, so each variant can be checked in game. Stairs and fence take their shape from their
+ * neighbours through a {@link io.github.tryrodave.jsonextended.blockstate.StateResolver}.
  */
 public final class BlockstateExamples {
     // Fixed ids are fine for dev-only blocks. 9100 is the Blockbench test block.
@@ -33,11 +34,11 @@ public final class BlockstateExamples {
 
     /** Six-way facing in bits 0-2 (south, west, north, east, up, down) and lit in bit 3. */
     public static Block<FacingLogic> testFacing;
-    /** Facing in bits 0-1 (south, west, north, east), half in bit 2; shape will come from a StateResolver. */
+    /** Facing in bits 0-1 (south, west, north, east), half in bit 2; shape comes from a StateResolver. */
     public static Block<StairsLogic> testStairs;
     /** Type in bits 0-1: bottom, top, double. */
     public static Block<SlabLogic> testSlab;
-    /** No metadata: north/east/south/west connections will come from a StateResolver. */
+    /** No metadata: north/east/south/west connections come from a StateResolver. */
     public static Block<ExampleLogic> testFence;
     /** No metadata: one of four weighted variants per position. */
     public static Block<ExampleLogic> testWeighted;
@@ -55,19 +56,16 @@ public final class BlockstateExamples {
         testWeighted = builder.build("test_weighted", FIRST_ID + 4, ExampleLogic::new);
     }
 
-    /** Placeholder models until blockstate rendering lands: the blockstate code will replace these. */
+    /** Draws every test block from its blockstate file. Called on every block model reload. */
     @Environment(EnvType.CLIENT)
     public static void addModels(BlockModelDispatcher dispatcher) {
-        fixedModel(dispatcher, testFacing, "jsonextended:block/test_facing");
-        fixedModel(dispatcher, testStairs, "jsonextended:block/test_stairs");
-        fixedModel(dispatcher, testSlab, "jsonextended:block/test_slab");
-        fixedModel(dispatcher, testFence, "jsonextended:block/test_fence_inventory");
-        fixedModel(dispatcher, testWeighted, "jsonextended:block/test_weighted_a");
-    }
-
-    @Environment(EnvType.CLIENT)
-    private static <T extends BlockLogic> void fixedModel(BlockModelDispatcher dispatcher, Block<T> block, String model) {
-        dispatcher.addDispatch(block, new BlockModelGeneric<>(block, BlockModelDispatcher.loadDataModel(model)));
+        dispatcher.addDispatch(testFacing, Blockstates.model(testFacing, "jsonextended:test_facing"));
+        dispatcher.addDispatch(testStairs, Blockstates.model(testStairs, "jsonextended:test_stairs",
+                NeighbourResolvers.stairs(block -> block == testStairs), null));
+        dispatcher.addDispatch(testSlab, Blockstates.model(testSlab, "jsonextended:test_slab"));
+        dispatcher.addDispatch(testFence, Blockstates.model(testFence, "jsonextended:test_fence",
+                NeighbourResolvers.connections(block -> block == testFence), "jsonextended:block/test_fence_inventory"));
+        dispatcher.addDispatch(testWeighted, Blockstates.model(testWeighted, "jsonextended:test_weighted"));
     }
 
     /** Horizontal index of the way the mob looks: 0 south, 1 west, 2 north, 3 east (as in Betafront's ramp). */
