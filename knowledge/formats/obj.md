@@ -25,6 +25,7 @@ Improvements over Betafront to aim for: several objects or groups per model, smo
 | `ObjMesh` | Faces sharing object, group and material; `name()` is `object/group` |
 | `Mtl.parse` / `ObjMaterial` | `newmtl`, `Kd` (1 or 3 numbers), `Ka` (largest channel as `ambient`), `map_Kd` (last argument, so `-s ...` options are skipped), `d`, `Tr`, `jsonextended_/betafront_/neoforge_/forge_TintIndex` |
 | `ObjQuad` | Four corners in blocks, UVs 0-1 (V up, as OBJ), unit normals; `cullSide()`, `Side.nearest(normal)`, `faceNormal` |
+| `ObjModelJson` | The model JSON: `LOADERS` (jsonextended/betafront/neoforge/forge `:obj`, string or `{"id"}`), `isObj(json)`, `parse` with NeoForge's keys and defaults (`flip_v` false, others true), `texture("#var")`, `particle()` |
 | `ObjLines` | Statement splitter: `\` continues a line; only a `#` at the start of a line is a comment |
 
 - File ids are `ns:path/file.obj` for `/assets/ns/path/file.obj`.
