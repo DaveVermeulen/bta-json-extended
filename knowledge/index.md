@@ -20,6 +20,7 @@ Open only the files your task needs. Each stays under ~150 lines; split a file w
 | [formats/models.md](formats/models.md) | Model JSON: Blockbench keys, `render_type`, `gui_light`, `loader`, readable load errors |
 | [formats/items.md](formats/items.md) | Item model JSON as we support it |
 | [formats/obj.md](formats/obj.md) | OBJ/MTL support, carried over from Betafront |
+| [formats/pose.md](formats/pose.md) | Rigs from Blockbench groups or OBJ meshes, poses from code, baking JSON elements to quads |
 | [formats/gltf.md](formats/gltf.md) | GLB/glTF support plan |
 | [formats/animation.md](formats/animation.md) | Bedrock animation JSON |
 | [build.md](build.md) | Building, testing, CI, versions and Maven repositories |
