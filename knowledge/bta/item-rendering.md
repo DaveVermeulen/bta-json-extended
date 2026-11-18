@@ -76,7 +76,7 @@ void render(TessellatorGeneral tessellator, Entity holder, ItemStack stack,
 - **render (3D)**: same steps as `ItemModelStandard`, but:
   - Sets `Shaders.ITEM` itself.
   - Always uses the flat-style random jitter for clusters, even with `items3d`.
-  - `renderSingle` binds `TextureRegistry.worldAtlas` and calls `blockModel.renderStandalone(tess, meta, lightIndex)`, so the block model draws itself. I didn't check whether `renderStandalone` centres the cube on the origin; read it before tuning `display` translations.
+  - `renderSingle` binds `TextureRegistry.worldAtlas` and calls `blockModel.renderStandalone(tess, meta, lightIndex)`, so the block model draws itself. Both implementations centre the block on the origin (-0.5..0.5); see [item-rendering-3d.md](item-rendering-3d.md).
   - Colour comes from `BlockColorDispatcher...getFallbackColor(meta, 0)` (grass and leaves tint).
 - **renderGui (3D)**:
   - Push, `Shaders.ITEM`, blend, cull face on, **lighting left on**.
