@@ -32,3 +32,5 @@ tile.jsonextended.test.obj.crystal.name=Test OBJ Crystal
 tile.jsonextended.test.obj.crystal.desc=OBJ test: a Blender export through "loader": "betafront:obj".
 tile.jsonextended.test.obj.ramp.name=Test OBJ Ramp
 tile.jsonextended.test.obj.ramp.desc=OBJ test: faces the way you look, upside down when placed against a ceiling. Right-click steps through every state.
+tile.jsonextended.test.chest.name=Test Chest
+tile.jsonextended.test.chest.desc=Tile entity test: right-click opens and closes the lid, a Blockbench group posed from code.
