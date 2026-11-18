@@ -5,6 +5,7 @@ Open only the files your task needs. Each stays under ~150 lines; split a file w
 | File | Answers |
 | --- | --- |
 | [bta/rendering.md](bta/rendering.md) | BTA's built-in JSON block models, `StaticBlockModel`, `BlockModelGeneric`, tessellator, lighting, textures |
+| [bta/model-behaviour.md](bta/model-behaviour.md) | How BTA rotates models, merges parents, resolves #textures; which atlas textures live in |
 | [bta/registration.md](bta/registration.md) | HalpLibe hooks, dispatchers, reloads, texture packs, blocks and creative menu |
 | [bta/items.md](bta/items.md) | `ItemModel`, item rendering, display transforms |
 | [bta/tile-entities.md](bta/tile-entities.md) | `TileEntityRenderer`, geo entity models |

@@ -4,7 +4,7 @@
 
 **Owns:** `core/.../blockstate/` and its tests, `bta/.../blockstate/`, blockstate examples.
 
-**Reads first:** `knowledge/formats/blockstates.md`, `knowledge/bta/rendering.md` (the "For feature agents" part).
+**Reads first:** `knowledge/bta/model-behaviour.md`, `knowledge/formats/blockstates.md`, `knowledge/bta/rendering.md` (the "For feature agents" part).
 
 **Never touches:** mixins, `api/`, other features. Needs a BTA hook? Ask Platform.
 
