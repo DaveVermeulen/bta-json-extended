@@ -1,0 +1,16 @@
+# No materials, no normals, relative indices, a triangle and a hexagon
+g tri
+v 0.2 0.5 0.2
+v 0.8 0.5 0.2
+v 0.5 0.5 0.8
+f -3 -2 -1
+g hex
+v 0 0 0
+v 1 0 0
+v 1.5 0 0.5
+v 1 0 1
+v 0 0 1
+v -0.5 0 0.5
+vt 0 0 \
+  
+f 4 5 6 7 8 9
