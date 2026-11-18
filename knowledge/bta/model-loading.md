@@ -76,7 +76,7 @@ Our own blocks need no mixin: build `BlockModelGeneric(block, StaticBlockModel)`
 
 - BTA never reads `texture_size`. Face `uv` values are always divided by 16 and used as a 0..1 position inside the icon (`getSubIconU/V`).
 - So the PNG's real resolution doesn't matter: a 32×32 texture with UVs 0..16 maps correctly.
-- But Blockbench writes UVs in `texture_size` units: with `[32, 32]`, the UVs run 0..32. **We must scale `uv * 16 / texture_size` while pre-processing**, or those faces sample outside the icon.
+- Blockbench's Java export already scales UVs to 0..16 (its codec multiplies by `16 / texture width`) and writes `texture_size` only so Blockbench can reopen the file. So no scaling is needed; `ModelCheck` warns when `texture_size` is not 16 only to say UVs stay 0..16. (Corrected 2026-11-18: an earlier note said UVs run 0..`texture_size`.)
 - Faces without `uv` get default UVs from the element bounds (`16 - to`... in `Face`), the same as vanilla.
 
 ## `gui_light`
