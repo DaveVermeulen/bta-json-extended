@@ -1,7 +1,7 @@
 # Item model JSON (as this mod supports it)
 
-Status: phase 2, step 1. The parser is in `core/` and tested; rendering in `bta/` waits on
-`knowledge/bta/item-rendering.md` (how BTA draws items, read from the jar).
+Status: phase 2. The parser in `core/` is tested; rendering in `bta/` is built on
+`knowledge/bta/item-rendering.md` and `item-rendering-3d.md` and waits for Dave's in-game check.
 
 ## Files
 
@@ -33,9 +33,15 @@ Status: phase 2, step 1. The parser is in `core/` and tested; rendering in `bta/
 | `core/.../item/ResolvedItemModel` | `style()` (GENERATED, HANDHELD, HANDHELD_ROD, MODEL), `layers()`, `textures()`, `display(context)`, `guiLight()`, `elementsFrom()`, `warnings()` |
 | `core/.../item/DisplayTransform` | Rotation in degrees, translation in pixels, scale; `clamped()` |
 | `core/.../json/Json` | Shared strict JSON reader (moved out of `blockstate/`) |
+| `bta/.../item/JsonItems.model(item, modelId)` | Reads through the texture packs, resolves, logs warnings; returns a `JsonItemModel`, a `JsonItemModel3d`, or a missing-texture `ItemModelStandard` plus one error line. Call it from `ClientEvents.ITEM_MODEL_RELOAD` and `addDispatch` the result |
+| `bta/.../item/JsonItemModel` | `ItemModelStandard` subclass: BTA's own flat or extruded sprite per layer (each inside `GLRenderer.pushFrame/popFrame`), with `getDisplayPos` from JSON (translation /16, as BTA's serializer does). Unset contexts use BTA's defaults: `ItemModelStandard` for generated items, `ItemModelDispatcher.HANDHELD_*` / `HANDHELD_ROD_*` for tools and rods |
+| `bta/.../item/JsonItemModel3d` | Element models: BTA reads the geometry (`BlockModelDispatcher.loadDataModel(id)`), drawn with `renderStandalone` (centred on the origin) after the pose, with the world atlas bound and `Shaders.ITEM`. The GUI copies `ItemModelBlock.renderGui` (depth kept, lighting on). `tintindex` faces are white for now |
 
-## Open for the rendering step
+Vanilla `display` numbers carry over unchanged. BTA's sprite and standalone block models are centred on the origin and rotate about it, which is the same as vanilla's centre pivot. BTA's built-in poses are vanilla's divided by 16.
 
-- Whether BTA mirrors left-hand poses itself. If it does, an explicit vanilla `*_lefthand` entry, which is already mirrored, must not be mirrored again.
-- Which atlas `item/` textures live in, and whether `HalpLibe.registerMod(id, true)` stitches `textures/item`.
-- 3D items drawn from item-model elements need block-atlas textures, or a bound item atlas.
+## Not yet / to check in game
+
+- `gui_light` is parsed but not applied: flat items get BTA's unlit GUI, and 3D items get a lit one.
+- Layers are drawn at the same depth, so the in-game check is whether layer1 shows on top everywhere.
+- BTA negates translate X and rotate Y/Z for `leftHanded`, and its own left-hand defaults are stored already mirrored. We hand it vanilla's left-hand entries the same way, so check that the left hand looks right.
+- Item and block textures share the world atlas (HalpLibe stitches both folders), so item models may use either.
