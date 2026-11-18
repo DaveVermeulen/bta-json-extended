@@ -1,6 +1,6 @@
 {
   "blockstate": "jsonextended:test_weighted",
-  "note": "Expected results for a blockstate file. 'meta' is the block metadata, 'resolved' are the properties a StateResolver supplies, 'properties' is the full decoded state, 'parts' are the models drawn in order. 'bta' is the same rotation as BTA renderAttached quarter turns [rotX, rotY, rotZ] = [-x/90, -y/90, 0] mod 4 (derived from the maths, to confirm in game). One variant is picked per block position, with chance weight / total weight (total 8). The pick must be stable for a position (BlockModel.getPositionalSeed) and the same for every meta.",
+  "note": "Expected results for a blockstate file. 'meta' is the block metadata, 'resolved' are the properties a StateResolver supplies, 'properties' is the full decoded state, 'parts' are the models drawn in order. 'bta' is the same rotation as BTA renderAttached quarter turns [rotX, rotY, rotZ] = [-x/90, -y/90, 0] mod 4 (derived from the maths, confirmed in game 2026-11-18). One variant is picked per block position, with chance weight / total weight (total 8). The pick must be stable for a position (BlockModel.getPositionalSeed) and the same for every meta.",
   "cases": [
     {
       "meta": 0,
