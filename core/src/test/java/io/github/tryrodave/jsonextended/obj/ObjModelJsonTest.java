@@ -5,7 +5,12 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
@@ -76,5 +81,31 @@ class ObjModelJsonTest {
         assertEquals(List.of("t:x: elements: unknown key 'elements' is ignored",
                 "t:x: parent: OBJ models don't inherit from a parent; it is ignored",
                 "t:x: model: 't:x.ob' doesn't end in .obj"), json.warnings());
+    }
+
+    private static final Path ASSETS = Path.of("../bta/src/main/resources/assets");
+
+    /** {@code ns:path} to {@code bta/src/main/resources/assets/ns/path}, or null. */
+    private static String dev(String id) {
+        Path file = ASSETS.resolve(id.substring(0, id.indexOf(':'))).resolve(id.substring(id.indexOf(':') + 1));
+        try {
+            return Files.exists(file) ? Files.readString(file) : null;
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    @Test
+    void devObjModelsLoadWithoutWarnings() {
+        assumeTrue(Files.isDirectory(ASSETS), "bta/ is not next to core/");
+        for (String name : List.of("test_obj_crystal", "test_obj_ramp")) {
+            String id = "jsonextended:block/" + name;
+            ObjModelJson json = ObjModelJson.parse(id, dev("jsonextended:models/block/" + name + ".json"));
+            assertEquals(List.of(), json.warnings(), id);
+            ObjModel model = ObjModel.load(json.model(), ObjModelJsonTest::dev, json.mtlOverride());
+            assertEquals(List.of(), model.warnings(), id);
+            for (ObjQuad quad : model.quads(json.flipV()))
+                assertTrue(json.texture(quad.material().texture()) != null, id + " has a face with no texture");
+        }
     }
 }

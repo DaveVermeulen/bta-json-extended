@@ -95,10 +95,12 @@ class ModelCheckTest {
     }
 
     @Test
-    void loaderIsAWarningForNow() {
+    void objModelsAreLeftToTheObjLoaderAndOtherLoadersWarn() {
         files.put("t:block/obj", "{\"loader\": \"jsonextended:obj\", \"model\": \"t:models/block/x.obj\"}");
-        List<String> m = messages("t:block/obj");
-        assertTrue(m.contains("warning: t:block/obj: loader: custom loaders ('jsonextended:obj') come with OBJ support; for now BTA's own reader draws this model and ignores the key"), m.toString());
+        assertEquals(List.of(), messages("t:block/obj"));
+        files.put("t:block/other", "{\"loader\": \"x:y\", \"textures\": {\"all\": \"t:block/a\"}, \"elements\": [" + CUBE + "]}");
+        List<String> m = messages("t:block/other");
+        assertTrue(m.get(0).startsWith("warning: t:block/other: loader: 'x:y' isn't a loader this mod knows"), m.toString());
     }
 
     @Test

@@ -1,6 +1,7 @@
 package io.github.tryrodave.jsonextended.model;
 
 import io.github.tryrodave.jsonextended.json.Json;
+import io.github.tryrodave.jsonextended.obj.ObjModelJson;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -45,8 +46,14 @@ public final class ModelCheck {
         this.source = source;
     }
 
-    /** Every problem in the model and its parents, child first. Empty means it is fine. */
+    /**
+     * Every problem in the model and its parents, child first. Empty means it is fine. An OBJ model
+     * ({@code loader} from {@link ObjModelJson#LOADERS}) is checked by the OBJ loader instead, so it gives none here.
+     */
     public List<Problem> check(String id) {
+        String own = source.apply(normalize(id));
+        if (own != null && ObjModelJson.isObj(own))
+            return List.of();
         List<Problem> problems = new ArrayList<>();
         Map<String, String> textures = new LinkedHashMap<>();
         List<String> referenced = new ArrayList<>();
@@ -129,8 +136,8 @@ public final class ModelCheck {
                 problems.add(new Problem(true, id + ": render_type: '" + type + "' is not one of " + RENDER_TYPES));
         }
         if (file.containsKey("loader"))
-            problems.add(new Problem(false, id + ": loader: custom loaders ('" + file.get("loader")
-                    + "') come with OBJ support; for now BTA's own reader draws this model and ignores the key"));
+            problems.add(new Problem(false, id + ": loader: '" + file.get("loader") + "' isn't a loader this mod knows ("
+                    + ObjModelJson.LOADERS + "); BTA's own reader draws this model and ignores the key"));
         if (file.containsKey("gui_light") && !"front".equals(file.get("gui_light")) && !"side".equals(file.get("gui_light")))
             problems.add(new Problem(true, id + ": gui_light: gui_light is \"front\" or \"side\""));
         if (file.containsKey("ambientocclusion") && !(file.get("ambientocclusion") instanceof Boolean))

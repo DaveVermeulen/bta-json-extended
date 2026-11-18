@@ -31,6 +31,8 @@ public class BlockstateModel<T extends BlockLogic> extends BlockModelGeneric<T> 
     protected final StaticBlockModel inventory;
     /** First value of every resolver property, for drawing without a world. */
     private final Map<String, String> defaults;
+    /** BTA's missing model, built the first time a state needs it (building it logs eight lines). */
+    private StaticBlockModel missing;
     /** BTA render pass from the models' {@code render_type}; -1 to keep BTA's choice. */
     private final int renderLayer;
 
@@ -63,7 +65,7 @@ public class BlockstateModel<T extends BlockLogic> extends BlockModelGeneric<T> 
                                   boolean cullFaces, IconCoordinate overrideTexture) {
         Selection selection = select(world, pos);
         if (selection.missing())
-            return Models.missing().renderAttached(this, tessellator, world, pos, 0, 0, 0, 0, 0, 0, false, cullFaces, overrideTexture);
+            return missing().renderAttached(this, tessellator, world, pos, 0, 0, 0, 0, 0, 0, false, cullFaces, overrideTexture);
         long seed = getPositionalSeed(pos);
         boolean drew = false;
         int index = 0;
@@ -80,7 +82,7 @@ public class BlockstateModel<T extends BlockLogic> extends BlockModelGeneric<T> 
     public StaticBlockModel getModel(WorldSource world, TilePosc pos) {
         Selection selection = select(world, pos);
         if (selection.missing() || selection.choices().isEmpty())
-            return selection.missing() ? Models.missing() : staticModel;
+            return selection.missing() ? missing() : staticModel;
         return model(selection.choices().get(0).pick(getPositionalSeed(pos)));
     }
 
@@ -91,7 +93,7 @@ public class BlockstateModel<T extends BlockLogic> extends BlockModelGeneric<T> 
             return inventory;
         Selection selection = blockstate.select(meta, defaults);
         if (selection.missing())
-            return Models.missing();
+            return missing();
         return selection.choices().isEmpty() ? staticModel : model(selection.choices().get(0).first());
     }
 
@@ -105,7 +107,13 @@ public class BlockstateModel<T extends BlockLogic> extends BlockModelGeneric<T> 
 
     private StaticBlockModel model(Part part) {
         StaticBlockModel model = models.get(part.model());
-        return model != null ? model : Models.missing();
+        return model != null ? model : missing();
+    }
+
+    private StaticBlockModel missing() {
+        if (missing == null)
+            missing = Models.missing();
+        return missing;
     }
 
     private static StaticBlockModel firstModel(Blockstate blockstate, Map<String, StaticBlockModel> models) {
