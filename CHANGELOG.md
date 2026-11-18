@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Model tile entity renderers (phase 5, step 2): `ModelTileEntityRenderer` draws a Blockbench model for a tile entity every frame, with its groups posed from code. Dev-only Test Chest: right-click opens and closes its lid.
 - Poses (phase 5, step 1, core only): model JSON elements baked to quads like vanilla, parts read from Blockbench `groups` (or OBJ objects), and part rotation, translation and scale set from code about each part's pivot, with lerp for smooth motion. Nothing in game uses it yet.
 - Smooth lighting for OBJ models (phase 4, step 3): with the game's smooth lighting on, OBJ faces get per-corner light and shading like vanilla blocks, also for faces inside the block.
 - OBJ models are drawn (phase 4, step 2): a model JSON with `"loader": "jsonextended:obj"` (or `betafront:`, `neoforge:`, `forge:obj`) draws an OBJ file, from blockstates and anywhere else BTA takes a model, with NeoForge's keys (`flip_v`, `automatic_culling`, `shade_quads`, `emissive_ambient`, `mtl_override`, `textures`) and `render_type`. Dev-only test blocks Test OBJ Crystal and Test OBJ Ramp.

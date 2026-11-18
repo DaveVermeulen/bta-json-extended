@@ -17,7 +17,7 @@
 | --- | --- |
 | `./gradlew buildAll` | Core tests + mod jar (`bta/build/libs/`) |
 | `./gradlew testCore` or `./gradlew -p core test` | Core tests only (works in cloud sessions) |
-| `./gradlew runClient` or `./gradlew -p bta runClient` | Dev client with the dev-only test blocks (`FabricLoader.isDevelopmentEnvironment()`) |
+| `./gradlew runBtaClient` or `./gradlew -p bta runClient` | Dev client with the dev-only test blocks (`FabricLoader.isDevelopmentEnvironment()`) |
 | `./gradlew cleanAll` | Deletes both builds' output |
 
 ## CI (GitHub Actions)
