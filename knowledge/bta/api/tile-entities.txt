@@ -127,3 +127,65 @@ public abstract class net.minecraft.core.block.entity.TileEntity implements net.
   public net.minecraft.core.block.motion.CarriedBlock getCarriedEntry(net.minecraft.core.world.World, net.minecraft.core.entity.Entity, net.minecraft.core.block.Block<?>, int);
 }
 
+
+# --- Added 2026-11-18: TE registration, BlockModelEmpty, Block.withEntity, tessellator sub-interfaces ---
+public class net.minecraft.core.block.entity.TileEntityDispatcher {
+  public net.minecraft.core.block.entity.TileEntityDispatcher();
+  public static void addMapping(java.lang.Class<? extends net.minecraft.core.block.entity.TileEntity>, net.minecraft.core.util.collection.NamespaceID);
+  public static net.minecraft.core.block.entity.TileEntity createAndLoadEntity(com.mojang.nbt.tags.CompoundTag);
+  public static java.lang.Class<? extends net.minecraft.core.block.entity.TileEntity> getClassFromID(java.lang.String);
+  public static java.lang.Class<? extends net.minecraft.core.block.entity.TileEntity> getClassFromID(net.minecraft.core.util.collection.NamespaceID);
+  public static net.minecraft.core.util.collection.NamespaceID getIDFromClass(java.lang.Class<? extends net.minecraft.core.block.entity.TileEntity>);
+  public static void init();
+}
+
+public final class turniplabs.halplibe.helper.EntityHelper {
+  public turniplabs.halplibe.helper.EntityHelper();
+  public <T extends net.minecraft.core.entity.Entity> net.minecraft.core.entity.factories.EntityFactory<T> createEntity(java.lang.Class<T>, net.minecraft.core.util.collection.NamespaceID, net.minecraft.core.entity.factories.EntityFactory<T>);
+  public static void addMapping(java.lang.Class<? extends net.minecraft.core.block.entity.TileEntity>, net.minecraft.core.util.collection.NamespaceID);
+}
+
+public class net.minecraft.client.render.block.model.BlockModelEmpty<T extends net.minecraft.core.block.BlockLogic> extends net.minecraft.client.render.block.model.BlockModelStandard<T> {
+  public net.minecraft.client.render.block.model.BlockModelEmpty(net.minecraft.core.block.Block<T>);
+  public boolean render(net.minecraft.client.render.tessellator.TessellatorGeneral, net.minecraft.core.world.WorldSource, net.minecraft.core.world.pos.TilePosc);
+  public void renderStandalone(net.minecraft.client.render.tessellator.TessellatorGeneral, int, byte);
+  public boolean shouldItemRender3d();
+}
+
+# net.minecraft.core.block.Block (filtered: withEntity, isEntityTile, entitySupplier)
+public final class net.minecraft.core.block.Block<T extends net.minecraft.core.block.BlockLogic> implements net.minecraft.core.data.tag.ITaggable<net.minecraft.core.block.Block<?>>, net.minecraft.core.item.IItemConvertible, net.minecraft.core.block.BlockInterface {
+  public boolean isEntityTile;
+  public java.util.function.Supplier<net.minecraft.core.block.entity.TileEntity> entitySupplier;
+  public net.minecraft.core.block.Block<T> withEntity(java.util.function.Supplier<net.minecraft.core.block.entity.TileEntity>);
+  public boolean isEntityTile();
+}
+
+public interface net.minecraft.client.render.tessellator.TessellatorColor extends net.minecraft.client.render.tessellator.Tessellator {
+  public default void setColorOpaque3f(float, float, float);
+  public default void setColor4f(float, float, float, float);
+  public default void setColorOpaque3i(int, int, int);
+  public default void setColor4i(int, int, int, int);
+  public default void setColorOpaque1i(int);
+  public default void setColor2i(int, int);
+  public abstract void setColor1i(int);
+  public abstract void lockColor();
+}
+
+public interface net.minecraft.client.render.tessellator.TessellatorTextured extends net.minecraft.client.render.tessellator.Tessellator {
+  public abstract void setTextureUV(double, double);
+  public default void addVertexWithUV(double, double, double, double, double);
+  public default void addVertexWithUV(org.joml.Vector3dc, double, double);
+  public default void addVertexWithUV(org.joml.Vector3fc, double, double);
+  public default void drawRectangleWithUV(int, int, int, int, double, double, double, double);
+}
+
+public interface net.minecraft.client.render.tessellator.TessellatorLightmap extends net.minecraft.client.render.tessellator.Tessellator {
+  public abstract void setLightmapCoord1i(int);
+  public default void setLightmapCoord2i(int, int);
+}
+
+public interface net.minecraft.client.render.tessellator.TessellatorNormal extends net.minecraft.client.render.tessellator.Tessellator {
+  public abstract void setNormal(float, float, float);
+  public default void setNormal(org.joml.Vector3dc);
+  public default void setNormal(org.joml.Vector3fc);
+}
