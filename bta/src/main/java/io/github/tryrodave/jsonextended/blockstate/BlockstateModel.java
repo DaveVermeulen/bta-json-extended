@@ -1,5 +1,6 @@
 package io.github.tryrodave.jsonextended.blockstate;
 
+import io.github.tryrodave.jsonextended.model.Models;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import net.fabricmc.api.EnvType;
@@ -25,7 +26,6 @@ public class BlockstateModel<T extends BlockLogic> extends BlockModelGeneric<T> 
 
     protected final Blockstate blockstate;
     protected final Map<String, StaticBlockModel> models;
-    protected final StaticBlockModel missing;
     protected final StateResolver resolver;
     /** Model for the inventory and wherever there's no world position; null means the state's first part. */
     protected final StaticBlockModel inventory;
@@ -35,11 +35,10 @@ public class BlockstateModel<T extends BlockLogic> extends BlockModelGeneric<T> 
     private final int renderLayer;
 
     public BlockstateModel(Block<T> block, Blockstate blockstate, Map<String, StaticBlockModel> models,
-                           StaticBlockModel missing, StateResolver resolver, StaticBlockModel inventory, int renderLayer) {
-        super(block, inventory != null ? inventory : firstModel(blockstate, models, missing));
+                           StateResolver resolver, StaticBlockModel inventory, int renderLayer) {
+        super(block, inventory != null ? inventory : firstModel(blockstate, models));
         this.blockstate = blockstate;
         this.models = Map.copyOf(models);
-        this.missing = missing;
         this.resolver = resolver;
         this.inventory = inventory;
         Map<String, String> defaults = new LinkedHashMap<>();
@@ -64,7 +63,7 @@ public class BlockstateModel<T extends BlockLogic> extends BlockModelGeneric<T> 
                                   boolean cullFaces, IconCoordinate overrideTexture) {
         Selection selection = select(world, pos);
         if (selection.missing())
-            return missing.renderAttached(this, tessellator, world, pos, 0, 0, 0, 0, 0, 0, false, cullFaces, overrideTexture);
+            return Models.missing().renderAttached(this, tessellator, world, pos, 0, 0, 0, 0, 0, 0, false, cullFaces, overrideTexture);
         long seed = getPositionalSeed(pos);
         boolean drew = false;
         int index = 0;
@@ -81,7 +80,7 @@ public class BlockstateModel<T extends BlockLogic> extends BlockModelGeneric<T> 
     public StaticBlockModel getModel(WorldSource world, TilePosc pos) {
         Selection selection = select(world, pos);
         if (selection.missing() || selection.choices().isEmpty())
-            return selection.missing() ? missing : staticModel;
+            return selection.missing() ? Models.missing() : staticModel;
         return model(selection.choices().get(0).pick(getPositionalSeed(pos)));
     }
 
@@ -92,7 +91,7 @@ public class BlockstateModel<T extends BlockLogic> extends BlockModelGeneric<T> 
             return inventory;
         Selection selection = blockstate.select(meta, defaults);
         if (selection.missing())
-            return missing;
+            return Models.missing();
         return selection.choices().isEmpty() ? staticModel : model(selection.choices().get(0).first());
     }
 
@@ -106,15 +105,15 @@ public class BlockstateModel<T extends BlockLogic> extends BlockModelGeneric<T> 
 
     private StaticBlockModel model(Part part) {
         StaticBlockModel model = models.get(part.model());
-        return model != null ? model : missing;
+        return model != null ? model : Models.missing();
     }
 
-    private static StaticBlockModel firstModel(Blockstate blockstate, Map<String, StaticBlockModel> models, StaticBlockModel missing) {
+    private static StaticBlockModel firstModel(Blockstate blockstate, Map<String, StaticBlockModel> models) {
         for (String id : blockstate.models()) {
             StaticBlockModel model = models.get(id);
             if (model != null)
                 return model;
         }
-        return missing;
+        return Models.missing();
     }
 }

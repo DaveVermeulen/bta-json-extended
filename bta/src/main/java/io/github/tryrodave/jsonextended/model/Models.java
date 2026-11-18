@@ -35,9 +35,26 @@ public final class Models {
             log(problem);
         if (ModelCheck.unreadable(problems, id)) {
             log(new ModelCheck.Problem(true, id + ": drawing the missing model instead"));
-            return BlockModelMojangData.Cache.getMissingModel().asModel();
+            return missing();
         }
         return BlockModelDispatcher.loadDataModel(id).asModel();
+    }
+
+    private static BlockModelMojangData missingData;
+    private static StaticBlockModel missingModel;
+
+    /**
+     * BTA's missing model, compiled only when something needs it and then reused: each compile logs eight
+     * "does not have an assigned texture" lines from BTA, because its missing model has no textures map.
+     * Compiled again when BTA's cache hands out a new missing model (after a reload).
+     */
+    public static synchronized StaticBlockModel missing() {
+        BlockModelMojangData data = BlockModelMojangData.Cache.getMissingModel();
+        if (data != missingData || missingModel == null) {
+            missingData = data;
+            missingModel = data.asModel();
+        }
+        return missingModel;
     }
 
     /**

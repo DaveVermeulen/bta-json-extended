@@ -11,7 +11,6 @@ import net.minecraft.client.render.block.model.BlockModel;
 import net.minecraft.client.render.block.model.generic.BlockModelGeneric;
 import net.minecraft.core.block.Block;
 import net.minecraft.core.block.BlockLogic;
-import org.useless.dragonfly.data.block.mojang.BlockModelMojangData;
 import org.useless.dragonfly.models.block.StaticBlockModel;
 
 /**
@@ -36,7 +35,6 @@ public final class Blockstates {
      *                      or null for the first part of the state
      */
     public static <T extends BlockLogic> BlockModel<T> model(Block<T> block, String id, StateResolver resolver, String inventoryModel) {
-        StaticBlockModel missing = BlockModelMojangData.Cache.getMissingModel().asModel();
         Blockstate blockstate;
         try {
             String json = Models.readAsset(id, "blockstates", ".json");
@@ -45,7 +43,7 @@ public final class Blockstates {
             blockstate = Blockstate.parse(id, json);
         } catch (UncheckedIOException | BlockstateException e) {
             JsonExtended.LOGGER.error("Blockstate {} can't be loaded, drawing the missing model: {}", id, e.getMessage());
-            return new BlockModelGeneric<>(block, missing);
+            return new BlockModelGeneric<>(block, Models.missing());
         }
         if (blockstate.needsResolver() && resolver == null)
             JsonExtended.LOGGER.error("Blockstate {} declares {} without bits but the block has no StateResolver; those states draw the missing model",
@@ -59,7 +57,7 @@ public final class Blockstates {
             renderLayer = Math.max(renderLayer, Models.renderLayer(model));
         }
         StaticBlockModel inventory = inventoryModel == null ? null : Models.load(inventoryModel);
-        return new BlockstateModel<>(block, blockstate, models, missing, resolver, inventory, renderLayer);
+        return new BlockstateModel<>(block, blockstate, models, resolver, inventory, renderLayer);
     }
 
 }
