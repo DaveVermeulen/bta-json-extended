@@ -24,8 +24,8 @@ public record Part(String model, int x, int y, boolean uvlock, int weight) {
 
     /**
      * Vanilla turns clockwise looking down the axis toward the origin (y=90 turns north to east), BTA's
-     * quarter turns go the other way: {@code -degrees/90 mod 4}. Derived from BTA's maths; still to be
-     * confirmed in game with the test blocks.
+     * quarter turns go the other way: {@code -degrees/90 mod 4}. Derived from BTA's maths and confirmed
+     * in game with the test blocks.
      */
     static int quarterTurns(int degrees) {
         return Math.floorMod(-degrees / 90, 4);

@@ -1,6 +1,6 @@
 {
   "blockstate": "conditions/multipart_conditions.json",
-  "note": "Expected results for a blockstate file. 'meta' is the block metadata, 'resolved' are the properties a StateResolver supplies, 'properties' is the full decoded state, 'parts' are the models drawn in order. 'bta' is the same rotation as BTA renderAttached quarter turns [rotX, rotY, rotZ] = [-x/90, -y/90, 0] mod 4 (derived from the maths, to confirm in game). Covers 'a|b' values, several keys (all must match), OR and AND.",
+  "note": "Expected results for a blockstate file. 'meta' is the block metadata, 'resolved' are the properties a StateResolver supplies, 'properties' is the full decoded state, 'parts' are the models drawn in order. 'bta' is the same rotation as BTA renderAttached quarter turns [rotX, rotY, rotZ] = [-x/90, -y/90, 0] mod 4 (derived from the maths, confirmed in game 2026-11-18). Covers 'a|b' values, several keys (all must match), OR and AND.",
   "cases": [
     {
       "meta": 0,

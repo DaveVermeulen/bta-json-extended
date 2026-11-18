@@ -1,6 +1,6 @@
 # Blockstate and model JSON (as this mod supports them)
 
-Status: implemented in phase 1 (parser tested in `core/`; rendering waiting for Dave's in-game check).
+Status: implemented in phase 1 (PR #8): parser tested in `core/`, rendering checked in game by Dave on 2026-11-18.
 
 ## Blockstate file: `assets/<ns>/blockstates/<block>.json`
 
