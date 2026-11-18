@@ -1,4 +1,4 @@
-package io.github.tryrodave.jsonextended.blockstate;
+package io.github.tryrodave.jsonextended.json;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
