@@ -8,6 +8,7 @@ Open only the files your task needs. Each stays under ~150 lines; split a file w
 | [bta/model-behaviour.md](bta/model-behaviour.md) | How BTA rotates models, merges parents, resolves #textures; which atlas textures live in |
 | [bta/registration.md](bta/registration.md) | HalpLibe hooks, dispatchers, reloads, texture packs, blocks and creative menu |
 | [bta/items.md](bta/items.md) | `ItemModel`, item rendering, display transforms |
+| [bta/item-rendering.md](bta/item-rendering.md) | How `ItemModelStandard`/`ItemModelBlock` draw items: render params, GL order, display ids, `DisplayPos` defaults, which atlas |
 | [bta/tile-entities.md](bta/tile-entities.md) | `TileEntityRenderer`, geo entity models |
 | [bta/api/](bta/api/README.md) | Exact public signatures of BTA and HalpLibe classes (javap) |
 | [bta/vanilla-parents.md](bta/vanilla-parents.md) | Vanilla parent model ids (cube_all, stairs, slab...) |
