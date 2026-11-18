@@ -12,7 +12,7 @@ Open only the files your task needs. Each stays under ~150 lines; split a file w
 | [bta/item-rendering.md](bta/item-rendering.md) | How `ItemModelStandard`/`ItemModelBlock` draw items: render params, GL order, display ids, `DisplayPos` defaults, which atlas |
 | [bta/static-model.md](bta/static-model.md) | Implementing `StaticBlockModel` (OBJ etc.): renderAttached rotation, culling, lighting/AO, tint; renderStandalone; particle/overlay/display getters |
 | [bta/item-rendering-3d.md](bta/item-rendering-3d.md) | GLRenderer/shader/atlas signatures; how block models render standalone (centred) for items |
-| [bta/tile-entities.md](bta/tile-entities.md) | `TileEntityRenderer`, geo entity models |
+| [bta/tile-entities.md](bta/tile-entities.md) | TileEntity class, registration, TE renderers end to end (doRender coords, GL setup, light), drawing block quads in a TE, hiding the static model, state sync, geo models |
 | [bta/api/](bta/api/README.md) | Exact public signatures of BTA and HalpLibe classes (javap) |
 | [bta/vanilla-parents.md](bta/vanilla-parents.md) | Vanilla parent model ids (cube_all, stairs, slab...) |
 | [bta/reading-bta-code.md](bta/reading-bta-code.md) | How to decompile BTA and HalpLibe on the Mac |
