@@ -1,0 +1,7 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "jsonextended:item/test_ruby",
+    "layer1": "jsonextended:item/test_ring"
+  }
+}

@@ -2,6 +2,7 @@ package io.github.tryrodave.jsonextended.dev;
 
 import io.github.tryrodave.jsonextended.JsonExtended;
 import io.github.tryrodave.jsonextended.blockstate.example.BlockstateExamples;
+import io.github.tryrodave.jsonextended.item.example.ItemExamples;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.render.block.model.BlockModelDispatcher;
@@ -36,6 +37,7 @@ public final class DevContent {
                 .setCreativeInventoryPlacement(new CreativeInventoryPlacement.Category(CreativeInventoryCategory.MISCELLANEOUS));
         blockbenchTest = builder.build("blockbench_test", FIRST_ID, ModelLogic::new);
         BlockstateExamples.registerBlocks();
+        ItemExamples.registerItems();
     }
 
     /**
@@ -46,6 +48,7 @@ public final class DevContent {
     @Environment(EnvType.CLIENT)
     public static void registerModels() {
         ClientEvents.BLOCK_MODEL_RELOAD.listen(Key.of(JsonExtended.MOD_ID), DevContent::addModels);
+        ClientEvents.ITEM_MODEL_RELOAD.listen(Key.of(JsonExtended.MOD_ID), ItemExamples::addModels);
     }
 
     @Environment(EnvType.CLIENT)

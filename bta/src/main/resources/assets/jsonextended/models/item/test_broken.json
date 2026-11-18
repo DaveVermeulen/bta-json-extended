@@ -1,0 +1,4 @@
+{
+  "parent": "item/generated",
+  "textures": {"layer1": "jsonextended:item/test_ruby"}
+}
