@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.option.GameSettings;
 import net.minecraft.client.render.LightingCache;
 import net.minecraft.client.render.block.color.BlockColor;
 import net.minecraft.client.render.block.color.BlockColorDispatcher;
@@ -26,8 +27,9 @@ import org.useless.dragonfly.models.block.StaticBlockModel;
  * An OBJ model as a BTA {@link StaticBlockModel}, so anything that draws model JSON (blockstates,
  * {@code BlockModelGeneric}, 3D item models) draws OBJ too. Follows {@code knowledge/bta/static-model.md}.
  * <p>
- * Lighting is flat for now: a face lying on a block side takes the light of the neighbour there, any other face
- * the block's own light, and directional shading comes from the face normal. Smooth lighting is a later step.
+ * Lighting: with smooth lighting on (and {@code ambient_occlusion} in the JSON), {@link ObjSmoothLight} per vertex.
+ * Otherwise flat: a face lying on a block side takes the light of the neighbour there, any other face the block's
+ * own light. Directional shading comes from the face normal.
  */
 @Environment(EnvType.CLIENT)
 public final class ObjStaticModel implements StaticBlockModel {
@@ -65,6 +67,9 @@ public final class ObjStaticModel implements StaticBlockModel {
                                   double xOff, double yOff, double zOff, boolean uvlock, boolean cullFaces,
                                   IconCoordinate overrideTexture) {
         LIGHT.setupCache(source.block, world, pos);
+        // Same rule as BTA's own models: smooth lighting with the option on, and not for blocks that give off light.
+        ObjSmoothLight smooth = json.ambientOcclusion() && Boolean.TRUE.equals(GameSettings.AMBIENT_OCCLUSION.value)
+                && source.block.emission == 0 ? new ObjSmoothLight(LIGHT) : null;
         BlockColor colors = null;
         int culled = 0, checked = 0;
         boolean drew = false;
@@ -112,11 +117,21 @@ public final class ObjStaticModel implements StaticBlockModel {
                 tess.setNormal(normal[0], normal[1], normal[2]);
             else
                 tess.setNormal(0f, 1f, 0f);
+            ObjQuad.Side lightSide = ObjQuad.Side.nearest(normal);
             for (int i = 0; i < 4; i++) {
                 tess.setColorOpaque3f(r, g, b);
-                tess.setLightmapCoord1i(light);
-                // In BTA the shade is only the ambient-occlusion factor; world light goes through the light index.
-                tess.setShade1i(255);
+                if (smooth != null) {
+                    smooth.sample(lightSide, p[i]);
+                    byte corner = smooth.lightIndex;
+                    if (face.emission() > LightIndexHelper.blockLightFromIndex(corner))
+                        corner = LightIndexHelper.setBlockLight(corner, face.emission());
+                    tess.setLightmapCoord1i(corner);
+                    tess.setShade1i(face.emission() > 0 ? 255 : Math.round(smooth.shade * 255f));
+                } else {
+                    tess.setLightmapCoord1i(light);
+                    // In BTA the shade is only the ambient-occlusion factor; world light goes through the light index.
+                    tess.setShade1i(255);
+                }
                 tess.addVertexWithUV(p[i][0] + pos.x() + xOff, p[i][1] + pos.y() + yOff, p[i][2] + pos.z() + zOff,
                         icon.getSubIconU(face.uvs()[i][0]), icon.getSubIconV(face.uvs()[i][1]));
             }

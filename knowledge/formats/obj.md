@@ -1,6 +1,6 @@
 # OBJ / MTL
 
-Status: phase 4. Step 1 (parser in `core/`, PR #14) merged; step 2 (drawing it in BTA behind `loader`, with the crystal and ramp test blocks) in review. Betafront's parser below is NeoForge-derived (LGPL): use it only as a description of the behaviour and JSON format we stay compatible with, never as code to copy.
+Status: phase 4 done when PR #15 merged (crystal and ramp checked in game by Dave, 2026-11-18). Step 3 (smooth lighting) in review. Betafront's parser below is NeoForge-derived (LGPL): use it only as a description of the behaviour and JSON format we stay compatible with, never as code to copy.
 
 1. `ObjTokenizer` reads lines, joins `\` continuations, splits on whitespace. Only a `#` at line start is a comment, so `map_Kd #texture0` survives.
 2. `ObjMaterialLibrary` reads `newmtl`, `Ka`, `Kd`, `Ks`, `map_Kd`, `d`, `Tr`, `Ns`, and `neoforge_TintIndex` / `forge_TintIndex` / `betafront_TintIndex` (add `jsonextended_TintIndex`).
@@ -43,7 +43,8 @@ Improvements over Betafront to aim for: several objects or groups per model, smo
 - `bta/.../obj/ObjStaticModel` implements `StaticBlockModel` as in [../bta/static-model.md](../bta/static-model.md):
   - quarter turns through `core/.../obj/QuarterTurns` (X, Y, Z about the centre; tested against BTA's `Direction.rotate*`); `uvlock` is ignored.
   - culling: faces with a `cullSide` (when `automatic_culling`) are skipped when `source.cullSide(world, pos, rotated side)`; checked once per side per block.
-  - light: flat. A face on a block side takes the neighbour's light index, others the block's own (`LightingCache`, our own instance); `setShade1i(255)`; normal from the face (or up when `shade_quads` is false). Smooth lighting not done yet (Betafront's per-vertex method is the reference).
+  - light, flat: a face on a block side takes the neighbour's light index, others the block's own (`LightingCache`, our own instance); `setShade1i(255)`; normal from the face (or up when `shade_quads` is false).
+  - light, smooth (step 3): when `ambient_occlusion` (JSON), `GameSettings.AMBIENT_OCCLUSION` and `block.emission == 0`, `ObjSmoothLight` (Betafront's method) per vertex: corners average 4 blocks for the light index and brightness, for the outside layer and the block's own, blended by position on the side and depth; brightness goes to `setShade1i`, emissive faces stay 255.
   - colour: material `Kd` times the block colour for a tinted material; `emissive_ambient`: `Ka` brightness raises block light (0-15).
   - textures: `map_Kd` through the model JSON's `textures`; none or unset gives `textures.particle`. Icons are cached until `TextureRegistry.reloadGeneration` changes.
   - `renderLayer` from `render_type` (translucent gives 1), item poses are BTA's block defaults, `particleColorIndex` -1.
