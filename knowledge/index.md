@@ -10,6 +10,7 @@ Open only the files your task needs. Each stays under ~150 lines; split a file w
 | [bta/registration.md](bta/registration.md) | HalpLibe hooks, dispatchers, reloads, texture packs, blocks and creative menu |
 | [bta/items.md](bta/items.md) | `ItemModel`, display transforms, `Item` constructors, ids, lang keys, `ItemBuilder` |
 | [bta/item-rendering.md](bta/item-rendering.md) | How `ItemModelStandard`/`ItemModelBlock` draw items: render params, GL order, display ids, `DisplayPos` defaults, which atlas |
+| [bta/static-model.md](bta/static-model.md) | Implementing `StaticBlockModel` (OBJ etc.): renderAttached rotation, culling, lighting/AO, tint; renderStandalone; particle/overlay/display getters |
 | [bta/item-rendering-3d.md](bta/item-rendering-3d.md) | GLRenderer/shader/atlas signatures; how block models render standalone (centred) for items |
 | [bta/tile-entities.md](bta/tile-entities.md) | `TileEntityRenderer`, geo entity models |
 | [bta/api/](bta/api/README.md) | Exact public signatures of BTA and HalpLibe classes (javap) |
