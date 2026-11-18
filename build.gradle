@@ -4,7 +4,10 @@ def included(String build, String path) {
     gradle.includedBuild(build).task(path)
 }
 
-tasks.register('runClient') {
+// Not named runClient on purpose: IntelliJ's Kotlin coroutine debugger init script matches start tasks
+// by name in every build, reads ':bta:runClient' jvmArgs while it is configured, and Loom then resolves
+// ':bta:runtimeClasspath' without bta's lock ("attempted without an exclusive lock", Gradle 9).
+tasks.register('runBtaClient') {
     group = 'jsonextended'
     description = 'Starts the BTA dev client with the dev-only test blocks.'
     dependsOn included('bta', ':runClient')
