@@ -1,6 +1,6 @@
 # Blockstate and model JSON (as this mod supports them)
 
-Status: design. Update when the Blockstates agent implements it.
+Status: implemented in phase 1 (parser tested in `core/`; rendering waiting for Dave's in-game check).
 
 ## Blockstate file: `assets/<ns>/blockstates/<block>.json`
 
@@ -39,6 +39,20 @@ Dev-only blocks (`bta/.../blockstate/example/BlockstateExamples.java`), each wit
 | `test_weighted` | weighted list, `""` key | none |
 
 `core/src/test/resources/` holds byte-identical copies (`BlockstateFixturesTest` checks this), plus `blockstate/cases/*.json` (expected results: meta and resolver values in, properties and parts out, with BTA quarter turns), `blockstate/conditions/` (`a|b`, `OR`, `AND`) and `blockstate/invalid/` (files that must fail to load). Placement sets metadata like the vanilla block; right-click steps through every valid metadata value.
+
+## Code
+
+| Where | What |
+| --- | --- |
+| `core/.../blockstate/Blockstate` | `parse(source, json)` checks the whole file (throws `BlockstateException`: `<file>: <key>: <reason>`); `select(meta, resolved)` returns a cached `Selection` (properties + `Choice`s, or `missing()` with an `error()`); `onWarning` gets each missing-state line once; `metaValue(property, meta)` decodes a neighbour's metadata |
+| `core/.../blockstate/Part`, `Choice` | One variant (`btaRotX/Y/Z()` quarter turns); a weighted list, `pick(seed)` stable per seed (SplitMix64 of the seed, mod total weight) |
+| `core/.../blockstate/StairShape` | Vanilla stair shape rule from neighbours, tested as tables |
+| `core/.../blockstate/Json` | Small strict JSON reader (core has no dependencies); objects keep key order |
+| `bta/.../blockstate/Blockstates.model(block, id[, resolver, inventoryModel])` | Reads `assets/<ns>/blockstates/<name>.json` through the texture packs, loads every model with `BlockModelDispatcher.loadDataModel`, returns a `BlockstateModel`. Call it from a `BLOCK_MODEL_RELOAD` listener. A bad file logs one error and draws the missing model |
+| `bta/.../blockstate/BlockstateModel` | `BlockModelGeneric` subclass: overrides `renderAttached` to draw each selected part with `renderAttached(rotX, rotY, 0, 0, 0, 0, uvlock, cullFaces, override)`; `getModelFromData(meta)` gives the inventory model or the first part with each resolver property's first value |
+| `bta/.../blockstate/StateResolver`, `NeighbourResolvers` | `resolve(world, pos, meta, blockstate)` for properties without `bits`; ready-made `stairs(isStairs)` and `connections(connectsTo)` (fence sides: same kind of block or an opaque cube) |
+
+Matching rules: a variant key may list only some properties; the first key in file order whose pairs all match wins. Multipart draws every entry whose `when` matches, in order. Weighted entries in multipart get different seeds per entry. Unknown keys anywhere in the file are load errors. `x`/`y` accept numbers; `bits` and condition values also accept unquoted numbers and booleans.
 
 ## Model JSON
 
