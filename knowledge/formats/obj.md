@@ -1,6 +1,6 @@
 # OBJ / MTL
 
-Status: phase 4. Step 1 (parser in `core/`) done, written from the OBJ/MTL specs; step 2 (drawing it in BTA behind `loader`) next. Betafront's parser below is NeoForge-derived (LGPL): use it only as a description of the behaviour and JSON format we stay compatible with, never as code to copy.
+Status: phase 4. Step 1 (parser in `core/`, PR #14) merged; step 2 (drawing it in BTA behind `loader`, with the crystal and ramp test blocks) in review. Betafront's parser below is NeoForge-derived (LGPL): use it only as a description of the behaviour and JSON format we stay compatible with, never as code to copy.
 
 1. `ObjTokenizer` reads lines, joins `\` continuations, splits on whitespace. Only a `#` at line start is a comment, so `map_Kd #texture0` survives.
 2. `ObjMaterialLibrary` reads `newmtl`, `Ka`, `Kd`, `Ks`, `map_Kd`, `d`, `Tr`, `Ns`, and `neoforge_TintIndex` / `forge_TintIndex` / `betafront_TintIndex` (add `jsonextended_TintIndex`).
@@ -35,3 +35,16 @@ Improvements over Betafront to aim for: several objects or groups per model, smo
 - Errors (`ObjException`) start with `id line N:`: bad numbers, out-of-range indices, faces under 3 corners, `w = 0`, missing OBJ file.
 - `cullSide`: all four corners on a block face plane and the face normal pointing out through it.
 - Tests: `ObjModelTest` (fixtures in `core/src/test/resources/obj/`, from Betafront's tests).
+
+## Drawing it in BTA (phase 4 step 2)
+
+- `Models.load(id)` (Platform) reads the model JSON first: an OBJ `loader` goes to `ObjModels.load`, everything else to BTA's reader. OBJ, MTL and model JSON all come through the texture packs (`Models.readFile("ns:path/file.obj")`). An `ObjException` logs one error line and gives the missing model.
+- `ModelCheck` skips OBJ model files; `ObjModelJson` and `ObjModel` report their own warnings, logged once per session.
+- `bta/.../obj/ObjStaticModel` implements `StaticBlockModel` as in [../bta/static-model.md](../bta/static-model.md):
+  - quarter turns through `core/.../obj/QuarterTurns` (X, Y, Z about the centre; tested against BTA's `Direction.rotate*`); `uvlock` is ignored.
+  - culling: faces with a `cullSide` (when `automatic_culling`) are skipped when `source.cullSide(world, pos, rotated side)`; checked once per side per block.
+  - light: flat. A face on a block side takes the neighbour's light index, others the block's own (`LightingCache`, our own instance); `setShade1i(255)`; normal from the face (or up when `shade_quads` is false). Smooth lighting not done yet (Betafront's per-vertex method is the reference).
+  - colour: material `Kd` times the block colour for a tinted material; `emissive_ambient`: `Ka` brightness raises block light (0-15).
+  - textures: `map_Kd` through the model JSON's `textures`; none or unset gives `textures.particle`. Icons are cached until `TextureRegistry.reloadGeneration` changes.
+  - `renderLayer` from `render_type` (translucent gives 1), item poses are BTA's block defaults, `particleColorIndex` -1.
+- Test blocks: Test OBJ Crystal (9122, `betafront:obj` spelling, cutout) and Test OBJ Ramp (9123, facing and upside down through a blockstate). `ObjModelJsonTest.devObjModelsLoadWithoutWarnings` checks both.

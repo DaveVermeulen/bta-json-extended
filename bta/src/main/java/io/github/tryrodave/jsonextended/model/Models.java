@@ -1,6 +1,9 @@
 package io.github.tryrodave.jsonextended.model;
 
 import io.github.tryrodave.jsonextended.JsonExtended;
+import io.github.tryrodave.jsonextended.obj.ObjException;
+import io.github.tryrodave.jsonextended.obj.ObjModelJson;
+import io.github.tryrodave.jsonextended.obj.ObjModels;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
@@ -30,6 +33,16 @@ public final class Models {
 
     /** A model by id ({@code ns:block/name} or {@code ns:item/name}), or BTA's missing model when it can't be read. */
     public static StaticBlockModel load(String id) {
+        String json = read(id);
+        if (json != null && ObjModelJson.isObj(json)) {
+            try {
+                return ObjModels.load(id, json, Models::readFile, line -> log(new ModelCheck.Problem(false, line)));
+            } catch (ObjException | UncheckedIOException e) {
+                log(new ModelCheck.Problem(true, e.getMessage()));
+                log(new ModelCheck.Problem(true, id + ": drawing the missing model instead"));
+                return missing();
+            }
+        }
         List<ModelCheck.Problem> problems = CHECK.check(id);
         for (ModelCheck.Problem problem : problems)
             log(problem);
@@ -40,21 +53,13 @@ public final class Models {
         return BlockModelDispatcher.loadDataModel(id).asModel();
     }
 
-    private static BlockModelMojangData missingData;
-    private static StaticBlockModel missingModel;
-
     /**
-     * BTA's missing model, compiled only when something needs it and then reused: each compile logs eight
-     * "does not have an assigned texture" lines from BTA, because its missing model has no textures map.
-     * Compiled again when BTA's cache hands out a new missing model (after a reload).
+     * BTA's missing model, freshly compiled. Call it only when a model is actually missing, and keep the result
+     * for that model: each compile logs eight "does not have an assigned texture" lines from BTA, because its
+     * missing model has no textures map. A fresh one per reload picks up the rebuilt atlas.
      */
-    public static synchronized StaticBlockModel missing() {
-        BlockModelMojangData data = BlockModelMojangData.Cache.getMissingModel();
-        if (data != missingData || missingModel == null) {
-            missingData = data;
-            missingModel = data.asModel();
-        }
-        return missingModel;
+    public static StaticBlockModel missing() {
+        return BlockModelMojangData.Cache.getMissingModel().asModel();
     }
 
     /**
@@ -74,11 +79,22 @@ public final class Models {
         return readAsset(id, "models", ".json");
     }
 
+    /** {@code ns:path/file.ext} to the text of {@code /assets/ns/path/file.ext} through the texture packs; null when absent. */
+    public static String readFile(String id) {
+        int colon = id.indexOf(':');
+        String namespace = colon < 0 ? "minecraft" : id.substring(0, colon);
+        return readPath("/assets/" + namespace + "/" + id.substring(colon + 1));
+    }
+
     /** {@code ns:path} to the text of {@code /assets/ns/<folder>/path<suffix>} through the texture packs; null when absent. */
     public static String readAsset(String id, String folder, String suffix) {
         int colon = id.indexOf(':');
         String namespace = colon < 0 ? "minecraft" : id.substring(0, colon);
-        String path = "/assets/" + namespace + "/" + folder + "/" + id.substring(colon + 1) + suffix;
+        return readPath("/assets/" + namespace + "/" + folder + "/" + id.substring(colon + 1) + suffix);
+    }
+
+    /** A resource path through the texture packs, highest first, then the mod jars; null when absent. */
+    private static String readPath(String path) {
         InputStream in = null;
         Minecraft mc = Minecraft.getMinecraft();
         if (mc != null && mc.texturePackList != null)

@@ -1,0 +1,10 @@
+{
+  "loader": "betafront:obj",
+  "model": "jsonextended:models/block/test_obj_crystal.obj",
+  "flip_v": true,
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "particle": "jsonextended:block/test_obj_crystal",
+    "texture0": "jsonextended:block/test_obj_crystal"
+  }
+}

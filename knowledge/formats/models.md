@@ -31,7 +31,7 @@ BTA's own reader (`org.useless.dragonfly`) still builds every model; see [../bta
 | Class | Does |
 | --- | --- |
 | `core/.../model/ModelCheck` | `check(id)`, `renderType(id)`, `hasErrors`, `unreadable` |
-| `bta/.../model/Models` | `load(id)` (check, log, then `BlockModelDispatcher.loadDataModel` or the missing model), `renderLayer(id)`, `read`/`readAsset` through `texturePackList` |
+| `bta/.../model/Models` | `load(id)` (an OBJ `loader` goes to `ObjModels`; otherwise check, log, then `BlockModelDispatcher.loadDataModel` or the missing model), `renderLayer(id)`, `read`/`readAsset` through `texturePackList` |
 | `bta/.../blockstate/BlockstateModel.renderLayer()` | from its models' `render_type` |
 | `bta/.../item/JsonItemModel3d.renderGui` | `gui_light` |
 

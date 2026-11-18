@@ -1,0 +1,46 @@
+{
+  "blockstate": "jsonextended:test_obj_ramp",
+  "note": "OBJ ramp (phase 4): tall side north in the model, turned to the facing; half=top flips it with x 180 and turns it back with y 180. 'bta' = [-x/90, -y/90, 0] mod 4.",
+  "cases": [
+    {
+      "meta": 0,
+      "properties": {"facing": "south", "half": "bottom"},
+      "parts": [{"model": "jsonextended:block/test_obj_ramp", "x": 0, "y": 180, "uvlock": false, "bta": [0, 2, 0]}]
+    },
+    {
+      "meta": 1,
+      "properties": {"facing": "west", "half": "bottom"},
+      "parts": [{"model": "jsonextended:block/test_obj_ramp", "x": 0, "y": 270, "uvlock": false, "bta": [0, 1, 0]}]
+    },
+    {
+      "meta": 2,
+      "properties": {"facing": "north", "half": "bottom"},
+      "parts": [{"model": "jsonextended:block/test_obj_ramp", "x": 0, "y": 0, "uvlock": false, "bta": [0, 0, 0]}]
+    },
+    {
+      "meta": 3,
+      "properties": {"facing": "east", "half": "bottom"},
+      "parts": [{"model": "jsonextended:block/test_obj_ramp", "x": 0, "y": 90, "uvlock": false, "bta": [0, 3, 0]}]
+    },
+    {
+      "meta": 4,
+      "properties": {"facing": "south", "half": "top"},
+      "parts": [{"model": "jsonextended:block/test_obj_ramp", "x": 180, "y": 0, "uvlock": false, "bta": [2, 0, 0]}]
+    },
+    {
+      "meta": 5,
+      "properties": {"facing": "west", "half": "top"},
+      "parts": [{"model": "jsonextended:block/test_obj_ramp", "x": 180, "y": 90, "uvlock": false, "bta": [2, 3, 0]}]
+    },
+    {
+      "meta": 6,
+      "properties": {"facing": "north", "half": "top"},
+      "parts": [{"model": "jsonextended:block/test_obj_ramp", "x": 180, "y": 180, "uvlock": false, "bta": [2, 2, 0]}]
+    },
+    {
+      "meta": 7,
+      "properties": {"facing": "east", "half": "top"},
+      "parts": [{"model": "jsonextended:block/test_obj_ramp", "x": 180, "y": 270, "uvlock": false, "bta": [2, 1, 0]}]
+    }
+  ]
+}

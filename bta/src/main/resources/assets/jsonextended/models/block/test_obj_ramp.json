@@ -1,0 +1,9 @@
+{
+  "loader": "jsonextended:obj",
+  "model": "jsonextended:models/block/test_obj_ramp.obj",
+  "flip_v": true,
+  "textures": {
+    "particle": "jsonextended:block/test_obj_ramp",
+    "ramp": "jsonextended:block/test_obj_ramp"
+  }
+}
