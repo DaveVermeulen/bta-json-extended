@@ -1,7 +1,8 @@
 # Item model JSON (as this mod supports it)
 
-Status: phase 2. The parser in `core/` is tested; rendering in `bta/` is built on
-`knowledge/bta/item-rendering.md` and `item-rendering-3d.md` and waits for Dave's in-game check.
+Status: phase 2 done (PR #11). The parser in `core/` is tested; rendering in `bta/` is built on
+`knowledge/bta/item-rendering.md` and `item-rendering-3d.md` and was checked in game by Dave on 2026-11-18
+(all six test items, display poses, layers, 3D gem, broken model).
 
 ## Files
 

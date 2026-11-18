@@ -56,6 +56,4 @@ Matching rules: a variant key may list only some properties; the first key in fi
 
 ## Model JSON
 
-BTA's own reader handles vanilla model JSON (see `knowledge/bta/rendering.md`). We add:
-- `"loader": "jsonextended:obj"` (and `betafront:obj`, `neoforge:obj`, `forge:obj`) to pick the OBJ model type.
-- Clean handling of `texture_size`, `gui_light`, `render_type` from Blockbench exports.
+See [models.md](models.md): `texture_size`, `render_type`, `gui_light`, `loader` and load errors.

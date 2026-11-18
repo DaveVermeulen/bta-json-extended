@@ -1,0 +1,4 @@
+{
+  "parent": "jsonextended:item/test_gem",
+  "gui_light": "front"
+}

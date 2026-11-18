@@ -6,6 +6,7 @@ Open only the files your task needs. Each stays under ~150 lines; split a file w
 | --- | --- |
 | [bta/rendering.md](bta/rendering.md) | BTA's built-in JSON block models, `StaticBlockModel`, `BlockModelGeneric`, tessellator, lighting, textures |
 | [bta/model-behaviour.md](bta/model-behaviour.md) | How BTA rotates models, merges parents, resolves #textures; which atlas textures live in |
+| [bta/model-loading.md](bta/model-loading.md) | Load path from `loadDataModel` to Gson, cache, mixin hook points, `renderlayer`, errors, `texture_size`, `gui_light`, mixin setup |
 | [bta/registration.md](bta/registration.md) | HalpLibe hooks, dispatchers, reloads, texture packs, blocks and creative menu |
 | [bta/items.md](bta/items.md) | `ItemModel`, display transforms, `Item` constructors, ids, lang keys, `ItemBuilder` |
 | [bta/item-rendering.md](bta/item-rendering.md) | How `ItemModelStandard`/`ItemModelBlock` draw items: render params, GL order, display ids, `DisplayPos` defaults, which atlas |
@@ -15,6 +16,7 @@ Open only the files your task needs. Each stays under ~150 lines; split a file w
 | [bta/vanilla-parents.md](bta/vanilla-parents.md) | Vanilla parent model ids (cube_all, stairs, slab...) |
 | [bta/reading-bta-code.md](bta/reading-bta-code.md) | How to decompile BTA and HalpLibe on the Mac |
 | [formats/blockstates.md](formats/blockstates.md) | Blockstate JSON and model JSON as we support them |
+| [formats/models.md](formats/models.md) | Model JSON: Blockbench keys, `render_type`, `gui_light`, `loader`, readable load errors |
 | [formats/items.md](formats/items.md) | Item model JSON as we support it |
 | [formats/obj.md](formats/obj.md) | OBJ/MTL support, carried over from Betafront |
 | [formats/gltf.md](formats/gltf.md) | GLB/glTF support plan |

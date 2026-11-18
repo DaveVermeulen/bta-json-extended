@@ -13,3 +13,5 @@
 | `Can't connect to Mojang API ... Player123` | Harmless |
 | `babric-loom-extension` 1.17.4 `UnsupportedOperationException` | Use 1.17.5 (only if a Babric build ever returns) |
 | Class clash with the game | Don't reuse `org.useless.dragonfly` names |
+
+- **Log: 8 lines of `Model 'minecraft:block/missing' does not have an assigned '#particle_up' symbol!` per block.** Cause: every `BlockModelMojangData.Cache.getMissingModel().asModel()` compiles BTA's missing model again, and it has no textures map. Fix: use `Models.missing()`, which compiles it only when needed and reuses it (seen in Dave's log 2026-11-18, one block per blockstate block).

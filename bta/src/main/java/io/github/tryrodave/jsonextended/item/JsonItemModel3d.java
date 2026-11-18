@@ -79,17 +79,26 @@ public class JsonItemModel3d extends JsonItemModel {
         }
     }
 
-    /** Like {@code ItemModelBlock.renderGui}: keeps depth (z scale 16) and lighting, so the model looks solid. */
+    /**
+     * Like {@code ItemModelBlock.renderGui}: keeps depth (z scale 16) and lighting, so the model looks solid.
+     * {@code gui_light: front} turns lighting off instead, as BTA does for flat items, so the model is drawn flat-lit.
+     */
     @Override
     public void renderGui(TessellatorGeneral tessellator, Entity holder, ItemStack stack, int x, int y, byte lightIndex, float partialTick) {
+        boolean front = "front".equals(model.guiLight());
+        boolean lightWas = GLRenderer.globalGetLightEnabled();
         GLRenderer.pushFrame();
         try {
+            if (front)
+                GLRenderer.globalSetLightEnabled(false);
             GLRenderer.setShader(Shaders.ITEM);
             GLRenderer.enableState(State.BLEND);
             GLRenderer.enableState(State.CULL_FACE);
             GLRenderer.modelM4f().translate(x + 8f, y + 8f, 8f).scale(16f, -16f, 16f);
             render(tessellator, holder, stack, "gui", false, 1, lightIndex, partialTick, false);
         } finally {
+            if (front)
+                GLRenderer.globalSetLightEnabled(lightWas);
             GLRenderer.popFrame();
         }
     }

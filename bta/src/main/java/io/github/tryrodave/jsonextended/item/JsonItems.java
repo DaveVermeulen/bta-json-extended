@@ -1,16 +1,12 @@
 package io.github.tryrodave.jsonextended.item;
 
 import io.github.tryrodave.jsonextended.JsonExtended;
-import java.io.IOException;
-import java.io.InputStream;
+import io.github.tryrodave.jsonextended.model.Models;
 import java.io.UncheckedIOException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.render.block.model.BlockModelDispatcher;
 import net.minecraft.client.render.item.model.ItemModel;
 import net.minecraft.client.render.item.model.ItemModelStandard;
 import net.minecraft.client.render.texture.stitcher.IconCoordinate;
@@ -34,7 +30,7 @@ public final class JsonItems {
     public static ItemModel model(Item item, String modelId) {
         ResolvedItemModel model;
         try {
-            model = new ItemModels(JsonItems::read).resolve(modelId);
+            model = new ItemModels(Models::read).resolve(modelId);
         } catch (ItemModelException | UncheckedIOException e) {
             JsonExtended.LOGGER.error("Item model {} can't be loaded, drawing the missing texture: {}", modelId, e.getMessage());
             ItemModelStandard missing = new ItemModelStandard(item, false);
@@ -53,7 +49,7 @@ public final class JsonItems {
         String particle = model.textures().get("particle");
         if (particle == null && !model.textures().isEmpty())
             particle = model.textures().values().iterator().next();
-        StaticBlockModel geometry = BlockModelDispatcher.loadDataModel(model.id()).asModel();
+        StaticBlockModel geometry = Models.load(model.id());
         return new JsonItemModel3d(item, model, icon(model.id(), particle), geometry);
     }
 
@@ -71,22 +67,4 @@ public final class JsonItems {
         }
     }
 
-    /** {@code ns:path} to the text of {@code /assets/ns/models/path.json}, highest texture pack first; null when absent. */
-    static String read(String id) {
-        int colon = id.indexOf(':');
-        String path = "/assets/" + id.substring(0, colon) + "/models/" + id.substring(colon + 1) + ".json";
-        InputStream in = null;
-        Minecraft mc = Minecraft.getMinecraft();
-        if (mc != null && mc.texturePackList != null)
-            in = mc.texturePackList.getResourceAsStream(path);
-        if (in == null)
-            in = JsonItems.class.getResourceAsStream(path);
-        if (in == null)
-            return null;
-        try (InputStream stream = in) {
-            return new String(stream.readAllBytes(), StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-    }
 }

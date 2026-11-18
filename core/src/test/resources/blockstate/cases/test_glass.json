@@ -1,0 +1,13 @@
+{
+  "blockstate": "jsonextended:test_glass",
+  "note": "One variant, no properties. The block is a model test (phase 3); the blockstate is the simplest one that draws the model.",
+  "cases": [
+    {
+      "meta": 0,
+      "properties": {},
+      "parts": [
+        {"model": "jsonextended:block/test_glass", "x": 0, "y": 0, "uvlock": false, "bta": [0, 0, 0]}
+      ]
+    }
+  ]
+}

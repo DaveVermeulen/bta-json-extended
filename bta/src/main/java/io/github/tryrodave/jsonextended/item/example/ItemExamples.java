@@ -29,6 +29,8 @@ public final class ItemExamples {
     public static Item testGem;
     /** Broken on purpose (no layer0): the missing texture and one error line in the log. */
     public static Item testBroken;
+    /** The 3D gem again with {@code gui_light: front}: flat-lit in the inventory, like a flat item. */
+    public static Item testGemFront;
 
     private ItemExamples() {}
 
@@ -41,6 +43,7 @@ public final class ItemExamples {
         testLayered = builder.build(new Item("test.layered", "jsonextended:item/test_layered", FIRST_ID + 3));
         testGem = builder.build(new Item("test.gem", "jsonextended:item/test_gem", FIRST_ID + 4));
         testBroken = builder.build(new Item("test.broken", "jsonextended:item/test_broken", FIRST_ID + 5));
+        testGemFront = builder.build(new Item("test.gem.front", "jsonextended:item/test_gem_front", FIRST_ID + 6));
     }
 
     /** Called on every item model reload. */
@@ -52,5 +55,6 @@ public final class ItemExamples {
         dispatcher.addDispatch(JsonItems.model(testLayered, "jsonextended:item/test_layered"));
         dispatcher.addDispatch(JsonItems.model(testGem, "jsonextended:item/test_gem"));
         dispatcher.addDispatch(JsonItems.model(testBroken, "jsonextended:item/test_broken"));
+        dispatcher.addDispatch(JsonItems.model(testGemFront, "jsonextended:item/test_gem_front"));
     }
 }
