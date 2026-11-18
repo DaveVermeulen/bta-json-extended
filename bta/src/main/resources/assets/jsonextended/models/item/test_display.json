@@ -1,0 +1,9 @@
+{
+  "parent": "jsonextended:item/test_display_base",
+  "textures": {"layer0": "jsonextended:item/test_display"},
+  "display": {
+    "gui": {"rotation": [0, 0, 45], "scale": [0.8, 0.8, 0.8]},
+    "ground": {"translation": [0, 4, 0], "scale": [1, 1, 1]},
+    "thirdperson_righthand": {"rotation": [0, 0, 90], "translation": [0, 3, 1], "scale": [0.55, 0.55, 0.55]}
+  }
+}

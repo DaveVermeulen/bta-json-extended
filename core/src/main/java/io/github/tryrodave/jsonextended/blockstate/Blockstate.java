@@ -1,5 +1,6 @@
 package io.github.tryrodave.jsonextended.blockstate;
 
+import io.github.tryrodave.jsonextended.json.Json;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;

@@ -1,0 +1,6 @@
+{
+  "parent": "item/generated",
+  "display": {
+    "head": {"translation": [0, 14, 0], "scale": [1.5, 1.5, 1.5]}
+  }
+}

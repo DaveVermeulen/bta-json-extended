@@ -7,12 +7,15 @@ Open only the files your task needs. Each stays under ~150 lines; split a file w
 | [bta/rendering.md](bta/rendering.md) | BTA's built-in JSON block models, `StaticBlockModel`, `BlockModelGeneric`, tessellator, lighting, textures |
 | [bta/model-behaviour.md](bta/model-behaviour.md) | How BTA rotates models, merges parents, resolves #textures; which atlas textures live in |
 | [bta/registration.md](bta/registration.md) | HalpLibe hooks, dispatchers, reloads, texture packs, blocks and creative menu |
-| [bta/items.md](bta/items.md) | `ItemModel`, item rendering, display transforms |
+| [bta/items.md](bta/items.md) | `ItemModel`, display transforms, `Item` constructors, ids, lang keys, `ItemBuilder` |
+| [bta/item-rendering.md](bta/item-rendering.md) | How `ItemModelStandard`/`ItemModelBlock` draw items: render params, GL order, display ids, `DisplayPos` defaults, which atlas |
+| [bta/item-rendering-3d.md](bta/item-rendering-3d.md) | GLRenderer/shader/atlas signatures; how block models render standalone (centred) for items |
 | [bta/tile-entities.md](bta/tile-entities.md) | `TileEntityRenderer`, geo entity models |
 | [bta/api/](bta/api/README.md) | Exact public signatures of BTA and HalpLibe classes (javap) |
 | [bta/vanilla-parents.md](bta/vanilla-parents.md) | Vanilla parent model ids (cube_all, stairs, slab...) |
 | [bta/reading-bta-code.md](bta/reading-bta-code.md) | How to decompile BTA and HalpLibe on the Mac |
 | [formats/blockstates.md](formats/blockstates.md) | Blockstate JSON and model JSON as we support them |
+| [formats/items.md](formats/items.md) | Item model JSON as we support it |
 | [formats/obj.md](formats/obj.md) | OBJ/MTL support, carried over from Betafront |
 | [formats/gltf.md](formats/gltf.md) | GLB/glTF support plan |
 | [formats/animation.md](formats/animation.md) | Bedrock animation JSON |

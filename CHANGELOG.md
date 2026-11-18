@@ -9,3 +9,5 @@
 - Fix: the dev client crashed at startup registering the test block model; models are now added on HalpLibe's block model reload event.
 - Dev-only blockstate test blocks (facing, stairs, slab, fence, weighted) with blockstate JSON, models, textures and expected-result fixtures for the phase 1 parser.
 - Blockstate JSON (phase 1): `variants` and `multipart` (`a|b`, `OR`, `AND`), `x`/`y`/`uvlock`, weighted variants, named properties from metadata bits, and `StateResolver` for neighbour-dependent properties (stair shape and fence sides built in). Every file is checked when loaded, with one log line naming the file and key. The dev test blocks are now drawn from their blockstate files.
+- Item model JSON parser (phase 2): parents with `item/generated`, `item/handheld` and `item/handheld_rod` built in, layered textures, 3D models from `elements`, merged `display` and `gui_light`, and one log line per bad file.
+- Item models are drawn (phase 2): flat items with any number of layers and their `display` poses (handheld and rod defaults included), and 3D item models from `elements`. Six dev-only test items.

@@ -1,4 +1,4 @@
-package io.github.tryrodave.jsonextended.blockstate;
+package io.github.tryrodave.jsonextended.json;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -10,7 +10,7 @@ import java.util.Map;
  * which variant matching relies on), arrays {@link List}, numbers {@link Double}, plus {@link String},
  * {@link Boolean} and {@code null}.
  */
-final class Json {
+public final class Json {
     private final String text;
     private int pos;
 
@@ -18,7 +18,7 @@ final class Json {
         this.text = text;
     }
 
-    static Object parse(String text) {
+    public static Object parse(String text) {
         Json json = new Json(text);
         json.skipSpace();
         Object value = json.value();
