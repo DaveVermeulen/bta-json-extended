@@ -7,7 +7,7 @@ Open only the files your task needs. Each stays under ~150 lines; split a file w
 | [bta/rendering.md](bta/rendering.md) | BTA's built-in JSON block models, `StaticBlockModel`, `BlockModelGeneric`, tessellator, lighting, textures |
 | [bta/model-behaviour.md](bta/model-behaviour.md) | How BTA rotates models, merges parents, resolves #textures; which atlas textures live in |
 | [bta/model-loading.md](bta/model-loading.md) | Load path from `loadDataModel` to Gson, cache, mixin hook points, `renderlayer`, errors, `texture_size`, `gui_light`, mixin setup |
-| [bta/registration.md](bta/registration.md) | HalpLibe hooks, dispatchers, reloads, texture packs, blocks and creative menu |
+| [bta/registration.md](bta/registration.md) | HalpLibe hooks, what triggers a model reload (pack screen, F3+R), the missing model, blocks and creative menu |
 | [bta/items.md](bta/items.md) | `ItemModel`, display transforms, `Item` constructors, ids, lang keys, `ItemBuilder` |
 | [bta/item-rendering.md](bta/item-rendering.md) | How `ItemModelStandard`/`ItemModelBlock` draw items: render params, GL order, display ids, `DisplayPos` defaults, which atlas |
 | [bta/item-rendering-3d.md](bta/item-rendering-3d.md) | GLRenderer/shader/atlas signatures; how block models render standalone (centred) for items |
