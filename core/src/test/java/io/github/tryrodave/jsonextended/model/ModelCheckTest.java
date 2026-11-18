@@ -53,8 +53,7 @@ class ModelCheckTest {
         files.put("t:block/x", "{\"credit\": \"Made with Blockbench\", \"texture_size\": [32, 32], \"render_type\": \"minecraft:cutout\","
                 + "\"textures\": {\"all\": \"t:block/a\"}, \"elements\": [" + CUBE.replace("\"faces\"", "\"name\": \"cube\", \"faces\"") + "],"
                 + "\"groups\": []}");
-        assertEquals(List.of("warning: t:block/x: texture_size: [32.0, 32.0] is only for Blockbench; UVs are still 0-16 across the whole texture"),
-                messages("t:block/x"));
+        assertEquals(List.of(), messages("t:block/x"));
         files.put("t:block/y", "{\"render_type\": \"glowing\", \"textures\": {\"all\": \"t:block/a\"}, \"elements\": [" + CUBE + "]}");
         assertTrue(messages("t:block/y").get(0).startsWith("error: t:block/y: render_type: 'glowing' is not one of"));
     }
@@ -86,6 +85,34 @@ class ModelCheckTest {
     }
 
     @Test
+    void renderTypeFromNearestFile() {
+        files.put("t:block/glass_base", "{\"render_type\": \"minecraft:translucent\", \"textures\": {\"all\": \"t:block/a\"}, \"elements\": [" + CUBE + "]}");
+        files.put("t:block/glass", "{\"parent\": \"t:block/glass_base\"}");
+        files.put("t:block/leaf", "{\"parent\": \"t:block/glass_base\", \"render_type\": \"cutout_mipped\"}");
+        assertEquals("translucent", check.renderType("t:block/glass"));
+        assertEquals("cutout_mipped", check.renderType("t:block/leaf"));
+        assertEquals(null, check.renderType("t:block/none"));
+    }
+
+    @Test
+    void loaderIsAWarningForNow() {
+        files.put("t:block/obj", "{\"loader\": \"jsonextended:obj\", \"model\": \"t:models/block/x.obj\"}");
+        List<String> m = messages("t:block/obj");
+        assertTrue(m.contains("warning: t:block/obj: loader: custom loaders ('jsonextended:obj') come with OBJ support; for now BTA's own reader draws this model and ignores the key"), m.toString());
+    }
+
+    @Test
+    void unreadableOnlyForMissingOrBrokenFiles() {
+        files.put("t:block/broken", "{\"elements\": [}");
+        files.put("t:block/unset", "{\"elements\": [" + CUBE + "]}");
+        assertTrue(ModelCheck.unreadable(check.check("t:block/broken"), "t:block/broken"));
+        assertTrue(ModelCheck.unreadable(check.check("t:block/gone"), "t:block/gone"));
+        List<ModelCheck.Problem> unset = check.check("t:block/unset");
+        assertTrue(ModelCheck.hasErrors(unset));
+        assertTrue(!ModelCheck.unreadable(unset, "t:block/unset"), "an unset #texture still draws, with BTA's default texture");
+    }
+
+    @Test
     void badJson() {
         files.put("t:block/x", "{\"elements\": [}");
         assertTrue(messages("t:block/x").get(0).startsWith("error: t:block/x: invalid JSON at line 1"));
@@ -101,7 +128,7 @@ class ModelCheckTest {
             for (Path file : walk.filter(p -> p.toString().endsWith(".json")).toList()) {
                 String rel = models.relativize(file).toString().replace('\\', '/');
                 String id = "jsonextended:" + rel.substring(0, rel.length() - 5);
-                if (id.equals("jsonextended:item/test_broken"))
+                if (id.equals("jsonextended:item/test_broken") || id.equals("jsonextended:block/test_broken_model"))
                     continue;
                 List<ModelCheck.Problem> problems = dev.check(id).stream()
                         // Templates are only parents: their #variables are set by the models that use them.
@@ -110,6 +137,16 @@ class ModelCheckTest {
                 assertEquals(List.of(), problems, id);
             }
         }
+    }
+
+    @Test
+    void brokenDevModelIsUnreadable() {
+        assumeTrue(Files.isDirectory(ASSETS), "bta/ is not next to core/");
+        ModelCheck dev = new ModelCheck(ModelCheckTest::readDev);
+        String id = "jsonextended:block/test_broken_model";
+        assertTrue(ModelCheck.unreadable(dev.check(id), id), dev.check(id).toString());
+        assertEquals("translucent", dev.renderType("jsonextended:block/test_glass"));
+        assertEquals(null, dev.renderType("jsonextended:block/blockbench_test"));
     }
 
     private static String readDev(String id) {

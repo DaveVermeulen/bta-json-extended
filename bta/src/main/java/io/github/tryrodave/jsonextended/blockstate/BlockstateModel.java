@@ -31,9 +31,11 @@ public class BlockstateModel<T extends BlockLogic> extends BlockModelGeneric<T> 
     protected final StaticBlockModel inventory;
     /** First value of every resolver property, for drawing without a world. */
     private final Map<String, String> defaults;
+    /** BTA render pass from the models' {@code render_type}; -1 to keep BTA's choice. */
+    private final int renderLayer;
 
     public BlockstateModel(Block<T> block, Blockstate blockstate, Map<String, StaticBlockModel> models,
-                           StaticBlockModel missing, StateResolver resolver, StaticBlockModel inventory) {
+                           StaticBlockModel missing, StateResolver resolver, StaticBlockModel inventory, int renderLayer) {
         super(block, inventory != null ? inventory : firstModel(blockstate, models, missing));
         this.blockstate = blockstate;
         this.models = Map.copyOf(models);
@@ -44,6 +46,13 @@ public class BlockstateModel<T extends BlockLogic> extends BlockModelGeneric<T> 
         for (Property p : blockstate.resolverProperties())
             defaults.put(p.name(), p.values().get(0));
         this.defaults = Map.copyOf(defaults);
+        this.renderLayer = renderLayer;
+    }
+
+    /** {@code render_type: translucent} on any part puts the block in BTA's blended pass. */
+    @Override
+    public int renderLayer() {
+        return renderLayer >= 0 ? renderLayer : super.renderLayer();
     }
 
     public Blockstate blockstate() {

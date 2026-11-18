@@ -1,0 +1,5 @@
+{
+  "variants": {
+    "": {"model": "jsonextended:block/test_glass"}
+  }
+}

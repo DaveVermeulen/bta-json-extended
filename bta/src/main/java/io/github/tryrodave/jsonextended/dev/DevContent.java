@@ -2,6 +2,8 @@ package io.github.tryrodave.jsonextended.dev;
 
 import io.github.tryrodave.jsonextended.JsonExtended;
 import io.github.tryrodave.jsonextended.blockstate.example.BlockstateExamples;
+import io.github.tryrodave.jsonextended.model.Models;
+import io.github.tryrodave.jsonextended.model.example.ModelExamples;
 import io.github.tryrodave.jsonextended.item.example.ItemExamples;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -37,6 +39,7 @@ public final class DevContent {
                 .setCreativeInventoryPlacement(new CreativeInventoryPlacement.Category(CreativeInventoryCategory.MISCELLANEOUS));
         blockbenchTest = builder.build("blockbench_test", FIRST_ID, ModelLogic::new);
         BlockstateExamples.registerBlocks();
+        ModelExamples.registerBlocks();
         ItemExamples.registerItems();
     }
 
@@ -54,8 +57,9 @@ public final class DevContent {
     @Environment(EnvType.CLIENT)
     private static void addModels(BlockModelDispatcher dispatcher) {
         dispatcher.addDispatch(blockbenchTest, new BlockModelGeneric<>(blockbenchTest,
-                BlockModelDispatcher.loadDataModel("jsonextended:block/blockbench_test")));
+                Models.load("jsonextended:block/blockbench_test")));
         BlockstateExamples.addModels(dispatcher);
+        ModelExamples.addModels(dispatcher);
     }
 
     /** Model blocks aren't full cubes, so they must not hide their neighbours' faces. */

@@ -118,16 +118,19 @@ public final class ModelCheck {
         }
         if (file.containsKey("parent") && !(file.get("parent") instanceof String))
             problems.add(new Problem(true, id + ": parent: parent is a model id"));
-        if (file.get("texture_size") instanceof List<?> size && size.size() == 2
-                && !(Double.valueOf(16).equals(size.get(0)) && Double.valueOf(16).equals(size.get(1))))
-            problems.add(new Problem(false, id + ": texture_size: " + size
-                    + " is only for Blockbench; UVs are still 0-16 across the whole texture"));
+        // texture_size only tells Blockbench the texture's resolution: its export already writes UVs as 0-16.
+        if (file.containsKey("texture_size") && !(file.get("texture_size") instanceof List<?> size && size.size() == 2
+                && size.stream().allMatch(n -> n instanceof Number)))
+            problems.add(new Problem(false, id + ": texture_size: texture_size is [width, height] and is ignored"));
         if (file.containsKey("render_type")) {
             Object type = file.get("render_type");
             String name = type instanceof String s ? s.substring(s.indexOf(':') + 1) : null;
             if (name == null || !RENDER_TYPES.contains(name))
                 problems.add(new Problem(true, id + ": render_type: '" + type + "' is not one of " + RENDER_TYPES));
         }
+        if (file.containsKey("loader"))
+            problems.add(new Problem(false, id + ": loader: custom loaders ('" + file.get("loader")
+                    + "') come with OBJ support; for now BTA's own reader draws this model and ignores the key"));
         if (file.containsKey("gui_light") && !"front".equals(file.get("gui_light")) && !"side".equals(file.get("gui_light")))
             problems.add(new Problem(true, id + ": gui_light: gui_light is \"front\" or \"side\""));
         if (file.containsKey("ambientocclusion") && !(file.get("ambientocclusion") instanceof Boolean))
@@ -237,6 +240,54 @@ public final class ModelCheck {
         }
         problems.add(new Problem(true, id + ": " + path + ": expected a list of " + count + " numbers"));
         return null;
+    }
+
+    /**
+     * The nearest {@code render_type} in the model or its parents, without namespace ({@code cutout},
+     * {@code translucent}, ...), or null when none sets one or the files can't be read.
+     */
+    public String renderType(String id) {
+        String current = normalize(id);
+        List<String> seen = new ArrayList<>();
+        while (current != null && !seen.contains(current) && seen.size() < MAX_DEPTH && !BUILT_IN.contains(current)) {
+            seen.add(current);
+            String json = source.apply(current);
+            if (json == null)
+                return null;
+            Object root;
+            try {
+                root = Json.parse(json);
+            } catch (IllegalArgumentException e) {
+                return null;
+            }
+            if (!(root instanceof Map<?, ?> file))
+                return null;
+            if (file.get("render_type") instanceof String type) {
+                String name = type.substring(type.indexOf(':') + 1);
+                return RENDER_TYPES.contains(name) ? name : null;
+            }
+            current = file.get("parent") instanceof String p ? normalize(p) : null;
+        }
+        return null;
+    }
+
+    /** True when any problem is an error. */
+    public static boolean hasErrors(List<Problem> problems) {
+        return problems.stream().anyMatch(Problem::error);
+    }
+
+    /**
+     * True when BTA's reader would crash or draw nothing useful: no file, JSON it can't parse (in the model or a
+     * parent), or a face without a texture. Other errors still draw with BTA's fallbacks, so the model is used and
+     * the problems are only logged.
+     */
+    public static boolean unreadable(List<Problem> problems, String id) {
+        String self = normalize(id);
+        return problems.stream().anyMatch(p -> p.error()
+                && (p.message().equals(self + ": no model file")
+                    || p.message().contains(": invalid JSON at ")
+                    || p.message().matches("[^ ]+: expected an object")
+                    || p.message().endsWith(".texture: every face needs a texture")));
     }
 
     /** Follows {@code #} references; null when one isn't set or they loop. */
