@@ -2,7 +2,8 @@
 
 ## Unreleased
 
-- OBJ models are drawn (phase 4, step 2): a model JSON with `"loader": "jsonextended:obj"` (or `betafront:`, `neoforge:`, `forge:obj`) draws an OBJ file, from blockstates and anywhere else BTA takes a model, with NeoForge's keys (`flip_v`, `automatic_culling`, `shade_quads`, `emissive_ambient`, `mtl_override`, `textures`) and `render_type`. Flat lighting for now. Dev-only test blocks Test OBJ Crystal and Test OBJ Ramp.
+- Smooth lighting for OBJ models (phase 4, step 3): with the game's smooth lighting on, OBJ faces get per-corner light and shading like vanilla blocks, also for faces inside the block.
+- OBJ models are drawn (phase 4, step 2): a model JSON with `"loader": "jsonextended:obj"` (or `betafront:`, `neoforge:`, `forge:obj`) draws an OBJ file, from blockstates and anywhere else BTA takes a model, with NeoForge's keys (`flip_v`, `automatic_culling`, `shade_quads`, `emissive_ambient`, `mtl_override`, `textures`) and `render_type`. Dev-only test blocks Test OBJ Crystal and Test OBJ Ramp.
 - Fix: BTA's missing model is built fresh for each model that needs it, so it picks up a rebuilt atlas after a texture pack change.
 - OBJ/MTL parser (phase 4, step 1): our own, written from the specs. Objects, groups, materials, relative indices, triangles and polygons as quads, block-side culling, and errors with file and line.
 
