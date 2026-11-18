@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- OBJ/MTL parser (phase 4, step 1): our own, written from the specs. Objects, groups, materials, relative indices, triangles and polygons as quads, block-side culling, and errors with file and line.
+
 ## 0.1.0 (2026-11-18)
 
 First release, for BTA 8.0.1 with HalpLibe 6.2.0. It's a library for mod authors: it adds nothing to the game on its own.

@@ -1,0 +1,9 @@
+# Material file
+newmtl stone
+Ka 0 0 0
+Kd 0.8 0.8 0.8
+map_Kd #texture0
+
+newmtl glow
+Ka 1 1 1
+map_Kd examplemod:block/lamp_glow
