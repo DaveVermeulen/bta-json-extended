@@ -1,0 +1,43 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"animation.test_chest.open": {
+			"animation_length": 0.5,
+			"loop": "hold_on_last_frame",
+			"bones": {
+				"lid": {
+					"rotation": {
+						"0.0": [0, 0, 0],
+						"0.5": {"post": [-90, 0, 0], "lerp_mode": "catmullrom"}
+					}
+				}
+			}
+		},
+		"animation.test_chest.bob": {
+			"loop": true,
+			"animation_length": 2,
+			"bones": {
+				"knob": {
+					"position": {
+						"0.0": [0, 0, 0],
+						"1.0": [0, 1, 0],
+						"2.0": [0, 0, 0]
+					},
+					"scale": 1.25
+				}
+			}
+		},
+		"animation.test_chest.snap": {
+			"bones": {
+				"lid": {
+					"rotation": {
+						"0.0": {"post": [0, 0, 0], "lerp_mode": "step"},
+						"0.25": {"pre": [-10, 0, 0], "post": [-45, 0, 0]},
+						"0.5": [-45, 0, 0]
+					},
+					"position": ["math.sin(query.anim_time * 360)", 0, "1"]
+				}
+			}
+		}
+	}
+}

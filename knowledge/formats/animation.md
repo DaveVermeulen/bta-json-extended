@@ -1,6 +1,6 @@
 # Bedrock animation JSON
 
-Status: design (phase 5).
+Status: core reader and player done (phase 6, step 1); in game next.
 
 - Files: `<name>.animation.json` as exported by Blockbench (Bedrock format), `format_version`, `animations.<id>`: `loop`, `animation_length`, `bones.<bone>.rotation|position|scale` as constants or keyframe maps (`"0.5": [x, y, z]` or `{ "post": [...], "lerp_mode": "catmull_rom" }`).
 - Load through `texturePackList`, so packs can change animations.
@@ -86,3 +86,14 @@ public class mojang.StaticEntityModelMojang implements StaticEntityModel {
 - Our runtime samples `animations.<id>.bones` at time t and writes the result into `BoneTransform`s, converting degrees to radians.
 - Base geo rotations stay in the geo.
 - Molang and keyframes have no BTA precedent: follow the Bedrock and Blockbench spec, and test with our own fixtures.
+
+## Our reader and player (`core/.../animation/`, phase 6 step 1)
+
+- `AnimationFile.parse(id, text)`: `animations()`, `get(name)`, `warnings()`. Reads `loop` (`true`, `false`, `"hold_on_last_frame"`), `animation_length` (else the last keyframe), and per bone `rotation`/`position`/`scale` as a constant, a scalar (all axes), or keyframes (`[x, y, z]`, `{pre, post, lerp_mode}`, old `{vector}`). Malformed files throw `AnimationException` with file, animation, bone, channel and keyframe.
+- **Molang:** numbers and number strings only. Any other string reads as 0 (1 for scale) and adds a warning. Evaluating Molang is later work.
+- `Channel.sample(t)` follows Blockbench's preview: before the first keyframe its `pre`, after the last its `post`; a segment is step if its first keyframe is step, Catmull-Rom if either end is, else linear. Catmull-Rom uses the neighbouring keyframes (or repeats the ends).
+- `Animation.sample(seconds, base)` returns a `Pose`: animation values are added to `base` (rotation and translation add, scale multiplies, `PartTransform.plus`). Loop wraps, hold clamps, play-once has no effect after its length (`finished`).
+- **Axes, Java block models (Blockbench groups, `Rig`):** rotation `(-x, -y, z)`, position `(-x, y, z)` from the file, the flip GeckoLib undoes. So Bedrock `-90` X opens our chest lid like `PartTransform.rotation(90, 0, 0)`. **Not yet checked in game.**
+- **Axes, geo entity models:** use `Animation.raw(bone, seconds)` (file values) and write `toRadians` of them into `BoneTransform`: BTA's `boneTransform` applies the Bedrock flip itself (see above).
+- `AnimationPlayer`: one per object. `play(anim, now[, fadeSeconds])`, `ensure(...)` (no restart if already current), `stop()`, `playing(now)`, `pose(now, base)`. Crossfade lerps each part from the old animation's pose to the new one's. Time is the caller's clock in seconds, e.g. `(worldTime + partialTick) / 20`.
+- Fixture: `core/src/test/resources/animation/test_chest.animation.json` (open: hold, catmull-rom; bob: loop, scalar scale; snap: step, pre/post, Molang).

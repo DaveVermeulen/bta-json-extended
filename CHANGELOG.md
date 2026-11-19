@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Animation (phase 6, step 1, core only): reads Blockbench's Bedrock `.animation.json` (loop, hold, play once; linear, Catmull-Rom and step keyframes; pre/post) and samples it to a pose at any time, on top of the pose set from code; `AnimationPlayer` plays one animation per object with crossfades. Molang expressions aren't evaluated yet (a warning, and 0).
 - Model tile entity renderers (phase 5, step 2): `ModelTileEntityRenderer` draws a Blockbench model for a tile entity every frame, with its groups posed from code. Dev-only Test Chest: right-click opens and closes its lid.
 - Poses (phase 5, step 1, core only): model JSON elements baked to quads like vanilla, parts read from Blockbench `groups` (or OBJ objects), and part rotation, translation and scale set from code about each part's pivot, with lerp for smooth motion. Nothing in game uses it yet.
 - Smooth lighting for OBJ models (phase 4, step 3): with the game's smooth lighting on, OBJ faces get per-corner light and shading like vanilla blocks, also for faces inside the block.
