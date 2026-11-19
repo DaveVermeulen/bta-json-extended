@@ -27,6 +27,12 @@ public record PartTransform(float rx, float ry, float rz, float tx, float ty, fl
         return new PartTransform(rx, ry, rz, tx, ty, tz, sx, sy, sz);
     }
 
+    /** This transform followed by {@code other}'s offsets: rotations and translations add, scales multiply. */
+    public PartTransform plus(PartTransform other) {
+        return new PartTransform(rx + other.rx, ry + other.ry, rz + other.rz, tx + other.tx, ty + other.ty, tz + other.tz,
+                sx * other.sx, sy * other.sy, sz * other.sz);
+    }
+
     /** Each value from {@code a} at t = 0 to {@code b} at t = 1. */
     public static PartTransform lerp(PartTransform a, PartTransform b, float t) {
         return new PartTransform(mix(a.rx, b.rx, t), mix(a.ry, b.ry, t), mix(a.rz, b.rz, t),
