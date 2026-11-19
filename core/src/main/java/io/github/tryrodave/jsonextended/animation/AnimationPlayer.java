@@ -51,6 +51,11 @@ public final class AnimationPlayer {
         return current;
     }
 
+    /** Seconds since the current animation started (0 with none). */
+    public float elapsed(float now) {
+        return current == null ? 0 : now - startedAt;
+    }
+
     /** True while an animation is running: looping, holding, or a play-once one before its end. */
     public boolean playing(float now) {
         return current != null && !current.finished(now - startedAt);
