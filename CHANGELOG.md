@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Documentation for mod developers in `docs/`: installing, getting started, blockstates, item models, model JSON, OBJ, tile entity models, animations, example content and limitations. The README describes what the library does now.
 - Animated mobs (phase 6, step 3): `AnimatedMobRenderer` poses a geo model's bones from a Bedrock animation file, blending idle into walk by walking speed. Dev-only Test Mob, spawned with the Test Mob Spawner block.
 - `AnimationPlayer.skipToEnd`: state loaded with the world shows at once (a saved open chest loads open).
 - Animations in game (phase 6, step 2): `Animations.load` reads `.animation.json` files through the texture packs, and a model tile entity renderer can pose its parts from them. Dev-only Test Animated Chest opens and closes from an animation file, and its knob wiggles while it's open.

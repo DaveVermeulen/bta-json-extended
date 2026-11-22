@@ -1,0 +1,17 @@
+# Known limitations
+
+These don't work yet:
+
+- **Molang.** Animation values must be numbers; expressions count as 0 and log a warning.
+- **Mob head look.** `AnimatedMobRenderer` plays idle and walk, but doesn't turn the head towards what the mob looks at.
+- **Item `overrides`** (a different model by damage or a predicate) log a warning and are ignored.
+- **`gui_light` for flat items.** It's read, but flat items always get BTA's normal inventory lighting.
+- **Tinted 3D item models.** Faces with a `tintindex` are drawn white in item models.
+- **Tile entity models** take one light level for the whole model (the block's own), with no smooth lighting, and only model JSON: OBJ files can't be posed yet.
+- **OBJ transparency from materials.** MTL `d` and `Tr` are read but ignored; use a texture with alpha and `render_type`.
+- **Rotations** in blockstates are in steps of 90 degrees, as in vanilla.
+- **New texture names from packs.** A texture pack can replace any file, but a texture that no mod jar ships isn't in BTA's atlas, so a pack's model can only point at textures that exist.
+- **Multiplayer** hasn't been tested. The test chests keep their open state in metadata, which the server sends; animation state is client-only.
+- **GLB/glTF** models are planned (see [PLAN.md](../PLAN.md)).
+
+Found something else? Please open an issue at https://github.com/DaveVermeulen/bta-json-extended/issues.
