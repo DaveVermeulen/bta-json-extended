@@ -22,7 +22,7 @@ import turniplabs.halplibe.event.defs.ClientEvents;
 import turniplabs.halplibe.util.dependency.Key;
 
 /**
- * Test blocks for the development client ({@code ./gradlew runClient}). Not registered in a normal game.
+ * Test blocks for the development client ({@code ./gradlew runBtaClient}). Not registered in a normal game.
  * <p>
  * Phase 0 spike: a Blockbench "Java Block" export drawn by BTA's own {@link BlockModelGeneric},
  * with no model code of ours.

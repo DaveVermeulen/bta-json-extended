@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- OBJ blocks: each rotation's corners, normals and sides are worked out once per model instead of for every block on every chunk rebuild.
 - Documentation for mod developers in `docs/`: installing, getting started, blockstates, item models, model JSON, OBJ, tile entity models, animations, example content and limitations. The README describes what the library does now.
 - Mod icon: shown in Mod Menu (`icon` in `fabric.mod.json`, white background); a transparent version sits at the top of the README.
 - Animated mobs (phase 6, step 3): `AnimatedMobRenderer` poses a geo model's bones from a Bedrock animation file, blending idle into walk by walking speed. Dev-only Test Mob, spawned with the Test Mob Spawner block.

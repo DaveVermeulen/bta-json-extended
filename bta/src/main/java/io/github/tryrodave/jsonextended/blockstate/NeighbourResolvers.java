@@ -6,8 +6,6 @@ import java.util.function.Predicate;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.block.Block;
-import net.minecraft.core.world.WorldSource;
-import net.minecraft.core.world.pos.TilePosc;
 
 /** Ready-made {@link StateResolver}s for the common neighbour-dependent blocks. */
 @Environment(EnvType.CLIENT)

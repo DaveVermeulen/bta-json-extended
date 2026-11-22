@@ -42,6 +42,7 @@ Improvements over Betafront to aim for: several objects or groups per model, smo
 - `ModelCheck` skips OBJ model files; `ObjModelJson` and `ObjModel` report their own warnings, logged once per session.
 - `bta/.../obj/ObjStaticModel` implements `StaticBlockModel` as in [../bta/static-model.md](../bta/static-model.md):
   - quarter turns through `core/.../obj/QuarterTurns` (X, Y, Z about the centre; tested against BTA's `Direction.rotate*`); `uvlock` is ignored.
+  - each quarter-turn combination is worked out once per model (corners, normal, cull side, light side) and kept, so chunk rebuilds don't redo it per block.
   - culling: faces with a `cullSide` (when `automatic_culling`) are skipped when `source.cullSide(world, pos, rotated side)`; checked once per side per block.
   - light, flat: a face on a block side takes the neighbour's light index, others the block's own (`LightingCache`, our own instance); `setShade1i(255)`; normal from the face (or up when `shade_quads` is false).
   - light, smooth (step 3): when `ambient_occlusion` (JSON), `GameSettings.AMBIENT_OCCLUSION` and `block.emission == 0`, `ObjSmoothLight` (Betafront's method) per vertex: corners average 4 blocks for the light index and brightness, for the outside layer and the block's own, blended by position on the side and depth; brightness goes to `setShade1i`, emissive faces stay 255.

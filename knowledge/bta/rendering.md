@@ -60,6 +60,11 @@ DisplayPos getItemDisplayPos(String id);
 - Directional shading comes from the normal. Unshaded faces: send an upward normal.
 - Faces flat on the block edge take the neighbour's light; inner faces the block's own.
 
+## Threads (checked against the jar, 2026-11-22)
+
+- Chunk meshes are built on the main render thread only: `WorldRenderer.renderWorld` → `RenderGlobal.updateDirtyChunks` → `ChunkRendererMultiDraw.rebuild` → `renderBlock` → `BlockModel.render` / `renderAttached`. Nothing in `client/render/terrain/` or `RenderGlobal` uses threads or executors.
+- BTA shares one tessellator for all chunks (`ChunkRendererMultiDraw.TESSELLATOR`, static) and one `LightingCache` (`StaticBlockModelMojang.LIGHTING_CACHE`, static). So a model's own static `LightingCache` and plain `HashMap` caches are safe.
+
 ## For feature agents
 
 You normally only need: implement `StaticBlockModel` (OBJ), or extend `BlockModelGeneric` and call `renderAttached` with rotations (blockstates). Anything else, ask Platform.
