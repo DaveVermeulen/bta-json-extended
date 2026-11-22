@@ -110,6 +110,11 @@ public final class Models {
         }
     }
 
+    /** One error or warning line, once per game session. */
+    public static void logOnce(boolean error, String line) {
+        log(new ModelCheck.Problem(error, line));
+    }
+
     /** Each distinct line once per game session, so reloads don't repeat it. */
     private static void log(ModelCheck.Problem problem) {
         if (!LOGGED.add(problem.toString()))

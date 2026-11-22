@@ -1,6 +1,7 @@
 package io.github.tryrodave.jsonextended.tileentity;
 
 import io.github.tryrodave.jsonextended.JsonExtended;
+import io.github.tryrodave.jsonextended.model.AtlasIcons;
 import io.github.tryrodave.jsonextended.model.ElementQuads;
 import io.github.tryrodave.jsonextended.model.Models;
 import io.github.tryrodave.jsonextended.model.ResolvedModel;
@@ -8,9 +9,7 @@ import io.github.tryrodave.jsonextended.obj.QuarterTurns;
 import io.github.tryrodave.jsonextended.pose.ModelQuad;
 import io.github.tryrodave.jsonextended.pose.Pose;
 import io.github.tryrodave.jsonextended.pose.Rig;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.render.renderer.BlendFactor;
@@ -49,14 +48,14 @@ public class ModelTileEntityRenderer<T extends TileEntity> extends TileEntityRen
     private final Facing<T> facing;
     private List<ModelQuad> quads;
     private Rig rig;
-    private final Map<String, IconCoordinate> icons = new HashMap<>();
-    private int iconsGeneration = -1;
+    private final AtlasIcons icons;
 
     /** @param modelId a model id as blockstates take it, e.g. {@code mymod:block/chest} */
     public ModelTileEntityRenderer(String modelId, Poser<T> poser, Facing<T> facing) {
         this.modelId = modelId;
         this.poser = poser;
         this.facing = facing;
+        this.icons = new AtlasIcons(modelId);
     }
 
     public ModelTileEntityRenderer(String modelId, Poser<T> poser) {
@@ -118,20 +117,8 @@ public class ModelTileEntityRenderer<T extends TileEntity> extends TileEntityRen
         return rig != null;
     }
 
-    /** Atlas entry for a texture id, cached until the atlas is rebuilt; null when it isn't in an atlas. */
+    /** Atlas entry for a texture id; null when it isn't in an atlas (logged once). */
     private IconCoordinate icon(String texture) {
-        if (iconsGeneration != TextureRegistry.reloadGeneration) {
-            icons.clear();
-            iconsGeneration = TextureRegistry.reloadGeneration;
-        }
-        if (texture == null)
-            return null;
-        return icons.computeIfAbsent(texture, t -> {
-            try {
-                return TextureRegistry.getTexture(t);
-            } catch (RuntimeException e) {
-                return null;
-            }
-        });
+        return icons.get(texture);
     }
 }

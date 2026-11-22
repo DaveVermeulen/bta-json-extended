@@ -13,7 +13,8 @@ import net.minecraft.core.util.helper.LightIndexHelper;
  * for the light index, and their brightness for the shade, like vanilla's ambient occlusion. That is worked out
  * for two layers: the neighbours outside the side, and the block's own layer. A vertex blends the four corners by
  * where it sits on the side, and the two layers by how deep inside the block it is. So a face flat on the block
- * edge gets vanilla's lighting and faces inside the block get in-between values.
+ * edge gets vanilla's lighting and faces inside the block get in-between values. When the neighbour on that side
+ * is opaque, the outside layer is the block's own (its light would be the dark inside of a solid block).
  * <p>
  * One instance per {@code renderAttached} call, after {@link LightingCache#setupCache}; corners are worked out
  * lazily, at most once per side and layer.
@@ -66,6 +67,10 @@ final class ObjSmoothLight {
         if (corners[slot] != null)
             return corners[slot];
         int[] d = DIRECTION[side];
+        // A slanted face leaning towards an opaque neighbour (an upside-down ramp on the ground) can't get light from
+        // inside that block, which is dark: it takes the block's own layer instead, as if it were inside the block.
+        if (layer == 0 && cache.getOpacity(d[0], d[1], d[2]))
+            return corners[slot] = corners(side, 1);
         int ox = layer == 0 ? d[0] : 0, oy = layer == 0 ? d[1] : 0, oz = layer == 0 ? d[2] : 0;
         int au = PLANE_AXES[side][0], av = PLANE_AXES[side][1];
         float[] c = new float[12];
