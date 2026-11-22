@@ -1,0 +1,11 @@
+{
+  "blockstate": "jsonextended:test_glb_lantern",
+  "note": "GLB lantern (phase 7): one variant, no properties.",
+  "cases": [
+    {
+      "meta": 0,
+      "properties": {},
+      "parts": [{"model": "jsonextended:block/test_glb_lantern", "x": 0, "y": 0, "uvlock": false, "bta": [0, 0, 0]}]
+    }
+  ]
+}

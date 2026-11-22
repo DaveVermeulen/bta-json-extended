@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- glTF and GLB models (phase 7, step 1): `"loader": "jsonextended:gltf"` draws a `.glb` or `.gltf` as a block model, with node transforms, materials (colour, glow, tint) and textures by material name from the model JSON, through the same renderer as OBJ. Dev-only Test GLB Lantern. Docs in `docs/gltf-models.md`.
 - OBJ smooth lighting: a slanted face leaning towards a solid block (an upside-down ramp on the ground) no longer goes black; it takes the block's own light on that side.
 - A texture id outside the atlas in an OBJ or tile entity model is looked up once and logged once (it was looked up again for every face every frame, silently). Both use one shared cache, `AtlasIcons`.
 - JSON nested more than 512 levels deep is a normal "can't be read" error instead of a stack overflow.

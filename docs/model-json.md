@@ -8,7 +8,7 @@ BTA 8.0.1 already reads vanilla-style block model JSON (`models/block/*.json`): 
 | --- | --- |
 | `render_type` | `translucent` puts the block in BTA's translucent pass (stained glass, ice). `solid`, `cutout`, `cutout_mipped` keep the normal pass. If any model of a blockstate is translucent, the whole block is |
 | `gui_light` | For 3D item models, see [item-models.md](item-models.md) |
-| `loader` | `jsonextended:obj` (or `betafront:obj`, `neoforge:obj`, `forge:obj`) makes it an OBJ model, see [obj-models.md](obj-models.md). Any other loader logs a warning, and BTA draws the elements |
+| `loader` | `jsonextended:obj` (or `betafront:obj`, `neoforge:obj`, `forge:obj`) makes it an OBJ model, see [obj-models.md](obj-models.md); `jsonextended:gltf` a glTF model, see [gltf-models.md](gltf-models.md). Any other loader logs a warning, and BTA draws the elements |
 | `groups` | Blockbench's outliner. Accepted quietly. [Tile entity models](tile-entities.md) use it to find the parts that move |
 | `credit`, `texture_size`, element `name`/`color` | Accepted quietly |
 

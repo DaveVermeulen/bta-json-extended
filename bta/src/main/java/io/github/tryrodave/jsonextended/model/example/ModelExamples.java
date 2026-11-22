@@ -14,7 +14,7 @@ import turniplabs.halplibe.helper.creativeInventory.CreativeInventoryPlacement;
 
 /**
  * Dev-only test blocks for model JSON: Blockbench keys BTA ignores, {@code render_type}, a broken file that must
- * give the missing model and an error line instead of crashing the reload (phase 3), and OBJ models (phase 4).
+ * give the missing model and an error line instead of crashing the reload (phase 3), OBJ models (phase 4) and glTF models (phase 7).
  */
 public final class ModelExamples {
     // Fixed ids are fine for dev-only blocks. 9100 is the Blockbench test block, 9110-9114 the blockstate tests.
@@ -30,6 +30,9 @@ public final class ModelExamples {
     /** Betafront's OBJ ramp through {@code "loader": "jsonextended:obj"}: faces the player, upside down from below. */
     public static Block<StairsLogic> testObjRamp;
 
+    /** A hand-made GLB (tools/make_test_glb.py): two nodes, the gem a turned and scaled child that glows (phase 7). */
+    public static Block<ExampleLogic> testGlbLantern;
+
     private ModelExamples() {}
 
     public static void registerBlocks() {
@@ -40,6 +43,8 @@ public final class ModelExamples {
         testBrokenModel = builder.build("test_broken_model", FIRST_ID + 1, ExampleLogic::new);
         testObjCrystal = builder.build("test_obj_crystal", FIRST_ID + 2, ExampleLogic::new);
         testObjRamp = builder.build("test_obj_ramp", FIRST_ID + 3, StairsLogic::new);
+        // 9124-9126 are the tile entity and mob tests.
+        testGlbLantern = builder.build("test_glb_lantern", FIRST_ID + 7, ExampleLogic::new);
     }
 
     @Environment(EnvType.CLIENT)
@@ -48,5 +53,6 @@ public final class ModelExamples {
         dispatcher.addDispatch(testBrokenModel, Blockstates.model(testBrokenModel, "jsonextended:test_broken_model"));
         dispatcher.addDispatch(testObjCrystal, Blockstates.model(testObjCrystal, "jsonextended:test_obj_crystal"));
         dispatcher.addDispatch(testObjRamp, Blockstates.model(testObjRamp, "jsonextended:test_obj_ramp"));
+        dispatcher.addDispatch(testGlbLantern, Blockstates.model(testGlbLantern, "jsonextended:test_glb_lantern"));
     }
 }

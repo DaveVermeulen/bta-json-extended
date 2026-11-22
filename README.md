@@ -10,6 +10,7 @@ Modern-Minecraft-style models for **Better Than Adventure 8.0.1** mods, on [Halp
 - **Item model JSON**: generated, handheld and rod items with layered textures, `display` poses, and 3D item models.
 - **Model JSON polish**: Blockbench exports load quietly, `render_type: translucent`, `gui_light`, and one readable log line per problem instead of a crash.
 - **OBJ models**: Wavefront `.obj` files as block models through `"loader": "jsonextended:obj"`, with NeoForge's keys, tinting and smooth lighting.
+- **glTF and GLB models**: `.glb` and `.gltf` files as block models through `"loader": "jsonextended:gltf"`, with node transforms and materials, drawn like OBJ.
 - **Tile entity models**: a Blockbench model drawn every frame, with its groups moved from code (a chest lid, a door).
 - **Animations**: Blockbench's `.animation.json` on tile entities and on geo mobs, with crossfades and walk/idle blending.
 
@@ -21,7 +22,7 @@ It's a library for mod authors: on its own it adds nothing to the game.
 
 ## Status
 
-Version 0.1.0 is released (blockstates, item models, model JSON polish). Main also has OBJ models, tile entity models and animations, which will be in the next release. Next on the plan is GLB/glTF models. See [CHANGELOG.md](CHANGELOG.md) and [PLAN.md](PLAN.md).
+Version 0.1.0 is released (blockstates, item models, model JSON polish). Main also has OBJ models, tile entity models and animations, which will be in the next release. GLB/glTF models are in progress: static block models work, node animations come next. See [CHANGELOG.md](CHANGELOG.md) and [PLAN.md](PLAN.md).
 
 ## A quick look
 
