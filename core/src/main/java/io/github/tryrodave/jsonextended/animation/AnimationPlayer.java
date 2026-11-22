@@ -36,6 +36,15 @@ public final class AnimationPlayer {
         play(animation, now, 0);
     }
 
+    /**
+     * Shows {@code animation} as already played to its end, with no movement and no fade: for state loaded with
+     * the world, so a chest that was open loads open. A hold animation then shows its last frame, a loop goes on
+     * from its start, and a play-once one has no effect.
+     */
+    public void skipToEnd(Animation animation, float now) {
+        play(animation, now - animation.length(), 0);
+    }
+
     /** Plays {@code animation} unless it's already the current one (so calling it every tick is fine). */
     public void ensure(Animation animation, float now, float fadeSeconds) {
         if (current != animation)
@@ -49,6 +58,11 @@ public final class AnimationPlayer {
 
     public Animation current() {
         return current;
+    }
+
+    /** Seconds since the current animation started (0 with none). */
+    public float elapsed(float now) {
+        return current == null ? 0 : now - startedAt;
     }
 
     /** True while an animation is running: looping, holding, or a play-once one before its end. */

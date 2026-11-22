@@ -6,12 +6,16 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import io.github.tryrodave.jsonextended.pose.PartTransform;
 import io.github.tryrodave.jsonextended.pose.Pose;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.stream.Stream;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
@@ -142,7 +146,33 @@ class AnimationTest {
         assertFalse(player.playing(12));
         player.ensure(snap, 20, 0);
         assertFalse(player.playing(20), "ensure doesn't restart the same animation");
+        player.skipToEnd(open, 50);
+        assertEquals(90f, player.pose(50, Pose.REST).get("lid").rx(), EPS, "skipToEnd shows the last frame at once");
         player.stop();
         assertSame(Pose.REST, player.pose(30, Pose.REST));
+    }
+
+    /** Every animation file the dev client ships reads without warnings. */
+    @Test
+    void devAnimationsAreClean() throws IOException {
+        Path dir = Path.of("../bta/src/main/resources/assets/jsonextended/animations");
+        assumeTrue(Files.isDirectory(dir), "bta/ is not next to core/");
+        try (Stream<Path> files = Files.list(dir)) {
+            for (Path p : files.filter(f -> f.toString().endsWith(".animation.json")).toList()) {
+                AnimationFile f = AnimationFile.parse(p.getFileName().toString(), Files.readString(p));
+                assertEquals(List.of(), f.warnings(), p.toString());
+                assertTrue(f.animations().size() > 0, p.toString());
+            }
+        }
+    }
+
+    @Test
+    void devChestAnimationsEndWhereTheyShould() throws IOException {
+        Path p = Path.of("../bta/src/main/resources/assets/jsonextended/animations/test_chest.animation.json");
+        assumeTrue(Files.isRegularFile(p), "bta/ is not next to core/");
+        AnimationFile f = AnimationFile.parse("dev", Files.readString(p));
+        assertEquals(90f, f.get("animation.test_chest.open").sample(5).get("lid").rx(), EPS);
+        assertEquals(0f, f.get("animation.test_chest.close").sample(5).get("lid").rx(), EPS);
+        assertEquals(0f, f.get("animation.test_chest.idle").sample(2).get("knob").rz(), EPS);
     }
 }

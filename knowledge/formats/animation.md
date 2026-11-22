@@ -1,6 +1,6 @@
 # Bedrock animation JSON
 
-Status: core reader and player done (phase 6, step 1); in game next.
+Status: core reader and player (step 1), tile entity use in game (step 2); geo entities next.
 
 - Files: `<name>.animation.json` as exported by Blockbench (Bedrock format), `format_version`, `animations.<id>`: `loop`, `animation_length`, `bones.<bone>.rotation|position|scale` as constants or keyframe maps (`"0.5": [x, y, z]` or `{ "post": [...], "lerp_mode": "catmull_rom" }`).
 - Load through `texturePackList`, so packs can change animations.
@@ -97,3 +97,13 @@ public class mojang.StaticEntityModelMojang implements StaticEntityModel {
 - **Axes, geo entity models:** use `Animation.raw(bone, seconds)` (file values) and write `toRadians` of them into `BoneTransform`: BTA's `boneTransform` applies the Bedrock flip itself (see above).
 - `AnimationPlayer`: one per object. `play(anim, now[, fadeSeconds])`, `ensure(...)` (no restart if already current), `stop()`, `playing(now)`, `pose(now, base)`. Crossfade lerps each part from the old animation's pose to the new one's. Time is the caller's clock in seconds, e.g. `(worldTime + partialTick) / 20`.
 - Fixture: `core/src/test/resources/animation/test_chest.animation.json` (open: hold, catmull-rom; bob: loop, scalar scale; snap: step, pre/post, Molang).
+
+## In game (`bta/.../animation/`, phase 6 step 2)
+
+- `Animations.load("ns:path")` reads `/assets/ns/animations/path.animation.json` through the texture packs. Missing or broken files and Molang warnings log once per session; it then returns an empty file, so `get` gives null.
+- Load in the tile entity renderer (lazily, on first draw): renderers are made new on every pack reload, so pack changes reach animations.
+- Example `animation/example/AnimatedChest` (dev block 9125, Test Animated Chest), the test chest's model with `animations/test_chest.animation.json`:
+  - The renderer's `Poser` keeps one `AnimationPlayer` per tile entity (client state, not saved). It calls `ensure(open ? open : close, now, 0.1)` with `now = (te.ticks + partialTick) / 20`, then adds `idle` once `open` has finished.
+  - A chest that has just loaded uses `skipToEnd`, so it shows its saved state (open or closed) without swinging into it.
+- `AnimationPlayer.skipToEnd(anim, now)`: as if already played to its end, for state loaded with the world (hold: last frame; loop: goes on; once: no effect).
+- `AnimationPlayer.elapsed(now)`: seconds since the current animation started (hold animations never report `finished`).

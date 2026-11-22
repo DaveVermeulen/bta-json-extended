@@ -6,6 +6,7 @@ import io.github.tryrodave.jsonextended.model.Models;
 import io.github.tryrodave.jsonextended.model.example.ModelExamples;
 import io.github.tryrodave.jsonextended.item.example.ItemExamples;
 import io.github.tryrodave.jsonextended.tileentity.example.TestChest;
+import io.github.tryrodave.jsonextended.animation.example.AnimatedChest;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.render.block.model.BlockModelDispatcher;
@@ -42,6 +43,7 @@ public final class DevContent {
         BlockstateExamples.registerBlocks();
         ModelExamples.registerBlocks();
         TestChest.registerBlocks();
+        AnimatedChest.registerBlocks();
         ItemExamples.registerItems();
     }
 
@@ -54,7 +56,10 @@ public final class DevContent {
     public static void registerModels() {
         ClientEvents.BLOCK_MODEL_RELOAD.listen(Key.of(JsonExtended.MOD_ID), DevContent::addModels);
         ClientEvents.ITEM_MODEL_RELOAD.listen(Key.of(JsonExtended.MOD_ID), ItemExamples::addModels);
-        ClientEvents.TILE_ENTITY_RENDERER_RELOAD.listen(Key.of(JsonExtended.MOD_ID), TestChest::addRenderers);
+        ClientEvents.TILE_ENTITY_RENDERER_RELOAD.listen(Key.of(JsonExtended.MOD_ID), dispatcher -> {
+            TestChest.addRenderers(dispatcher);
+            AnimatedChest.addRenderers(dispatcher);
+        });
     }
 
     @Environment(EnvType.CLIENT)
@@ -64,6 +69,7 @@ public final class DevContent {
         BlockstateExamples.addModels(dispatcher);
         ModelExamples.addModels(dispatcher);
         TestChest.addModels(dispatcher);
+        AnimatedChest.addModels(dispatcher);
     }
 
     /** Model blocks aren't full cubes, so they must not hide their neighbours' faces. */
