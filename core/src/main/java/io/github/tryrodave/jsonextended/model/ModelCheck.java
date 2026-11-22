@@ -1,6 +1,7 @@
 package io.github.tryrodave.jsonextended.model;
 
 import io.github.tryrodave.jsonextended.json.Json;
+import io.github.tryrodave.jsonextended.gltf.GltfModelJson;
 import io.github.tryrodave.jsonextended.obj.ObjModelJson;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -47,12 +48,13 @@ public final class ModelCheck {
     }
 
     /**
-     * Every problem in the model and its parents, child first. Empty means it is fine. An OBJ model
-     * ({@code loader} from {@link ObjModelJson#LOADERS}) is checked by the OBJ loader instead, so it gives none here.
+     * Every problem in the model and its parents, child first. Empty means it is fine. An OBJ or glTF model
+     * ({@code loader} from {@link ObjModelJson#LOADERS} or {@link GltfModelJson#LOADER}) is checked by its own
+     * loader instead, so it gives none here.
      */
     public List<Problem> check(String id) {
         String own = source.apply(normalize(id));
-        if (own != null && ObjModelJson.isObj(own))
+        if (own != null && (ObjModelJson.isObj(own) || GltfModelJson.isGltf(own)))
             return List.of();
         List<Problem> problems = new ArrayList<>();
         Map<String, String> textures = new LinkedHashMap<>();
@@ -137,7 +139,7 @@ public final class ModelCheck {
         }
         if (file.containsKey("loader"))
             problems.add(new Problem(false, id + ": loader: '" + file.get("loader") + "' isn't a loader this mod knows ("
-                    + ObjModelJson.LOADERS + "); BTA's own reader draws this model and ignores the key"));
+                    + ObjModelJson.LOADERS + " or " + GltfModelJson.LOADER + "); BTA's own reader draws this model and ignores the key"));
         if (file.containsKey("gui_light") && !"front".equals(file.get("gui_light")) && !"side".equals(file.get("gui_light")))
             problems.add(new Problem(true, id + ": gui_light: gui_light is \"front\" or \"side\""));
         if (file.containsKey("ambientocclusion") && !(file.get("ambientocclusion") instanceof Boolean))

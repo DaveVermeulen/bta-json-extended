@@ -18,6 +18,7 @@ The code is in `bta/src/main/java/io/github/tryrodave/jsonextended/` (each featu
 | Test Broken Model | A broken file: the missing model and one error line, no crash | `models/block/test_broken_model.json` |
 | Test OBJ Crystal | An OBJ from Blender, no `.mtl` | `models/block/test_obj_crystal.*` |
 | Test OBJ Ramp | An OBJ with an `.mtl`, turned by blockstate | `models/block/test_obj_ramp.*` |
+| Test GLB Lantern | A `.glb` with two nodes: a base built around the origin (moved by `offset`) and a glowing gem, turned 45° and scaled as its child | `models/block/test_glb_lantern.*`, made by `tools/make_test_glb.py` |
 | Test Chest | A tile entity model whose lid opens from code | `models/block/test_chest.json`, `tileentity/example/TestChest.java` |
 | Test Animated Chest | The same lid moved by an animation file | `animations/test_chest.animation.json`, `animation/example/AnimatedChest.java` |
 | Test Mob Spawner | Right-click: spawns the Test Mob | `animation/example/TestMob.java` |

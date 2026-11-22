@@ -25,6 +25,6 @@ public final class ObjModels {
         model.warnings().forEach(log);
         if (settings.particle() == null)
             log.accept(id + ": textures.particle: not set, so particles and faces without a texture draw nothing");
-        return new ObjStaticModel(settings, model);
+        return new ObjStaticModel(settings, model.quads(settings.flipV()));
     }
 }

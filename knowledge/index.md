@@ -22,7 +22,7 @@ Open only the files your task needs. Each stays under ~150 lines; split a file w
 | [formats/items.md](formats/items.md) | Item model JSON as we support it |
 | [formats/obj.md](formats/obj.md) | OBJ/MTL support, carried over from Betafront |
 | [formats/pose.md](formats/pose.md) | Rigs from Blockbench groups or OBJ meshes, poses from code, baking JSON elements to quads |
-| [formats/gltf.md](formats/gltf.md) | GLB/glTF support plan |
+| [formats/gltf.md](formats/gltf.md) | GLB/glTF: our reader, the model JSON, what is and isn't read |
 | [formats/animation.md](formats/animation.md) | Bedrock animation JSON; what BTA ships (static poses), BoneTransform and how bones are posed |
 | [build.md](build.md) | Building, testing, CI, versions and Maven repositories |
 | [pitfalls.md](pitfalls.md) | Symptom, cause, fix |

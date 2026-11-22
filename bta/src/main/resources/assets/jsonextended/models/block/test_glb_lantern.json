@@ -1,0 +1,11 @@
+{
+  "loader": "jsonextended:gltf",
+  "model": "jsonextended:models/block/test_glb_lantern.glb",
+  "offset": [0.5, 0, 0.5],
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "particle": "jsonextended:block/test_glb_base",
+    "base": "jsonextended:block/test_glb_base",
+    "gem": "jsonextended:block/test_glb_gem"
+  }
+}

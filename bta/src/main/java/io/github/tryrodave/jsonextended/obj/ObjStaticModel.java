@@ -23,8 +23,8 @@ import org.useless.dragonfly.DisplayPos;
 import org.useless.dragonfly.models.block.StaticBlockModel;
 
 /**
- * An OBJ model as a BTA {@link StaticBlockModel}, so anything that draws model JSON (blockstates,
- * {@code BlockModelGeneric}, 3D item models) draws OBJ too. Follows {@code knowledge/bta/static-model.md}.
+ * An OBJ or glTF model as a BTA {@link StaticBlockModel}, so anything that draws model JSON (blockstates,
+ * {@code BlockModelGeneric}, 3D item models) draws them too. Follows {@code knowledge/bta/static-model.md}.
  * <p>
  * Lighting: with smooth lighting on (and {@code ambient_occlusion} in the JSON), {@link ObjSmoothLight} per vertex.
  * Otherwise flat: a face lying on a block side takes the light of the neighbour there, any other face the block's
@@ -42,18 +42,22 @@ public final class ObjStaticModel implements StaticBlockModel {
     private record Placed(float[][] positions, float[] normal, ObjQuad.Side cull, ObjQuad.Side onSide,
                           ObjQuad.Side lightSide) {}
 
-    private final ObjModelJson json;
+    private final MeshModelJson json;
     private final List<Face> faces;
     /** Faces placed for each quarter-turn combination (x, y, z each 0-3), made the first time a block uses it. */
     private final Placed[][] placed = new Placed[64][];
     private final int renderLayer;
     private final AtlasIcons icons;
 
-    public ObjStaticModel(ObjModelJson json, ObjModel model) {
+    /**
+     * @param json  the model JSON's settings (OBJ or glTF)
+     * @param quads the faces, with UVs already flipped if the JSON asks for it
+     */
+    public ObjStaticModel(MeshModelJson json, List<ObjQuad> quads) {
         this.json = json;
         this.icons = new AtlasIcons(json.id());
         List<Face> faces = new ArrayList<>();
-        for (ObjQuad quad : model.quads(json.flipV())) {
+        for (ObjQuad quad : quads) {
             ObjMaterial m = quad.material();
             String texture = m == null || m.texture() == null ? json.particle() : json.texture(m.texture());
             float[] color = m == null ? ObjMaterial.WHITE : m.color();
