@@ -59,6 +59,34 @@ public record Animation(String name, Loop loop, float length, Map<String, Bone> 
         return new float[] {r[0], r[1], r[2], p[0], p[1], p[2], s[0], s[1], s[2]};
     }
 
+    /** {@link #raw} for every bone this animation moves, keyed by bone name. Empty after a play-once animation ends. */
+    public Map<String, float[]> rawPose(float seconds) {
+        if (finished(seconds))
+            return Map.of();
+        Map<String, float[]> out = new java.util.LinkedHashMap<>();
+        for (String bone : bones.keySet())
+            out.put(bone, raw(bone, seconds));
+        return out;
+    }
+
+    /**
+     * Blends two {@link #rawPose}s: {@code t} = 0 gives {@code a}, 1 gives {@code b}. A bone in only one of them
+     * blends with the neutral value (rotation and position 0, scale 1).
+     */
+    public static Map<String, float[]> mix(Map<String, float[]> a, Map<String, float[]> b, float t) {
+        float[] neutral = {0, 0, 0, 0, 0, 0, 1, 1, 1};
+        Map<String, float[]> out = new java.util.LinkedHashMap<>();
+        java.util.Set<String> names = new java.util.LinkedHashSet<>(a.keySet());
+        names.addAll(b.keySet());
+        for (String name : names) {
+            float[] x = a.getOrDefault(name, neutral), y = b.getOrDefault(name, neutral), v = new float[9];
+            for (int i = 0; i < 9; i++)
+                v[i] = x[i] + (y[i] - x[i]) * t;
+            out.put(name, v);
+        }
+        return out;
+    }
+
     /**
      * Bedrock bone values to our part transform. Blockbench writes Bedrock rotations with X and Y negated and
      * positions with X negated compared with the Java model it shows (the same flip GeckoLib undoes), so undo it.

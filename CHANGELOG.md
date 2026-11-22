@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Animated mobs (phase 6, step 3): `AnimatedMobRenderer` poses a geo model's bones from a Bedrock animation file, blending idle into walk by walking speed. Dev-only Test Mob, spawned with the Test Mob Spawner block.
+- `AnimationPlayer.skipToEnd`: state loaded with the world shows at once (a saved open chest loads open).
 - Animations in game (phase 6, step 2): `Animations.load` reads `.animation.json` files through the texture packs, and a model tile entity renderer can pose its parts from them. Dev-only Test Animated Chest opens and closes from an animation file, and its knob wiggles while it's open.
 - Animation (phase 6, step 1, core only): reads Blockbench's Bedrock `.animation.json` (loop, hold, play once; linear, Catmull-Rom and step keyframes; pre/post) and samples it to a pose at any time, on top of the pose set from code; `AnimationPlayer` plays one animation per object with crossfades. Molang expressions aren't evaluated yet (a warning, and 0).
 - Model tile entity renderers (phase 5, step 2): `ModelTileEntityRenderer` draws a Blockbench model for a tile entity every frame, with its groups posed from code. Dev-only Test Chest: right-click opens and closes its lid.
