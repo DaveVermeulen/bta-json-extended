@@ -1,5 +1,9 @@
 # BTA JSON Extended
 
+<p align="center">
+  <img src=".github/icon-transparent.png" alt="BTA JSON Extended icon" width="128">
+</p>
+
 Modern-Minecraft-style models for **Better Than Adventure 8.0.1** mods, on [HalpLibe](https://github.com/Turnip-Labs/bta-halplibe). BTA already reads vanilla-style JSON block models; this library adds the rest of the model system:
 
 - **Blockstate JSON**: `variants` and `multipart`, `x`/`y`/`uvlock`, weighted models, named properties from metadata bits, and neighbour-dependent state (stairs, fences).
