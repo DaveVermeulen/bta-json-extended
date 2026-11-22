@@ -130,6 +130,9 @@ class ModelCheckTest {
             for (Path file : walk.filter(p -> p.toString().endsWith(".json")).toList()) {
                 String rel = models.relativize(file).toString().replace('\\', '/');
                 String id = "jsonextended:" + rel.substring(0, rel.length() - 5);
+                // models/entity/ holds Bedrock geo files and their manifest, not model JSON.
+                if (rel.startsWith("entity/"))
+                    continue;
                 if (id.equals("jsonextended:item/test_broken") || id.equals("jsonextended:block/test_broken_model"))
                     continue;
                 List<ModelCheck.Problem> problems = dev.check(id).stream()

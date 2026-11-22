@@ -14,6 +14,7 @@ Open only the files your task needs. Each stays under ~150 lines; split a file w
 | [bta/item-rendering-3d.md](bta/item-rendering-3d.md) | GLRenderer/shader/atlas signatures; how block models render standalone (centred) for items |
 | [bta/tile-entities.md](bta/tile-entities.md) | TileEntity class, registration, TE renderers end to end (doRender coords, GL setup, light), drawing block quads in a TE, hiding the static model, state sync, geo models |
 | [bta/collision.md](bta/collision.md) | Collision boxes, ray picking (`collisionRayTrace`), hover outline (`BoundingVolume`), support; how stairs and fences do several boxes |
+| [bta/entities.md](bta/entities.md) | Custom mobs: mob class and texture path, EntityDispatcher registration, spawning, models.json and geo lookup, MobRenderer and where bones are posed |
 | [bta/api/](bta/api/README.md) | Exact public signatures of BTA and HalpLibe classes (javap) |
 | [bta/vanilla-parents.md](bta/vanilla-parents.md) | Vanilla parent model ids (cube_all, stairs, slab...) |
 | [bta/reading-bta-code.md](bta/reading-bta-code.md) | How to decompile BTA and HalpLibe on the Mac |

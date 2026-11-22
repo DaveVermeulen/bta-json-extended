@@ -1,0 +1,8 @@
+{
+	"model_paths": ["/assets/jsonextended/models/entity/test_mob/test_mob.geo.json"],
+	"renderers": {
+		"jsonextended:test_mob": {
+			"main": "geometry.jsonextended.test_mob"
+		}
+	}
+}
