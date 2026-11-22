@@ -146,6 +146,8 @@ class AnimationTest {
         assertFalse(player.playing(12));
         player.ensure(snap, 20, 0);
         assertFalse(player.playing(20), "ensure doesn't restart the same animation");
+        player.skipToEnd(open, 50);
+        assertEquals(90f, player.pose(50, Pose.REST).get("lid").rx(), EPS, "skipToEnd shows the last frame at once");
         player.stop();
         assertSame(Pose.REST, player.pose(30, Pose.REST));
     }

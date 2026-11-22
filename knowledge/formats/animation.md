@@ -104,5 +104,6 @@ public class mojang.StaticEntityModelMojang implements StaticEntityModel {
 - Load in the tile entity renderer (lazily, on first draw): renderers are made new on every pack reload, so pack changes reach animations.
 - Example `animation/example/AnimatedChest` (dev block 9125, Test Animated Chest), the test chest's model with `animations/test_chest.animation.json`:
   - The renderer's `Poser` keeps one `AnimationPlayer` per tile entity (client state, not saved). It calls `ensure(open ? open : close, now, 0.1)` with `now = (te.ticks + partialTick) / 20`, then adds `idle` once `open` has finished.
-  - A chest that loads closed starts at the end of `close`, so it doesn't swing shut on load.
+  - A chest that has just loaded uses `skipToEnd`, so it shows its saved state (open or closed) without swinging into it.
+- `AnimationPlayer.skipToEnd(anim, now)`: as if already played to its end, for state loaded with the world (hold: last frame; loop: goes on; once: no effect).
 - `AnimationPlayer.elapsed(now)`: seconds since the current animation started (hold animations never report `finished`).

@@ -83,9 +83,9 @@ public final class AnimatedChest {
                     if (wanted == null)
                         return Pose.REST;
                     AnimationPlayer player = chest.player();
-                    if (player.current() == null && !open) {
-                        // A closed chest that was never opened: start at the end of "close", not mid-swing.
-                        player.play(wanted, now - wanted.length());
+                    if (player.current() == null) {
+                        // Just loaded: show the saved state as it is, without swinging into it.
+                        player.skipToEnd(wanted, now);
                     } else {
                         player.ensure(wanted, now, 0.1f);
                     }
