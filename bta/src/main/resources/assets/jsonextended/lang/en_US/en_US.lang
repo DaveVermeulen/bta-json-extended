@@ -36,3 +36,5 @@ tile.jsonextended.test.chest.name=Test Chest
 tile.jsonextended.test.chest.desc=Tile entity test: right-click opens and closes the lid, a Blockbench group posed from code.
 tile.jsonextended.test.animated.chest.name=Test Animated Chest
 tile.jsonextended.test.animated.chest.desc=Animation test: right-click plays open and close from test_chest.animation.json; the knob wiggles while it's open.
+tile.jsonextended.test.mob.spawner.name=Test Mob Spawner
+tile.jsonextended.test.mob.spawner.desc=Animation test: right-click puts a Test Mob on top. It idles and walks from test_mob.animation.json.
