@@ -175,4 +175,17 @@ class AnimationTest {
         assertEquals(0f, f.get("animation.test_chest.close").sample(5).get("lid").rx(), EPS);
         assertEquals(0f, f.get("animation.test_chest.idle").sample(2).get("knob").rz(), EPS);
     }
+
+    @Test
+    void rawPosesMixForGeoEntities() {
+        Animation bob = file.get("animation.test_chest.bob");
+        Animation open = file.get("animation.test_chest.open");
+        java.util.Map<String, float[]> mixed = Animation.mix(bob.rawPose(0.5f), open.rawPose(0.5f), 0.25f);
+        // knob only in bob: position y 0.5 and scale 1.25, blended a quarter towards neutral.
+        assertEquals(0.375f, mixed.get("knob")[4], EPS);
+        assertEquals(1.1875f, mixed.get("knob")[6], EPS);
+        // lid only in open: raw X -90 (file axes), a quarter of it.
+        assertEquals(-22.5f, mixed.get("lid")[0], EPS);
+        assertEquals(java.util.Map.of(), file.get("animation.test_chest.snap").rawPose(1));
+    }
 }

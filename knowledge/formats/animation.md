@@ -1,6 +1,6 @@
 # Bedrock animation JSON
 
-Status: core reader and player (step 1), tile entity use in game (step 2); geo entities next.
+Status: core reader and player (step 1), tile entities (step 2), geo mobs (step 3).
 
 - Files: `<name>.animation.json` as exported by Blockbench (Bedrock format), `format_version`, `animations.<id>`: `loop`, `animation_length`, `bones.<bone>.rotation|position|scale` as constants or keyframe maps (`"0.5": [x, y, z]` or `{ "post": [...], "lerp_mode": "catmull_rom" }`).
 - Load through `texturePackList`, so packs can change animations.
@@ -107,3 +107,10 @@ public class mojang.StaticEntityModelMojang implements StaticEntityModel {
   - A chest that has just loaded uses `skipToEnd`, so it shows its saved state (open or closed) without swinging into it.
 - `AnimationPlayer.skipToEnd(anim, now)`: as if already played to its end, for state loaded with the world (hold: last frame; loop: goes on; once: no effect).
 - `AnimationPlayer.elapsed(now)`: seconds since the current animation started (hold animations never report `finished`).
+
+## Geo mobs (`AnimatedMobRenderer`, phase 6 step 3)
+
+- `bta/.../animation/AnimatedMobRenderer<T extends Mob>(shadow, animationFile, idle, walk, walkCycle)`: a `MobRenderer` for a geo model listed in `models/entity/models.json` (see [../bta/entities.md](../bta/entities.md)). Each frame: `getModel("main")`, `resetBones()`, then each bone from `pose(mob, pt)` into its `BoneTransform` (degrees to radians, raw file axes).
+- `pose`: `idle` on the mob's age (`getLimbPitch / 20` s), blended into `walk` by walk amount (`getLimbYaw`, 0..1) with `Animation.mix`. Walk time follows `getLimbSwing`: one loop per `walkCycle` of limb swing (`VANILLA_WALK_CYCLE` = 2π/0.6662, the vanilla leg period), so steps match ground speed. Override `pose` for more.
+- Core: `Animation.rawPose(seconds)` (all bones, file values) and `Animation.mix(a, b, t)` (missing bones blend with neutral).
+- Example `animation/example/TestMob` (dev): our own `models/entity/test_mob/test_mob.geo.json` (body, head child of body, leg0-3), `textures/entity/test_mob/0.png`, `animations/test_mob.animation.json` (walk, idle). Spawned by right-clicking the Test Mob Spawner block (9126). No head look yet.
