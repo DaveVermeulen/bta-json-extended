@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- OBJ smooth lighting: a slanted face leaning towards a solid block (an upside-down ramp on the ground) no longer goes black; it takes the block's own light on that side.
 - A texture id outside the atlas in an OBJ or tile entity model is looked up once and logged once (it was looked up again for every face every frame, silently). Both use one shared cache, `AtlasIcons`.
 - JSON nested more than 512 levels deep is a normal "can't be read" error instead of a stack overflow.
 - 3D item models reuse one random generator for ground clusters instead of making one per draw.
