@@ -12,7 +12,7 @@ On its own it adds nothing to the game. Your mod points it at JSON files and it 
 4. [Item models](item-models.md): flat, layered, handheld and 3D items, with display poses.
 5. [Model JSON and Blockbench](model-json.md): what we add on top of BTA's model reader, and the error messages.
 6. [OBJ models](obj-models.md): Wavefront `.obj` files as block models.
-7. [glTF and GLB models](gltf-models.md): `.glb` and `.gltf` files as block models.
+7. [glTF and GLB models](gltf-models.md): `.glb` and `.gltf` files as block models, and their animations on tile entities.
 8. [Tile entity models](tile-entities.md): a Blockbench model drawn every frame, with parts moved from code.
 9. [Animations](animations.md): Blockbench animations on tile entities and mobs.
 10. [Example content](examples.md): the dev-only test blocks, items and mob, and where their files are.

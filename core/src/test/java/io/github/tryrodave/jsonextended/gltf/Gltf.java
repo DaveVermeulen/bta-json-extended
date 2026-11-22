@@ -23,6 +23,11 @@ final class Gltf {
         return add(b.array(), type, 5126, values.length / size(type), false);
     }
 
+    /** A float SCALAR accessor (animation times). */
+    int times(float... values) {
+        return floats("SCALAR", values);
+    }
+
     /** An unsigned short index accessor. */
     int indices(int... values) {
         ByteBuffer b = ByteBuffer.allocate(values.length * 2).order(ByteOrder.LITTLE_ENDIAN);

@@ -1,6 +1,6 @@
 # glTF / GLB
 
-Status: phase 7 step 1 (static GLB/glTF block models) written 2026-11-22, waiting for the in-game check. Step 2 is node animations on tile entities.
+Status: step 1 (static GLB/glTF block models) merged in PR #26 and checked in game by Dave (2026-11-22). Step 2 (node animations on tile entities) written 2026-11-22, waiting for the in-game check.
 
 - glTF 2.0: `.gltf` (JSON + `.bin` + images) and `.glb` (one binary file: JSON chunk + BIN chunk). Parse with Gson plus our own buffer/accessor reader.
 - Meshes: triangles from `POSITION`, `NORMAL`, `TEXCOORD_0`, `indices`; node transforms (TRS or matrix) baked for static models.
@@ -24,3 +24,11 @@ Status: phase 7 step 1 (static GLB/glTF block models) written 2026-11-22, waitin
 - `ModelCheck` skips glTF model JSON like OBJ.
 - Dev block: Test GLB Lantern (9127), hand-made by `tools/make_test_glb.py`: base box around the origin (`offset` [0.5, 0, 0.5]), gem octahedron child turned 45 degrees and scaled, `emissiveFactor` 1. Tests: `GltfModelTest` (built-in GLB writer `Gltf` in the tests), `GltfModelJsonTest.devLanternLoadsWithoutWarnings`.
 - Not verified yet: what Blockbench's glTF export looks like (units, centring). Check with a real export at the in-game check and note it here.
+
+## Animations (phase 7 step 2)
+
+- `GltfModel` keeps the scene as `nodes()` (parents first): file index, name, parent, rest TRS packed in 10 floats (`T`=0 translation, `R`=3 rotation x y z w, `S`=7 scale), `matrix` (column-major, or null; matrix nodes can't be animated, per spec) and the node's quads in its own space. `pose(Map<node, TRS>)` places everything (mirrored world matrices reverse the corner order 0,3,2,1, same two triangles); `quads()` is the rest pose.
+- `GltfAnimation.read`: `animations[].channels` (`target.node`, `target.path` translation/rotation/scale; `weights` skipped with a warning; nodes outside the scene skipped) and `samplers` (`input` times, `output` values, `interpolation` LINEAR/STEP/CUBICSPLINE). Errors: wrong VECn for the path, times going down, key/value count mismatch. `length` = last key of any channel. `sample(t)` gives TRS for animated nodes (unanimated paths keep rest); clamps outside the keys; LINEAR rotation = slerp (short way), CUBICSPLINE = Hermite with tangents times the key span, then rotations normalized.
+- `GltfAnimationPlayer(model)`: `play/ensure/skipToEnd(anim, Loop, now[, fade])`, `stop`, `current`, `elapsed`, `playing`, `pose(now)`; crossfade blends per node (lerp T and S, slerp R; a node in only one side blends with its rest). `sample(anim, loop, seconds)` is the static form. Own player rather than converting to Bedrock clips: see decisions.md 2026-11-22.
+- `bta/.../gltf/GltfTileEntityRenderer<T>(modelId, Poser, Facing)`: reads the model JSON and file once per renderer (new renderers on pack reload); `Poser.pose(te, model, partialTick)` returns node TRS; drawn like `ModelTileEntityRenderer` (block light, `setShade1i(255)`, normals, quarter turns), plus material colour and `emissiveFactor` glow.
+- Dev block: Test GLB Animated Lantern (9128), `gltf/example/AnimatedLantern` and `models/block/test_glb_animated_lantern.*` (same script). `idle` (4 s: turn in quarter keys, cubic-spline bob 0.6 to 0.66) loops; metadata bit 0 (right-click) crossfades 0.3 s to `spin` (0.5 s turn, STEP scale 0.4). Tests: `GltfAnimationTest`, `GltfModelJsonTest.devAnimatedLanternPlaysInsideItsBlock`.

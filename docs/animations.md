@@ -1,6 +1,6 @@
 # Animations
 
-Blockbench animations (`.animation.json`, the Bedrock format Blockbench exports) can move the parts of [tile entity models](tile-entities.md) and the bones of geo mobs. Animations are read through the texture packs like every other file.
+Blockbench animations (`.animation.json`, the Bedrock format Blockbench exports) can move the parts of [tile entity models](tile-entities.md) and the bones of geo mobs. Animations are read through the texture packs like every other file. For animations inside a `.glb`, see [glTF models](gltf-models.md#animations-on-a-tile-entity).
 
 ## Making an animation
 
