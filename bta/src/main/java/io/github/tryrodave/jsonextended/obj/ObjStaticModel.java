@@ -1,9 +1,9 @@
 package io.github.tryrodave.jsonextended.obj;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import io.github.tryrodave.jsonextended.model.AtlasIcons;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.option.GameSettings;
@@ -13,7 +13,6 @@ import net.minecraft.client.render.block.color.BlockColorDispatcher;
 import net.minecraft.client.render.block.model.generic.BlockModelGeneric;
 import net.minecraft.client.render.tessellator.TessellatorGeneral;
 import net.minecraft.client.render.texture.stitcher.IconCoordinate;
-import net.minecraft.client.render.texture.stitcher.TextureRegistry;
 import net.minecraft.core.block.BlockLogic;
 import net.minecraft.core.util.helper.Direction;
 import net.minecraft.core.util.helper.LightIndexHelper;
@@ -48,11 +47,11 @@ public final class ObjStaticModel implements StaticBlockModel {
     /** Faces placed for each quarter-turn combination (x, y, z each 0-3), made the first time a block uses it. */
     private final Placed[][] placed = new Placed[64][];
     private final int renderLayer;
-    private final Map<String, IconCoordinate> icons = new HashMap<>();
-    private int iconsGeneration = -1;
+    private final AtlasIcons icons;
 
     public ObjStaticModel(ObjModelJson json, ObjModel model) {
         this.json = json;
+        this.icons = new AtlasIcons(json.id());
         List<Face> faces = new ArrayList<>();
         for (ObjQuad quad : model.quads(json.flipV())) {
             ObjMaterial m = quad.material();
@@ -256,24 +255,8 @@ public final class ObjStaticModel implements StaticBlockModel {
         };
     }
 
-    /** Atlas entry for a texture id, cached until the atlas is rebuilt; null when it isn't in an atlas. */
+    /** Atlas entry for a texture id; null when it isn't in an atlas (logged once). */
     private IconCoordinate icon(String texture) {
-        if (iconsGeneration != TextureRegistry.reloadGeneration) {
-            icons.clear();
-            iconsGeneration = TextureRegistry.reloadGeneration;
-        }
-        if (texture == null)
-            return null;
-        if (icons.containsKey(texture))
-            return icons.get(texture);
-        IconCoordinate icon;
-        try {
-            icon = TextureRegistry.getTexture(texture);
-        } catch (RuntimeException e) {
-            // TextureRegistry throws for an id with no atlas folder (one without block/ or item/).
-            icon = null;
-        }
-        icons.put(texture, icon);
-        return icon;
+        return icons.get(texture);
     }
 }

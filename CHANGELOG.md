@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- A texture id outside the atlas in an OBJ or tile entity model is looked up once and logged once (it was looked up again for every face every frame, silently). Both use one shared cache, `AtlasIcons`.
+- JSON nested more than 512 levels deep is a normal "can't be read" error instead of a stack overflow.
+- 3D item models reuse one random generator for ground clusters instead of making one per draw.
 - OBJ blocks: each rotation's corners, normals and sides are worked out once per model instead of for every block on every chunk rebuild.
 - Documentation for mod developers in `docs/`: installing, getting started, blockstates, item models, model JSON, OBJ, tile entity models, animations, example content and limitations. The README describes what the library does now.
 - Mod icon: shown in Mod Menu (`icon` in `fabric.mod.json`, white background); a transparent version sits at the top of the README.

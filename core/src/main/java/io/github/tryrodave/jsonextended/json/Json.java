@@ -11,8 +11,12 @@ import java.util.Map;
  * {@link Boolean} and {@code null}.
  */
 public final class Json {
+    /** Deeper nesting is refused, so a broken file can't overflow the stack. */
+    static final int MAX_DEPTH = 512;
+
     private final String text;
     private int pos;
+    private int depth;
 
     private Json(String text) {
         this.text = text;
@@ -33,8 +37,8 @@ public final class Json {
             throw error("unexpected end of file");
         char c = text.charAt(pos);
         switch (c) {
-            case '{': return object();
-            case '[': return array();
+            case '{': return nested(true);
+            case '[': return nested(false);
             case '"': return string();
             case 't': return word("true", Boolean.TRUE);
             case 'f': return word("false", Boolean.FALSE);
@@ -43,6 +47,16 @@ public final class Json {
                 if (c == '-' || (c >= '0' && c <= '9'))
                     return number();
                 throw error("unexpected '" + c + "'");
+        }
+    }
+
+    private Object nested(boolean object) {
+        if (++depth > MAX_DEPTH)
+            throw error("nested more than " + MAX_DEPTH + " levels deep");
+        try {
+            return object ? object() : array();
+        } finally {
+            depth--;
         }
     }
 

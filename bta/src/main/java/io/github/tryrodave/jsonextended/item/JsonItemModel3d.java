@@ -40,6 +40,9 @@ public class JsonItemModel3d extends JsonItemModel {
         }
     };
 
+    /** Cluster offsets; reseeded every draw so they're the same each frame. Main thread only. */
+    private static final Random CLUSTER = new Random();
+
     protected final StaticBlockModel geometry;
 
     public JsonItemModel3d(Item item, ResolvedItemModel model, IconCoordinate particle, StaticBlockModel geometry) {
@@ -62,7 +65,8 @@ public class JsonItemModel3d extends JsonItemModel {
                 .scale(p.sx, p.sy, p.sz);
         TextureRegistry.worldAtlas.bind();
         int meta = stack == null ? 0 : stack.getMetadata();
-        Random random = new Random(187);
+        Random random = CLUSTER;
+        random.setSeed(187);
         for (int i = 0; i < Math.max(1, clusterSize); i++) {
             float dx = 0, dy = 0, dz = 0;
             if (i > 0) {
