@@ -1,6 +1,6 @@
 # BTA JSON Extended
 
-<img src="bta/src/main/resources/assets/jsonextended/icon.png" alt="BTA JSON Extended icon" width="128">
+<img src=".github/icon-transparent.png" alt="BTA JSON Extended icon" width="128">
 
 Modern-Minecraft-style models for Better Than Adventure 8.0.1: blockstate JSON, JSON item models, OBJ models, model-driven tile entity renderers and Blockbench animations, built on the JSON block models BTA already ships.
 
