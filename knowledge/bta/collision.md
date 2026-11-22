@@ -47,7 +47,7 @@ Side from the clipped plane: minX `WEST`, maxX `EAST`, minY `BOTTOM`, maxY `TOP`
 - `static newFilledVolume()`, `newEmptyVolume()`, `static bakeFromBlockSpaceAabbs(AABBdc... localBoxes)` (samples each voxel centre `(i + 0.5) / 16`, then bakes)
 - `fillVolume` / `carveVolume(int x0, y0, z0, x1, y1, z1)`, `addVolume` / `subtractVolume(BoundingVolume)`, `bake()`, `Float[] getBakedLineCoords()`, `copy()`
 - Baked lines are the merged outer edges of the union: no lines between touching parts.
-- **Outlines snap to 1/16.** A box edge at 0.3 is drawn at the nearest voxel edge. An exact off-grid outline needs a `RenderGlobal` mixin.
+- **Outlines snap to 1/16.** A box edge at 0.3 is drawn at the nearest voxel edge. For exact outlines see [../shapes.md](../shapes.md) "Exact outline": a `BoundingVolume` subclass with our own line coords, or a `RenderGlobal` mixin.
 - Baking is not free: cache one volume per state, like `BlockLogicFire.SHAPE_VOLUMES` (lazy, per neighbour mask) and `BlockLogicStairs.STAIR_SELECTION_VOLUME` (8 orientations, baked once).
 
 ## How vanilla multi-box blocks do it
