@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Mod icon: shown in Mod Menu (`icon` in `fabric.mod.json`, white background); a transparent version sits at the top of the README.
 - Animated mobs (phase 6, step 3): `AnimatedMobRenderer` poses a geo model's bones from a Bedrock animation file, blending idle into walk by walking speed. Dev-only Test Mob, spawned with the Test Mob Spawner block.
 - `AnimationPlayer.skipToEnd`: state loaded with the world shows at once (a saved open chest loads open).
 - Animations in game (phase 6, step 2): `Animations.load` reads `.animation.json` files through the texture packs, and a model tile entity renderer can pose its parts from them. Dev-only Test Animated Chest opens and closes from an animation file, and its knob wiggles while it's open.

@@ -12,6 +12,7 @@
 		"issues": "https://github.com/DaveVermeulen/bta-json-extended/issues"
 	},
 	"license": "MIT",
+	"icon": "assets/jsonextended/icon.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
