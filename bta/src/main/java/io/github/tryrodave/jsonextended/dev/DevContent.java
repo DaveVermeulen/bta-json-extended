@@ -8,6 +8,7 @@ import io.github.tryrodave.jsonextended.item.example.ItemExamples;
 import io.github.tryrodave.jsonextended.tileentity.example.TestChest;
 import io.github.tryrodave.jsonextended.animation.example.AnimatedChest;
 import io.github.tryrodave.jsonextended.animation.example.TestMob;
+import io.github.tryrodave.jsonextended.gltf.example.AnimatedLantern;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.render.block.model.BlockModelDispatcher;
@@ -22,7 +23,7 @@ import turniplabs.halplibe.event.defs.ClientEvents;
 import turniplabs.halplibe.util.dependency.Key;
 
 /**
- * Test blocks for the development client ({@code ./gradlew runClient}). Not registered in a normal game.
+ * Test blocks for the development client ({@code ./gradlew runBtaClient}). Not registered in a normal game.
  * <p>
  * Phase 0 spike: a Blockbench "Java Block" export drawn by BTA's own {@link BlockModelGeneric},
  * with no model code of ours.
@@ -45,6 +46,7 @@ public final class DevContent {
         ModelExamples.registerBlocks();
         TestChest.registerBlocks();
         AnimatedChest.registerBlocks();
+        AnimatedLantern.registerBlocks();
         TestMob.register();
         ItemExamples.registerItems();
     }
@@ -61,6 +63,7 @@ public final class DevContent {
         ClientEvents.TILE_ENTITY_RENDERER_RELOAD.listen(Key.of(JsonExtended.MOD_ID), dispatcher -> {
             TestChest.addRenderers(dispatcher);
             AnimatedChest.addRenderers(dispatcher);
+            AnimatedLantern.addRenderers(dispatcher);
         });
         ClientEvents.ENTITY_RENDERER_RELOAD.listen(Key.of(JsonExtended.MOD_ID), TestMob::addRenderers);
     }
@@ -73,6 +76,7 @@ public final class DevContent {
         ModelExamples.addModels(dispatcher);
         TestChest.addModels(dispatcher);
         AnimatedChest.addModels(dispatcher);
+        AnimatedLantern.addModels(dispatcher);
         TestMob.addModels(dispatcher);
     }
 

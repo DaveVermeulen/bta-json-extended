@@ -2,7 +2,10 @@ package io.github.tryrodave.jsonextended.animation;
 
 import io.github.tryrodave.jsonextended.pose.PartTransform;
 import io.github.tryrodave.jsonextended.pose.Pose;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * One animation from a Bedrock {@code .animation.json}: channels per bone, sampled to a {@link Pose}.
@@ -63,7 +66,7 @@ public record Animation(String name, Loop loop, float length, Map<String, Bone> 
     public Map<String, float[]> rawPose(float seconds) {
         if (finished(seconds))
             return Map.of();
-        Map<String, float[]> out = new java.util.LinkedHashMap<>();
+        Map<String, float[]> out = new LinkedHashMap<>();
         for (String bone : bones.keySet())
             out.put(bone, raw(bone, seconds));
         return out;
@@ -75,8 +78,8 @@ public record Animation(String name, Loop loop, float length, Map<String, Bone> 
      */
     public static Map<String, float[]> mix(Map<String, float[]> a, Map<String, float[]> b, float t) {
         float[] neutral = {0, 0, 0, 0, 0, 0, 1, 1, 1};
-        Map<String, float[]> out = new java.util.LinkedHashMap<>();
-        java.util.Set<String> names = new java.util.LinkedHashSet<>(a.keySet());
+        Map<String, float[]> out = new LinkedHashMap<>();
+        Set<String> names = new LinkedHashSet<>(a.keySet());
         names.addAll(b.keySet());
         for (String name : names) {
             float[] x = a.getOrDefault(name, neutral), y = b.getOrDefault(name, neutral), v = new float[9];

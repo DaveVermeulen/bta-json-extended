@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+- glTF animations (phase 7, step 2): a `.glb`'s own node animations (translation, rotation, scale; linear, step and cubic spline, rotations slerped) play on tile entities through `GltfTileEntityRenderer` and `GltfAnimationPlayer` (loop, hold or once, crossfades). Dev-only Test GLB Animated Lantern: right-click to spin.
+- glTF and GLB models (phase 7, step 1): `"loader": "jsonextended:gltf"` draws a `.glb` or `.gltf` as a block model, with node transforms, materials (colour, glow, tint) and textures by material name from the model JSON, through the same renderer as OBJ. Dev-only Test GLB Lantern. Docs in `docs/gltf-models.md`.
+- OBJ smooth lighting: a slanted face leaning towards a solid block (an upside-down ramp on the ground) no longer goes black; it takes the block's own light on that side.
+- A texture id outside the atlas in an OBJ or tile entity model is looked up once and logged once (it was looked up again for every face every frame, silently). Both use one shared cache, `AtlasIcons`.
+- JSON nested more than 512 levels deep is a normal "can't be read" error instead of a stack overflow.
+- 3D item models reuse one random generator for ground clusters instead of making one per draw.
+- OBJ blocks: each rotation's corners, normals and sides are worked out once per model instead of for every block on every chunk rebuild.
+- Documentation for mod developers in `docs/`: installing, getting started, blockstates, item models, model JSON, OBJ, tile entity models, animations, example content and limitations. The README describes what the library does now.
+- Mod icon: shown in Mod Menu (`icon` in `fabric.mod.json`, white background); a transparent version sits at the top of the README.
 - Animated mobs (phase 6, step 3): `AnimatedMobRenderer` poses a geo model's bones from a Bedrock animation file, blending idle into walk by walking speed. Dev-only Test Mob, spawned with the Test Mob Spawner block.
 - `AnimationPlayer.skipToEnd`: state loaded with the world shows at once (a saved open chest loads open).
 - Animations in game (phase 6, step 2): `Animations.load` reads `.animation.json` files through the texture packs, and a model tile entity renderer can pose its parts from them. Dev-only Test Animated Chest opens and closes from an animation file, and its knob wiggles while it's open.

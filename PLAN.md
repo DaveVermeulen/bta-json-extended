@@ -80,8 +80,8 @@ Priority: work like modern Minecraft first (phases 0 to 3), then extend on top (
 | **Extensions** | | | |
 | 4. OBJ model type | Our own OBJ/MTL parser (MIT, from the spec), as a `StaticBlockModel` behind `loader` | Betafront's crystal and ramp work through blockstates | 1.5 weeks (done 2026-11-18: PR #14, #15) |
 | 5. Model TE renderers | Generic renderer for any model type, bone transforms from code | Chest-style lid opens from code with a Blockbench model | 1-1.5 weeks (done 2026-11-18: PR #17, #18) |
-| 6. Animation | Bedrock keyframes (rot/pos/scale, linear + catmull-rom), loop/one-shot, controller API | Animated entity and tile entity from Blockbench | 2 weeks |
-| 7. GLB / glTF | glTF 2.0 meshes and materials as a model type; node animations through the phase 6 player | A static GLB block and an animated GLB tile entity | 2-3 weeks (skinning later, separate) |
+| 6. Animation | Bedrock keyframes (rot/pos/scale, linear + catmull-rom), loop/one-shot, controller API | Animated entity and tile entity from Blockbench | 2 weeks (done 2026-11-22: PR #20, #21, #22) |
+| 7. GLB / glTF | glTF 2.0 meshes and materials as a model type; node animations through the phase 6 player | A static GLB block and an animated GLB tile entity | 2-3 weeks (skinning later, separate). Step 1 (static block models) done (PR #26); step 2 (node animations on tile entities) in review |
 
 ## Side track: block shapes
 

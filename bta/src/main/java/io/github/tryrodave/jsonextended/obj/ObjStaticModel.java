@@ -1,9 +1,9 @@
 package io.github.tryrodave.jsonextended.obj;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import io.github.tryrodave.jsonextended.model.AtlasIcons;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.option.GameSettings;
@@ -13,7 +13,6 @@ import net.minecraft.client.render.block.color.BlockColorDispatcher;
 import net.minecraft.client.render.block.model.generic.BlockModelGeneric;
 import net.minecraft.client.render.tessellator.TessellatorGeneral;
 import net.minecraft.client.render.texture.stitcher.IconCoordinate;
-import net.minecraft.client.render.texture.stitcher.TextureRegistry;
 import net.minecraft.core.block.BlockLogic;
 import net.minecraft.core.util.helper.Direction;
 import net.minecraft.core.util.helper.LightIndexHelper;
@@ -24,8 +23,8 @@ import org.useless.dragonfly.DisplayPos;
 import org.useless.dragonfly.models.block.StaticBlockModel;
 
 /**
- * An OBJ model as a BTA {@link StaticBlockModel}, so anything that draws model JSON (blockstates,
- * {@code BlockModelGeneric}, 3D item models) draws OBJ too. Follows {@code knowledge/bta/static-model.md}.
+ * An OBJ or glTF model as a BTA {@link StaticBlockModel}, so anything that draws model JSON (blockstates,
+ * {@code BlockModelGeneric}, 3D item models) draws them too. Follows {@code knowledge/bta/static-model.md}.
  * <p>
  * Lighting: with smooth lighting on (and {@code ambient_occlusion} in the JSON), {@link ObjSmoothLight} per vertex.
  * Otherwise flat: a face lying on a block side takes the light of the neighbour there, any other face the block's
@@ -39,16 +38,26 @@ public final class ObjStaticModel implements StaticBlockModel {
     private record Face(float[][] positions, float[][] uvs, float[] normal, String texture, int tintIndex,
                         float r, float g, float b, int emission, ObjQuad.Side cull) {}
 
-    private final ObjModelJson json;
-    private final List<Face> faces;
-    private final int renderLayer;
-    private final Map<String, IconCoordinate> icons = new HashMap<>();
-    private int iconsGeneration = -1;
+    /** A face turned by one set of quarter turns, with what the turn decides worked out once. */
+    private record Placed(float[][] positions, float[] normal, ObjQuad.Side cull, ObjQuad.Side onSide,
+                          ObjQuad.Side lightSide) {}
 
-    public ObjStaticModel(ObjModelJson json, ObjModel model) {
+    private final MeshModelJson json;
+    private final List<Face> faces;
+    /** Faces placed for each quarter-turn combination (x, y, z each 0-3), made the first time a block uses it. */
+    private final Placed[][] placed = new Placed[64][];
+    private final int renderLayer;
+    private final AtlasIcons icons;
+
+    /**
+     * @param json  the model JSON's settings (OBJ or glTF)
+     * @param quads the faces, with UVs already flipped if the JSON asks for it
+     */
+    public ObjStaticModel(MeshModelJson json, List<ObjQuad> quads) {
         this.json = json;
+        this.icons = new AtlasIcons(json.id());
         List<Face> faces = new ArrayList<>();
-        for (ObjQuad quad : model.quads(json.flipV())) {
+        for (ObjQuad quad : quads) {
             ObjMaterial m = quad.material();
             String texture = m == null || m.texture() == null ? json.particle() : json.texture(m.texture());
             float[] color = m == null ? ObjMaterial.WHITE : m.color();
@@ -73,9 +82,12 @@ public final class ObjStaticModel implements StaticBlockModel {
         BlockColor colors = null;
         int culled = 0, checked = 0;
         boolean drew = false;
-        for (Face face : faces) {
-            if (cullFaces && face.cull() != null) {
-                ObjQuad.Side side = QuarterTurns.side(face.cull(), rotX, rotY, rotZ);
+        Placed[] turned = placed(rotX, rotY, rotZ);
+        for (int f = 0; f < turned.length; f++) {
+            Face face = faces.get(f);
+            Placed at = turned[f];
+            if (cullFaces && at.cull() != null) {
+                ObjQuad.Side side = at.cull();
                 int bit = 1 << side.ordinal();
                 if ((checked & bit) == 0) {
                     checked |= bit;
@@ -101,12 +113,10 @@ public final class ObjStaticModel implements StaticBlockModel {
                 }
             }
 
-            float[][] p = new float[4][];
-            for (int i = 0; i < 4; i++)
-                p[i] = QuarterTurns.point(face.positions()[i], rotX, rotY, rotZ);
-            float[] normal = QuarterTurns.vector(face.normal(), rotX, rotY, rotZ);
+            float[][] p = at.positions();
+            float[] normal = at.normal();
             // A face on a block side takes the neighbour's light there, like a full cube face; others the block's own.
-            ObjQuad.Side onSide = ObjQuad.cullSide(p, normal);
+            ObjQuad.Side onSide = at.onSide();
             byte light = onSide == null ? LIGHT.getLightIndex(0, 0, 0)
                     : LIGHT.getLightIndex(onSide.axis == 0 ? side(onSide) : 0, onSide.axis == 1 ? side(onSide) : 0,
                     onSide.axis == 2 ? side(onSide) : 0);
@@ -117,7 +127,7 @@ public final class ObjStaticModel implements StaticBlockModel {
                 tess.setNormal(normal[0], normal[1], normal[2]);
             else
                 tess.setNormal(0f, 1f, 0f);
-            ObjQuad.Side lightSide = ObjQuad.Side.nearest(normal);
+            ObjQuad.Side lightSide = at.lightSide();
             for (int i = 0; i < 4; i++) {
                 tess.setColorOpaque3f(r, g, b);
                 if (smooth != null) {
@@ -213,6 +223,27 @@ public final class ObjStaticModel implements StaticBlockModel {
             DisplayPos.FIRST_PERSON_RIGHT_HAND, new DisplayPos(0, 0, 0, 0, 45, 0, 0.4f, 0.4f, 0.4f),
             DisplayPos.FIRST_PERSON_LEFT_HAND, new DisplayPos(0, 0, 0, 0, 225, 0, 0.4f, 0.4f, 0.4f));
 
+    /** The faces turned by these quarter turns; chunk rebuilds draw the same few turns over and over. */
+    private Placed[] placed(int rotX, int rotY, int rotZ) {
+        int x = Math.floorMod(rotX, 4), y = Math.floorMod(rotY, 4), z = Math.floorMod(rotZ, 4);
+        int key = x << 4 | y << 2 | z;
+        Placed[] turned = placed[key];
+        if (turned != null)
+            return turned;
+        turned = new Placed[faces.size()];
+        for (int f = 0; f < turned.length; f++) {
+            Face face = faces.get(f);
+            float[][] p = new float[4][];
+            for (int i = 0; i < 4; i++)
+                p[i] = QuarterTurns.point(face.positions()[i], x, y, z);
+            float[] normal = QuarterTurns.vector(face.normal(), x, y, z);
+            ObjQuad.Side cull = face.cull() == null ? null : QuarterTurns.side(face.cull(), x, y, z);
+            turned[f] = new Placed(p, normal, cull, ObjQuad.cullSide(p, normal), ObjQuad.Side.nearest(normal));
+        }
+        placed[key] = turned;
+        return turned;
+    }
+
     private static int side(ObjQuad.Side side) {
         return side.bound == 0 ? -1 : 1;
     }
@@ -228,24 +259,8 @@ public final class ObjStaticModel implements StaticBlockModel {
         };
     }
 
-    /** Atlas entry for a texture id, cached until the atlas is rebuilt; null when it isn't in an atlas. */
+    /** Atlas entry for a texture id; null when it isn't in an atlas (logged once). */
     private IconCoordinate icon(String texture) {
-        if (iconsGeneration != TextureRegistry.reloadGeneration) {
-            icons.clear();
-            iconsGeneration = TextureRegistry.reloadGeneration;
-        }
-        if (texture == null)
-            return null;
-        if (icons.containsKey(texture))
-            return icons.get(texture);
-        IconCoordinate icon;
-        try {
-            icon = TextureRegistry.getTexture(texture);
-        } catch (RuntimeException e) {
-            // TextureRegistry throws for an id with no atlas folder (one without block/ or item/).
-            icon = null;
-        }
-        icons.put(texture, icon);
-        return icon;
+        return icons.get(texture);
     }
 }

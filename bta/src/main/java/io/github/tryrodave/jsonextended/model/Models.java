@@ -1,6 +1,9 @@
 package io.github.tryrodave.jsonextended.model;
 
 import io.github.tryrodave.jsonextended.JsonExtended;
+import io.github.tryrodave.jsonextended.gltf.GltfException;
+import io.github.tryrodave.jsonextended.gltf.GltfModelJson;
+import io.github.tryrodave.jsonextended.gltf.GltfModels;
 import io.github.tryrodave.jsonextended.obj.ObjException;
 import io.github.tryrodave.jsonextended.obj.ObjModelJson;
 import io.github.tryrodave.jsonextended.obj.ObjModels;
@@ -21,7 +24,7 @@ import org.useless.dragonfly.models.block.StaticBlockModel;
 /**
  * Loads block and item model JSON for this mod's blocks and items: checks the file and its parents first
  * ({@link ModelCheck}) and logs each problem once, in one line naming the model and key, then lets BTA's own reader
- * build the model. Files BTA's reader would crash on (broken JSON, a face without a texture) or that don't exist
+ * build the model. OBJ and glTF model JSON ({@code loader}) go to their own loaders. Files BTA's reader would crash on (broken JSON, a face without a texture) or that don't exist
  * give the missing model instead.
  */
 @Environment(EnvType.CLIENT)
@@ -38,6 +41,15 @@ public final class Models {
             try {
                 return ObjModels.load(id, json, Models::readFile, line -> log(new ModelCheck.Problem(false, line)));
             } catch (ObjException | UncheckedIOException e) {
+                log(new ModelCheck.Problem(true, e.getMessage()));
+                log(new ModelCheck.Problem(true, id + ": drawing the missing model instead"));
+                return missing();
+            }
+        }
+        if (json != null && GltfModelJson.isGltf(json)) {
+            try {
+                return GltfModels.load(id, json, Models::readBytes, line -> log(new ModelCheck.Problem(false, line)));
+            } catch (GltfException | UncheckedIOException e) {
                 log(new ModelCheck.Problem(true, e.getMessage()));
                 log(new ModelCheck.Problem(true, id + ": drawing the missing model instead"));
                 return missing();
@@ -86,6 +98,13 @@ public final class Models {
         return readPath("/assets/" + namespace + "/" + id.substring(colon + 1));
     }
 
+    /** {@code ns:path/file.ext} to the bytes of {@code /assets/ns/path/file.ext} through the texture packs; null when absent. */
+    public static byte[] readBytes(String id) {
+        int colon = id.indexOf(':');
+        String namespace = colon < 0 ? "minecraft" : id.substring(0, colon);
+        return readPathBytes("/assets/" + namespace + "/" + id.substring(colon + 1));
+    }
+
     /** {@code ns:path} to the text of {@code /assets/ns/<folder>/path<suffix>} through the texture packs; null when absent. */
     public static String readAsset(String id, String folder, String suffix) {
         int colon = id.indexOf(':');
@@ -95,6 +114,11 @@ public final class Models {
 
     /** A resource path through the texture packs, highest first, then the mod jars; null when absent. */
     private static String readPath(String path) {
+        byte[] bytes = readPathBytes(path);
+        return bytes == null ? null : new String(bytes, StandardCharsets.UTF_8);
+    }
+
+    private static byte[] readPathBytes(String path) {
         InputStream in = null;
         Minecraft mc = Minecraft.getMinecraft();
         if (mc != null && mc.texturePackList != null)
@@ -104,10 +128,15 @@ public final class Models {
         if (in == null)
             return null;
         try (InputStream stream = in) {
-            return new String(stream.readAllBytes(), StandardCharsets.UTF_8);
+            return stream.readAllBytes();
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
+    }
+
+    /** One error or warning line, once per game session. */
+    public static void logOnce(boolean error, String line) {
+        log(new ModelCheck.Problem(error, line));
     }
 
     /** Each distinct line once per game session, so reloads don't repeat it. */
