@@ -82,27 +82,32 @@ public class ModelTileEntityRenderer<T extends TileEntity> extends TileEntityRen
     public void doRender(TessellatorGeneral tess, T te, double x, double y, double z, float partialTick) {
         if (!loaded())
             return;
-        Pose pose = poser.pose(te, partialTick);
-        int turns = facing.yTurns(te);
+        long started = System.nanoTime();
         TileEntityMesh mesh = meshes.computeIfAbsent(te, k -> new TileEntityMesh());
-        Key key = new Key(pose, turns);
-        if (!mesh.matches(key)) {
-            mesh.begin(key);
-            for (ModelQuad quad : rig.pose(quads, pose)) {
-                IconCoordinate icon = icon(quad.texture());
-                if (icon == null)
-                    continue;
-                float[][] corners = new float[4][];
-                double[][] uvs = new double[4][];
-                for (int i = 0; i < 4; i++) {
-                    corners[i] = QuarterTurns.point(quad.positions()[i], 0, turns, 0);
-                    uvs[i] = new double[] {icon.getSubIconU(quad.uvs()[i][0]), icon.getSubIconV(quad.uvs()[i][1])};
+        // Far away, a moving model is re-posed less often (see TileEntityMesh.poseDue).
+        if (mesh.poseDue(x, y, z)) {
+            Pose pose = poser.pose(te, partialTick);
+            int turns = facing.yTurns(te);
+            Key key = new Key(pose, turns);
+            if (!mesh.matches(key)) {
+                mesh.begin(key);
+                for (ModelQuad quad : rig.pose(quads, pose)) {
+                    IconCoordinate icon = icon(quad.texture());
+                    if (icon == null)
+                        continue;
+                    float[][] corners = new float[4][];
+                    double[][] uvs = new double[4][];
+                    for (int i = 0; i < 4; i++) {
+                        corners[i] = QuarterTurns.point(quad.positions()[i], 0, turns, 0);
+                        uvs[i] = new double[] {icon.getSubIconU(quad.uvs()[i][0]), icon.getSubIconV(quad.uvs()[i][1])};
+                    }
+                    float[] n = QuarterTurns.vector(quad.normal(), 0, turns, 0);
+                    mesh.add(corners, uvs, n, n, WHITE, 0);
                 }
-                float[] n = QuarterTurns.vector(quad.normal(), 0, turns, 0);
-                mesh.add(corners, uvs, n, n, WHITE, 0);
             }
         }
         mesh.draw(tess, te, x, y, z);
+        TileEntityMesh.timed(started);
     }
 
     /** What the faces were built for: the parts' pose and the facing. */

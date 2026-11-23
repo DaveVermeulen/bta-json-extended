@@ -73,7 +73,10 @@ public final class TileEntityMesh {
     private int vao, vbo, vertexCount;
     private boolean dirty = true, smoothBefore;
     private ObjSmoothLight smoothLight;
-    private long lastDrawn;
+    private long lastDrawn, lastPosed = Long.MIN_VALUE / 2;
+    /** Dev timing, summed over all meshes since the last log line. */
+    private static long renderNanos, renders, fills;
+    private static long lastTiming;
 
     private Object key;
     private int generation = -1;
@@ -90,6 +93,25 @@ public final class TileEntityMesh {
     private long lightRead;
     private boolean lightSet;
 
+    /**
+     * Whether the renderer should work out the pose this frame. Always when the mesh has no faces yet; otherwise
+     * every frame within 16 blocks, then 20, 8 and 2 times a second within 32, 64 and beyond. A still model costs
+     * nothing extra either way; this only spaces out rebuilds of moving models far from the camera.
+     */
+    public boolean poseDue(double x, double y, double z) {
+        if (generation != TextureRegistry.reloadGeneration)
+            return true;
+        double d2 = x * x + y * y + z * z;
+        long interval = d2 < 16 * 16 ? 0L : d2 < 32 * 32 ? 50_000_000L : d2 < 64 * 64 ? 125_000_000L : 500_000_000L;
+        return interval == 0L || System.nanoTime() - lastPosed >= interval;
+    }
+
+    /** Dev timing: adds one tile entity's render time, from {@code started} ({@link System#nanoTime}) to now. */
+    public static void timed(long started) {
+        renderNanos += System.nanoTime() - started;
+        renders++;
+    }
+
     /** True when the faces were built for this key and the current atlas, so they can be drawn as they are. */
     public boolean matches(Object key) {
         return generation == TextureRegistry.reloadGeneration && Objects.equals(this.key, key);
@@ -101,6 +123,7 @@ public final class TileEntityMesh {
         this.generation = TextureRegistry.reloadGeneration;
         this.count = 0;
         this.dirty = true;
+        this.lastPosed = System.nanoTime();
     }
 
     /**
@@ -167,6 +190,7 @@ public final class TileEntityMesh {
 
     /** Writes the faces in the terrain vertex format, with smooth light and shade when the option is on. */
     private TessellatorTerrainImpl fill(TileEntity te) {
+        fills++;
         if (terrain == null)
             terrain = new TessellatorTerrainImpl(64 * 1024);
         TessellatorTerrainImpl t = terrain;
@@ -259,6 +283,16 @@ public final class TileEntityMesh {
         if (LIVE.size() != lastLogged && JsonExtended.devContentEnabled()) {
             lastLogged = LIVE.size();
             JsonExtended.LOGGER.info("Tile entity model buffers in use: {}", lastLogged);
+        }
+        // Dev only: every 5 s, the time spent in our tile entity renderers, to measure each optimisation.
+        if (now - lastTiming >= 5_000_000_000L && JsonExtended.devContentEnabled()) {
+            double seconds = (now - lastTiming) / 1e9;
+            if (lastTiming != 0 && renders > 0)
+                JsonExtended.LOGGER.info("Tile entity models: {} ms/s rendering ({} draws/s, {} rebuilds/s), {} µs per draw",
+                        String.format("%.1f", renderNanos / 1e6 / seconds), Math.round(renders / seconds),
+                        Math.round(fills / seconds), String.format("%.0f", renderNanos / 1e3 / renders));
+            lastTiming = now;
+            renderNanos = renders = fills = 0;
         }
     }
 

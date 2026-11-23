@@ -99,31 +99,36 @@ public class GltfTileEntityRenderer<T extends TileEntity> extends TileEntityRend
         GltfModel model = model();
         if (model == null)
             return;
-        Map<Integer, float[]> pose = poser.pose(te, model, partialTick);
-        int turns = facing.yTurns(te);
+        long started = System.nanoTime();
         TileEntityMesh mesh = meshes.computeIfAbsent(te, k -> new TileEntityMesh());
-        Key key = Key.of(pose, turns);
-        if (!mesh.matches(key)) {
-            mesh.begin(key);
-            for (ObjQuad quad : settings.place(model.pose(pose))) {
-                ObjMaterial m = quad.material();
-                String texture = m == null || m.texture() == null ? settings.particle() : settings.texture(m.texture());
-                IconCoordinate icon = icons.get(texture != null ? texture : settings.particle());
-                if (icon == null)
-                    continue;
-                int emission = m != null && settings.emissiveAmbient() ? Math.round(m.ambient() * 15f) : 0;
-                float[] geometry = QuarterTurns.vector(ObjQuad.faceNormal(quad.positions()), 0, turns, 0);
-                float[] n = settings.shadeQuads() ? geometry : UP;
-                float[][] corners = new float[4][];
-                double[][] uvs = new double[4][];
-                for (int i = 0; i < 4; i++) {
-                    corners[i] = QuarterTurns.point(quad.positions()[i], 0, turns, 0);
-                    uvs[i] = new double[] {icon.getSubIconU(quad.uvs()[i][0]), icon.getSubIconV(quad.uvs()[i][1])};
+        // Far away, a moving model is re-posed less often (see TileEntityMesh.poseDue).
+        if (mesh.poseDue(x, y, z)) {
+            Map<Integer, float[]> pose = poser.pose(te, model, partialTick);
+            int turns = facing.yTurns(te);
+            Key key = Key.of(pose, turns);
+            if (!mesh.matches(key)) {
+                mesh.begin(key);
+                for (ObjQuad quad : settings.place(model.pose(pose))) {
+                    ObjMaterial m = quad.material();
+                    String texture = m == null || m.texture() == null ? settings.particle() : settings.texture(m.texture());
+                    IconCoordinate icon = icons.get(texture != null ? texture : settings.particle());
+                    if (icon == null)
+                        continue;
+                    int emission = m != null && settings.emissiveAmbient() ? Math.round(m.ambient() * 15f) : 0;
+                    float[] geometry = QuarterTurns.vector(ObjQuad.faceNormal(quad.positions()), 0, turns, 0);
+                    float[] n = settings.shadeQuads() ? geometry : UP;
+                    float[][] corners = new float[4][];
+                    double[][] uvs = new double[4][];
+                    for (int i = 0; i < 4; i++) {
+                        corners[i] = QuarterTurns.point(quad.positions()[i], 0, turns, 0);
+                        uvs[i] = new double[] {icon.getSubIconU(quad.uvs()[i][0]), icon.getSubIconV(quad.uvs()[i][1])};
+                    }
+                    mesh.add(corners, uvs, n, geometry, m == null ? WHITE : m.color(), emission);
                 }
-                mesh.add(corners, uvs, n, geometry, m == null ? WHITE : m.color(), emission);
             }
         }
         mesh.draw(tess, te, x, y, z);
+        TileEntityMesh.timed(started);
     }
 
     /** What the faces were built for: the node TRS (copied, compared by value) and the facing. */
