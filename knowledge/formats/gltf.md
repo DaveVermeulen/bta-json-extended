@@ -1,6 +1,6 @@
 # glTF / GLB
 
-Status: step 1 (static GLB/glTF block models) merged in PR #26 and checked in game by Dave (2026-11-22). Step 2 (node animations on tile entities) written 2026-11-22, waiting for the in-game check.
+Status: step 1 (static GLB/glTF block models) merged in PR #26 and checked in game by Dave (2026-11-22). Step 2 (node animations on tile entities) merged in PR #27 and checked in game by Dave (2026-11-23). Released in 1.0.0.
 
 - glTF 2.0: `.gltf` (JSON + `.bin` + images) and `.glb` (one binary file: JSON chunk + BIN chunk). Parse with Gson plus our own buffer/accessor reader.
 - Meshes: triangles from `POSITION`, `NORMAL`, `TEXCOORD_0`, `indices`; node transforms (TRS or matrix) baked for static models.

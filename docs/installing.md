@@ -22,7 +22,7 @@ You call it from code, so it's a compile dependency:
 ```kotlin
 // build.gradle.kts
 dependencies {
-    implementation(files("libs/bta-json-extended-0.1.0+8.0.1.jar"))
+    implementation(files("libs/bta-json-extended-1.0.0+8.0.1.jar"))
 }
 ```
 

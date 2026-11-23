@@ -22,7 +22,7 @@ It's a library for mod authors: on its own it adds nothing to the game.
 
 ## Status
 
-Version 0.1.0 is released (blockstates, item models, model JSON polish). Main also has OBJ models, tile entity models and animations, which will be in the next release. GLB/glTF models are in progress: static block models are merged, node animations on tile entities are in review. See [CHANGELOG.md](CHANGELOG.md) and [PLAN.md](PLAN.md).
+Version 1.0.0 covers the whole plan: blockstates, item models, model JSON polish, OBJ models, tile entity models, animations, and GLB/glTF models with their animations. Next up: tile entity models shaded like chunk blocks, Molang, mob head look and glTF skinning. See [CHANGELOG.md](CHANGELOG.md) and [PLAN.md](PLAN.md).
 
 ## A quick look
 

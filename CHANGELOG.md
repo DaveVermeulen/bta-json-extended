@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 1.0.0 (2026-11-23)
+
+The full plan: blockstates, item models and model JSON (0.1.0), plus OBJ models, model tile entity renderers, Blockbench animations on tile entities and mobs, and GLB/glTF models with their animations. Documentation for mod developers is in `docs/`.
+
 - glTF animations (phase 7, step 2): a `.glb`'s own node animations (translation, rotation, scale; linear, step and cubic spline, rotations slerped) play on tile entities through `GltfTileEntityRenderer` and `GltfAnimationPlayer` (loop, hold or once, crossfades). Dev-only Test GLB Animated Lantern: right-click to spin.
 - glTF and GLB models (phase 7, step 1): `"loader": "jsonextended:gltf"` draws a `.glb` or `.gltf` as a block model, with node transforms, materials (colour, glow, tint) and textures by material name from the model JSON, through the same renderer as OBJ. Dev-only Test GLB Lantern. Docs in `docs/gltf-models.md`.
 - OBJ smooth lighting: a slanted face leaning towards a solid block (an upside-down ramp on the ground) no longer goes black; it takes the block's own light on that side.
