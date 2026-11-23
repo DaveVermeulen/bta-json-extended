@@ -38,7 +38,7 @@ public final class TileEntityMesh {
     private int generation = -1;
     private int count;
     private float[] positions = new float[0]; // 12 per face
-    private float[] uvs = new float[0];       // 8 per face, atlas coordinates
+    private double[] uvs = new double[0];     // 8 per face, atlas coordinates
     private float[] normals = new float[0];   // 3 per face
     private float[] colors = new float[0];    // 3 per face
     private byte[] sides = new byte[0];
@@ -69,7 +69,7 @@ public final class TileEntityMesh {
      * @param geometry the face's geometric normal, already turned, for finding the side it lies on
      * @param emission block light the face gives itself, 0 to 15
      */
-    public void add(float[][] corners, float[][] uvs, float[] normal, float[] geometry, float[] color, int emission) {
+    public void add(float[][] corners, double[][] uvs, float[] normal, float[] geometry, float[] color, int emission) {
         grow();
         for (int i = 0; i < 4; i++) {
             System.arraycopy(corners[i], 0, positions, count * 12 + i * 3, 3);

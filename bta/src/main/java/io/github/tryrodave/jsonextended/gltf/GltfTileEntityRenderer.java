@@ -102,10 +102,10 @@ public class GltfTileEntityRenderer<T extends TileEntity> extends TileEntityRend
                 float[] geometry = QuarterTurns.vector(ObjQuad.faceNormal(quad.positions()), 0, turns, 0);
                 float[] n = settings.shadeQuads() ? geometry : UP;
                 float[][] corners = new float[4][];
-                float[][] uvs = new float[4][];
+                double[][] uvs = new double[4][];
                 for (int i = 0; i < 4; i++) {
                     corners[i] = QuarterTurns.point(quad.positions()[i], 0, turns, 0);
-                    uvs[i] = new float[] {icon.getSubIconU(quad.uvs()[i][0]), icon.getSubIconV(quad.uvs()[i][1])};
+                    uvs[i] = new double[] {icon.getSubIconU(quad.uvs()[i][0]), icon.getSubIconV(quad.uvs()[i][1])};
                 }
                 mesh.add(corners, uvs, n, geometry, m == null ? WHITE : m.color(), emission);
             }
