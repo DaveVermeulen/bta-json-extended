@@ -9,8 +9,7 @@ import io.github.tryrodave.jsonextended.obj.QuarterTurns;
 import io.github.tryrodave.jsonextended.tileentity.ModelTileEntityRenderer.Facing;
 import io.github.tryrodave.jsonextended.tileentity.TileEntityMesh;
 import java.io.UncheckedIOException;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -127,17 +126,47 @@ public class GltfTileEntityRenderer<T extends TileEntity> extends TileEntityRend
         mesh.draw(tess, te, x, y, z);
     }
 
-    /** What the faces were built for: a copy of the node TRS (compared by value) and the facing. */
-    private record Key(Map<Integer, List<Float>> pose, int turns) {
+    /** What the faces were built for: the node TRS (copied, compared by value) and the facing. */
+    private static final class Key {
+        private final int[] nodes;
+        private final float[] values;
+        private final int turns;
+        private final int hash;
+
+        private Key(int[] nodes, float[] values, int turns) {
+            this.nodes = nodes;
+            this.values = values;
+            this.turns = turns;
+            this.hash = 31 * (31 * Arrays.hashCode(nodes) + Arrays.hashCode(values)) + turns;
+        }
+
         static Key of(Map<Integer, float[]> pose, int turns) {
-            Map<Integer, List<Float>> copy = new HashMap<>();
-            pose.forEach((node, trs) -> {
-                List<Float> values = new ArrayList<>(trs.length);
-                for (float v : trs)
-                    values.add(v);
-                copy.put(node, values);
-            });
-            return new Key(copy, turns);
+            int[] nodes = new int[pose.size()];
+            int n = 0, length = 0;
+            for (Map.Entry<Integer, float[]> e : pose.entrySet()) {
+                nodes[n++] = e.getKey();
+                length += e.getValue().length;
+            }
+            Arrays.sort(nodes);
+            float[] values = new float[length];
+            int at = 0;
+            for (int node : nodes) {
+                float[] trs = pose.get(node);
+                System.arraycopy(trs, 0, values, at, trs.length);
+                at += trs.length;
+            }
+            return new Key(nodes, values, turns);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            return o instanceof Key k && turns == k.turns && hash == k.hash && Arrays.equals(nodes, k.nodes)
+                    && Arrays.equals(values, k.values);
+        }
+
+        @Override
+        public int hashCode() {
+            return hash;
         }
     }
 }

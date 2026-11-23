@@ -38,6 +38,16 @@ public final class ObjSmoothLight {
         this.cache = cache;
     }
 
+    /**
+     * Works out every side and layer now, so {@link #sample} no longer reads the {@link LightingCache} and the cache
+     * can be set up for another block. Tile entity meshes keep one prepared instance per tick.
+     */
+    public void prepareAll() {
+        for (int side = 0; side < 6; side++)
+            for (int layer = 0; layer < 2; layer++)
+                corners(side, layer);
+    }
+
     /** Light index and shade for a vertex at {@code p} (block units) on a face looking towards {@code side}. */
     public void sample(ObjQuad.Side side, float[] p) {
         int s = side.ordinal();

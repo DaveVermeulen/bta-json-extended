@@ -60,7 +60,7 @@ public final class TileEntityMesh {
 
     /** Free a mesh's vertex buffer after this long without being drawn (unloaded, removed, or its renderer replaced). */
     static final long UNUSED_NANOS = 2_000_000_000L;
-    private static final int GL_ARRAY_BUFFER = 34962, GL_STATIC_DRAW = 35044;
+    private static final int GL_ARRAY_BUFFER = 34962, GL_DYNAMIC_DRAW = 35048;
     private static final ObjQuad.Side[] SIDE_VALUES = ObjQuad.Side.values();
     private static boolean itemShader = Boolean.getBoolean("jsonextended.tileEntityItemShader");
     /** Meshes holding GL buffers, so they can be freed even after their tile entity or renderer is gone. */
@@ -72,6 +72,7 @@ public final class TileEntityMesh {
 
     private int vao, vbo, vertexCount;
     private boolean dirty = true, smoothBefore;
+    private ObjSmoothLight smoothLight;
     private long lastDrawn;
 
     private Object key;
@@ -169,15 +170,7 @@ public final class TileEntityMesh {
         if (terrain == null)
             terrain = new TessellatorTerrainImpl(64 * 1024);
         TessellatorTerrainImpl t = terrain;
-        ObjSmoothLight smooth = null;
-        if (Boolean.TRUE.equals(GameSettings.AMBIENT_OCCLUSION.value)) {
-            World world = te.worldObj;
-            Block<?> block = world.getBlock(te.tilePos.x, te.tilePos.y, te.tilePos.z);
-            if (block != null) {
-                CACHE.setupCache(block, world, te.tilePos.x, te.tilePos.y, te.tilePos.z);
-                smooth = new ObjSmoothLight(CACHE);
-            }
-        }
+        ObjSmoothLight smooth = smoothLight;
         t.drawing = false; // in case an earlier fill stopped half way
         t.startDrawing(DrawMode.QUADS);
         float[] p = new float[3];
@@ -225,13 +218,13 @@ public final class TileEntityMesh {
             vbo = GL41.glGenBuffers();
             LIVE.add(this);
             GL41.glBindBuffer(GL_ARRAY_BUFFER, vbo);
-            GL41.glBufferData(GL_ARRAY_BUFFER, data, GL_STATIC_DRAW);
+            GL41.glBufferData(GL_ARRAY_BUFFER, data, GL_DYNAMIC_DRAW);
             // Binds our VAO and VBO and sets the five attribute pointers of the terrain format on the VAO.
             new TessellatorTerrainImpl.TerrainVertexConfig().enable(vao, vbo);
             GL41.glBindVertexArray(0);
         } else {
             GL41.glBindBuffer(GL_ARRAY_BUFFER, vbo);
-            GL41.glBufferData(GL_ARRAY_BUFFER, data, GL_STATIC_DRAW);
+            GL41.glBufferData(GL_ARRAY_BUFFER, data, GL_DYNAMIC_DRAW);
         }
         GL41.glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
@@ -337,6 +330,20 @@ public final class TileEntityMesh {
         boolean smooth = Boolean.TRUE.equals(GameSettings.AMBIENT_OCCLUSION.value);
         boolean changed = !Arrays.equals(before, light) || smooth != smoothBefore;
         smoothBefore = smooth;
+        // Corner light and shade for smooth lighting, worked out once per tick (not per fill: an animated model
+        // is filled every frame) and only when something changed.
+        if (!smooth) {
+            smoothLight = null;
+        } else if (changed || smoothLight == null) {
+            Block<?> block = world.getBlock(x, y, z);
+            smoothLight = null;
+            if (block != null) {
+                CACHE.setupCache(block, world, x, y, z);
+                smoothLight = new ObjSmoothLight(CACHE);
+                smoothLight.prepareAll();
+            }
+            changed = true;
+        }
         return changed;
     }
 
