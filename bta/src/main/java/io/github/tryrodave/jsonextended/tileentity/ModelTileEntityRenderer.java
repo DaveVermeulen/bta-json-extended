@@ -10,15 +10,12 @@ import io.github.tryrodave.jsonextended.pose.ModelQuad;
 import io.github.tryrodave.jsonextended.pose.Pose;
 import io.github.tryrodave.jsonextended.pose.Rig;
 import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.render.renderer.BlendFactor;
-import net.minecraft.client.render.renderer.GLRenderer;
-import net.minecraft.client.render.renderer.Shaders;
-import net.minecraft.client.render.renderer.State;
 import net.minecraft.client.render.tessellator.TessellatorGeneral;
 import net.minecraft.client.render.texture.stitcher.IconCoordinate;
-import net.minecraft.client.render.texture.stitcher.TextureRegistry;
 import net.minecraft.client.render.tileentity.TileEntityRenderer;
 import net.minecraft.core.block.entity.TileEntity;
 
@@ -27,7 +24,8 @@ import net.minecraft.core.block.entity.TileEntity;
  * Parts are Blockbench's groups (see {@code knowledge/formats/pose.md}); the {@link Poser} says how each part sits
  * this frame. The model is read once and again after a texture pack change (the game makes new renderers then).
  * <p>
- * Drawn under the model matrix like BTA's flower jar renderer: the block's own light, face shading from the normal.
+ * Drawn by {@link TileEntityMesh}: faces are reused while the pose and facing stay the same, faces on the block's
+ * edge take their neighbour's light, face shading comes from the normal, and there is no ambient occlusion.
  */
 @Environment(EnvType.CLIENT)
 public class ModelTileEntityRenderer<T extends TileEntity> extends TileEntityRenderer<T> {
@@ -49,6 +47,9 @@ public class ModelTileEntityRenderer<T extends TileEntity> extends TileEntityRen
     private List<ModelQuad> quads;
     private Rig rig;
     private final AtlasIcons icons;
+    /** Last drawn faces per tile entity; an unloaded one drops out with its tile entity. */
+    private final Map<T, TileEntityMesh> meshes = new WeakHashMap<>();
+    private static final float[] WHITE = {1f, 1f, 1f};
 
     /** @param modelId a model id as blockstates take it, e.g. {@code mymod:block/chest} */
     public ModelTileEntityRenderer(String modelId, Poser<T> poser, Facing<T> facing) {
@@ -66,40 +67,31 @@ public class ModelTileEntityRenderer<T extends TileEntity> extends TileEntityRen
     public void doRender(TessellatorGeneral tess, T te, double x, double y, double z, float partialTick) {
         if (!loaded())
             return;
-        List<ModelQuad> posed = rig.pose(quads, poser.pose(te, partialTick));
+        Pose pose = poser.pose(te, partialTick);
         int turns = facing.yTurns(te);
-        // The block's own light, as BTA's dispatcher sets it before doRender (the model is drawn inside the block).
-        byte light = te.worldObj.getLightmapCoord(te.tilePos.x, te.tilePos.y, te.tilePos.z, 0);
-
-        GLRenderer.pushFrame();
-        try {
-            GLRenderer.setShader(Shaders.ITEM);
-            TextureRegistry.worldAtlas.bind();
-            GLRenderer.enableState(State.BLEND);
-            GLRenderer.setBlendFunc(BlendFactor.SRC_ALPHA, BlendFactor.ONE_MINUS_SRC_ALPHA);
-            GLRenderer.modelM4f().translate((float) x, (float) y, (float) z);
-            tess.startDrawingQuads();
-            for (ModelQuad quad : posed) {
+        TileEntityMesh mesh = meshes.computeIfAbsent(te, k -> new TileEntityMesh());
+        Key key = new Key(pose, turns);
+        if (!mesh.matches(key)) {
+            mesh.begin(key);
+            for (ModelQuad quad : rig.pose(quads, pose)) {
                 IconCoordinate icon = icon(quad.texture());
                 if (icon == null)
                     continue;
-                float[] n = QuarterTurns.vector(quad.normal(), 0, turns, 0);
-                tess.setNormal(n[0], n[1], n[2]);
-                tess.setColorOpaque3f(1f, 1f, 1f);
+                float[][] corners = new float[4][];
+                float[][] uvs = new float[4][];
                 for (int i = 0; i < 4; i++) {
-                    float[] p = QuarterTurns.point(quad.positions()[i], 0, turns, 0);
-                    tess.setLightmapCoord1i(light);
-                    tess.setShade1i(255);
-                    tess.addVertexWithUV(p[0], p[1], p[2],
-                            icon.getSubIconU(quad.uvs()[i][0]), icon.getSubIconV(quad.uvs()[i][1]));
+                    corners[i] = QuarterTurns.point(quad.positions()[i], 0, turns, 0);
+                    uvs[i] = new float[] {icon.getSubIconU(quad.uvs()[i][0]), icon.getSubIconV(quad.uvs()[i][1])};
                 }
+                float[] n = QuarterTurns.vector(quad.normal(), 0, turns, 0);
+                mesh.add(corners, uvs, n, n, WHITE, 0);
             }
-            tess.setNormal(0f, 1f, 0f);
-            tess.draw();
-        } finally {
-            GLRenderer.disableState(State.BLEND);
-            GLRenderer.popFrame();
         }
+        mesh.draw(tess, te, x, y, z);
+    }
+
+    /** What the faces were built for: the parts' pose and the facing. */
+    private record Key(Pose pose, int turns) {
     }
 
     /** Reads and bakes the model the first time; false (and one error line) when it can't be read. */

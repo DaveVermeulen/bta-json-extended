@@ -7,7 +7,7 @@ These don't work yet:
 - **Item `overrides`** (a different model by damage or a predicate) log a warning and are ignored.
 - **`gui_light` for flat items.** It's read, but flat items always get BTA's normal inventory lighting.
 - **Tinted 3D item models.** Faces with a `tintindex` are drawn white in item models.
-- **Tile entity models** take one light level for the whole model (the block's own), with no smooth lighting, and only model JSON: OBJ files can't be posed yet.
+- **Tile entity models** take their light from their own block and, for faces on the block's edge, from the block next to them, but have no smooth lighting (the soft darkening in corners): BTA's tile entity shader has no input for it. OBJ files can't be posed yet (model JSON and glTF can).
 - **OBJ transparency from materials.** MTL `d` and `Tr` are read but ignored; use a texture with alpha and `render_type`.
 - **Rotations** in blockstates are in steps of 90 degrees, as in vanilla.
 - **New texture names from packs.** A texture pack can replace any file, but a texture that no mod jar ships isn't in BTA's atlas, so a pack's model can only point at textures that exist.

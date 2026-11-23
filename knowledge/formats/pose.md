@@ -29,7 +29,7 @@ Core code in `core/.../pose/` and `core/.../model/{ResolvedModel,ElementQuads}`.
 ## Drawing it in game (bta)
 
 - `bta/.../tileentity/ModelTileEntityRenderer<T>(modelId, poser, facing)`: a `TileEntityRenderer` that reads the model JSON once (through the texture packs, `Models::read`), bakes it, and every frame draws `rig.pose(quads, poser.pose(te, partialTick))`, turned by `facing.yTurns(te)` quarter turns about Y (as `QuarterTurns`).
-- Drawn way A from [../bta/tile-entities.md](../bta/tile-entities.md): `pushFrame`, `Shaders.ITEM`, `worldAtlas`, blend, `modelM4f().translate(x, y, z)`, one quad batch, `popFrame`. Light is the block's own (`getLightmapCoord`), shade 255, normals per face. No AO, no culling against neighbours.
+- Drawn way A from [../bta/tile-entities.md](../bta/tile-entities.md): `pushFrame`, `Shaders.ITEM`, `worldAtlas`, blend, `modelM4f().translate(x, y, z)`, one quad batch, `popFrame`. Drawn through `tileentity/TileEntityMesh`: faces cached per TE while pose and facing are unchanged; faces on the block edge take the neighbour's light, others the block's own; shade 255, normals per face. No AO (the ITEM shader has no input for it), no culling against neighbours.
 - A new renderer is made on every `TILE_ENTITY_RENDERER_RELOAD` (startup and pack change), so the model and icons follow the packs.
 - Hide the chunk model by overriding `render` and `renderAttached` on a `BlockModelGeneric` to draw nothing; `renderStandalone` still draws the item.
 - Example: `tileentity/example/TestChest` (dev block 9124). The open state is metadata bit 2 (facing bits 0-1); the tile entity only eases `lid` 0..1 per tick and the renderer lerps with `partialTick`.
