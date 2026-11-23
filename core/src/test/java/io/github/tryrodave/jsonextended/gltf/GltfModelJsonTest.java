@@ -96,6 +96,26 @@ class GltfModelJsonTest {
         assertEquals(1f, quads.stream().filter(q -> q.mesh().equals("gem")).findFirst().orElseThrow().material().ambient(), 1e-6f);
     }
 
+    @Test
+    void devAnimatedLanternPlaysInsideItsBlock() {
+        assumeTrue(Files.isDirectory(ASSETS), "bta/ is not next to core/");
+        String id = "jsonextended:block/test_glb_animated_lantern";
+        GltfModelJson json = GltfModelJson.parse(id, new String(dev("jsonextended:models/block/test_glb_animated_lantern.json"),
+                StandardCharsets.UTF_8));
+        assertEquals(List.of(), json.warnings());
+        GltfModel model = GltfModel.load(json.model(), GltfModelJsonTest::dev);
+        assertEquals(List.of(), model.warnings());
+        assertEquals(List.of("idle", "spin"), List.copyOf(model.animations().keySet()));
+        assertEquals(4f, model.animations().get("idle").length(), 1e-6f);
+        assertEquals(0.5f, model.animations().get("spin").length(), 1e-6f);
+        for (GltfAnimation animation : model.animations().values())
+            for (float t = 0; t <= animation.length(); t += animation.length() / 16)
+                for (ObjQuad q : json.place(model.pose(animation.sample(t))))
+                    for (float[] p : q.positions())
+                        for (float c : p)
+                            assertTrue(c >= -1e-4f && c <= 1 + 1e-4f, animation.name() + " at " + t + " leaves the block");
+    }
+
     private static byte[] dev(String id) {
         Path file = ASSETS.resolve(id.substring(0, id.indexOf(':'))).resolve(id.substring(id.indexOf(':') + 1));
         try {

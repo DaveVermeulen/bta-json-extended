@@ -4,6 +4,7 @@ import io.github.tryrodave.jsonextended.obj.ObjMaterial;
 import io.github.tryrodave.jsonextended.obj.ObjQuad;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -22,12 +23,29 @@ import java.util.function.Function;
  * images in the file are not read.
  */
 public final class GltfModel {
-    private final List<ObjQuad> quads;
-    private final List<String> warnings;
+    /** Rest values of a node's {@code translation}, {@code rotation} (x, y, z, w) and {@code scale}, packed in 10 floats. */
+    public static final int T = 0, R = 3, S = 7, TRS = 10;
 
-    private GltfModel(List<ObjQuad> quads, List<String> warnings) {
-        this.quads = quads;
+    /**
+     * A node of the scene, parents before children.
+     *
+     * @param parent index into {@link #nodes()}, or -1 for a root
+     * @param rest   rest TRS (see {@link #T}); for a {@code matrix} node, identity and {@code matrix} is set
+     * @param matrix the node's {@code matrix} (16 numbers, column by column), or null for a TRS node
+     * @param quads  the node's mesh in its own space, before any node transform
+     */
+    public record Node(int fileIndex, String name, int parent, float[] rest, float[] matrix, List<ObjQuad> quads) {}
+
+    private final List<Node> nodes;
+    private final Map<String, GltfAnimation> animations;
+    private final List<String> warnings;
+    private final List<ObjQuad> rest;
+
+    private GltfModel(List<Node> nodes, Map<String, GltfAnimation> animations, List<String> warnings) {
+        this.nodes = nodes;
+        this.animations = animations;
         this.warnings = warnings;
+        this.rest = pose(Map.of());
     }
 
     /**
@@ -46,14 +64,57 @@ public final class GltfModel {
         return new Builder(file).build();
     }
 
-    /** Every face, node by node. {@link ObjQuad#mesh()} is the node's name. */
+    /** Every face in the rest pose, node by node. {@link ObjQuad#mesh()} is the node's name. */
     public List<ObjQuad> quads() {
-        return quads;
+        return rest;
+    }
+
+    /** The scene's nodes, parents before children. */
+    public List<Node> nodes() {
+        return nodes;
+    }
+
+    /** Animations by name ({@code animation_N} for an unnamed one), in file order. */
+    public Map<String, GltfAnimation> animations() {
+        return animations;
     }
 
     /** One line each, starting with the file id. */
     public List<String> warnings() {
         return warnings;
+    }
+
+    /**
+     * Every face with some nodes moved: {@code pose} maps a node's place in {@link #nodes()} to its TRS (see
+     * {@link #T}); nodes not in it keep their rest values. Nodes with a {@code matrix} can't be moved.
+     */
+    public List<ObjQuad> pose(Map<Integer, float[]> pose) {
+        Matrix[] world = new Matrix[nodes.size()];
+        List<ObjQuad> out = new ArrayList<>();
+        for (int i = 0; i < nodes.size(); i++) {
+            Node node = nodes.get(i);
+            float[] trs = node.matrix() == null ? pose.getOrDefault(i, node.rest()) : null;
+            Matrix local = trs == null ? Matrix.columnMajor(node.matrix())
+                    : Matrix.trs(new float[] {trs[T], trs[T + 1], trs[T + 2]},
+                    new float[] {trs[R], trs[R + 1], trs[R + 2], trs[R + 3]}, new float[] {trs[S], trs[S + 1], trs[S + 2]});
+            world[i] = node.parent() < 0 ? local : world[node.parent()].times(local);
+            if (node.quads().isEmpty())
+                continue;
+            Matrix m = world[i];
+            boolean mirrored = m.determinant() < 0;
+            for (ObjQuad q : node.quads()) {
+                float[][] p = new float[4][], uv = new float[4][];
+                for (int c = 0; c < 4; c++) {
+                    int from = mirrored ? (4 - c) % 4 : c; // 0, 3, 2, 1: same two triangles, turned the other way
+                    float[] v = q.positions()[from];
+                    p[c] = m.point(v[0], v[1], v[2]);
+                    uv[c] = q.uvs()[from];
+                }
+                float[] normal = ObjQuad.faceNormal(p);
+                out.add(new ObjQuad(q.mesh(), q.material(), p, uv, new float[][] {normal, normal, normal, normal}));
+            }
+        }
+        return Collections.unmodifiableList(out);
     }
 
     /** The texture variable a material draws with: its name, or {@code material_N} when it has none. */
@@ -64,7 +125,9 @@ public final class GltfModel {
     private static final class Builder {
         private final GltfFile file;
         private final String id;
-        private final List<ObjQuad> quads = new ArrayList<>();
+        private final List<Node> built = new ArrayList<>();
+        private List<ObjQuad> quads;
+        private boolean anyQuads;
         private final List<String> warnings = new ArrayList<>();
         private final Set<String> warned = new HashSet<>();
         private final List<ObjMaterial> materials = new ArrayList<>();
@@ -82,10 +145,14 @@ public final class GltfModel {
             List<Object> nodes = file.array("nodes");
             Set<Integer> visiting = new HashSet<>();
             for (int root : roots(nodes))
-                node(nodes, root, Matrix.IDENTITY, visiting);
-            if (quads.isEmpty())
+                node(nodes, root, -1, visiting);
+            if (!anyQuads)
                 warn(id + ": the scene has no triangles to draw");
-            return new GltfModel(Collections.unmodifiableList(quads), List.copyOf(warnings));
+            Map<Integer, Integer> byFileIndex = new HashMap<>();
+            for (int i = 0; i < built.size(); i++)
+                byFileIndex.putIfAbsent(built.get(i).fileIndex(), i);
+            Map<String, GltfAnimation> animations = GltfAnimation.read(file, byFileIndex, built, warnings);
+            return new GltfModel(List.copyOf(built), animations, List.copyOf(warnings));
         }
 
         /** The scene's root nodes: {@code scene} (or the first scene), else every node no other node holds. */
@@ -112,32 +179,40 @@ public final class GltfModel {
             return roots;
         }
 
-        private void node(List<Object> nodes, int index, Matrix parent, Set<Integer> visiting) {
+        private void node(List<Object> nodes, int index, int parent, Set<Integer> visiting) {
             String path = "nodes[" + index + "]";
             if (!visiting.add(index))
                 throw new GltfException(id + ": " + path + ": is its own ancestor");
             Map<?, ?> node = GltfFile.object(id, nodes.get(index), path);
-            Matrix world = parent.times(local(node, path));
             String name = node.get("name") instanceof String s && !s.isEmpty() ? s : "node_" + index;
+            quads = new ArrayList<>();
             if (node.containsKey("mesh"))
-                mesh(GltfFile.integer(id, node, "mesh", path, -1), name, world, path);
+                mesh(GltfFile.integer(id, node, "mesh", path, -1), name, path);
             if (node.containsKey("skin"))
                 warn(id + ": " + path + ": skinning isn't supported; the mesh is drawn in its rest pose");
+            anyQuads |= !quads.isEmpty();
+            float[] matrix = node.get("matrix") instanceof List<?> m ? numbers(m, 16, path + ".matrix") : null;
+            built.add(new Node(index, name, parent, matrix == null ? rest(node, path) : REST.clone(), matrix, List.copyOf(quads)));
+            int self = built.size() - 1;
             for (Object c : GltfFile.list(node, "children"))
-                node(nodes, index(c, nodes.size(), path + ".children"), world, visiting);
+                node(nodes, index(c, nodes.size(), path + ".children"), self, visiting);
             visiting.remove(index);
         }
 
-        private Matrix local(Map<?, ?> node, String path) {
-            if (node.get("matrix") instanceof List<?> m)
-                return Matrix.columnMajor(numbers(m, 16, path + ".matrix"));
-            float[] t = node.containsKey("translation") ? numbers(node.get("translation"), 3, path + ".translation") : new float[3];
-            float[] r = node.containsKey("rotation") ? numbers(node.get("rotation"), 4, path + ".rotation") : new float[] {0, 0, 0, 1};
-            float[] s = node.containsKey("scale") ? numbers(node.get("scale"), 3, path + ".scale") : new float[] {1, 1, 1};
-            return Matrix.trs(t, r, s);
+        private static final float[] REST = {0, 0, 0, 0, 0, 0, 1, 1, 1, 1};
+
+        private float[] rest(Map<?, ?> node, String path) {
+            float[] trs = REST.clone();
+            if (node.containsKey("translation"))
+                System.arraycopy(numbers(node.get("translation"), 3, path + ".translation"), 0, trs, T, 3);
+            if (node.containsKey("rotation"))
+                System.arraycopy(numbers(node.get("rotation"), 4, path + ".rotation"), 0, trs, R, 4);
+            if (node.containsKey("scale"))
+                System.arraycopy(numbers(node.get("scale"), 3, path + ".scale"), 0, trs, S, 3);
+            return trs;
         }
 
-        private void mesh(int meshIndex, String name, Matrix world, String nodePath) {
+        private void mesh(int meshIndex, String name, String nodePath) {
             List<Object> meshes = file.array("meshes");
             if (meshIndex >= meshes.size())
                 throw new GltfException(id + ": " + nodePath + ".mesh: " + meshIndex + " doesn't exist");
@@ -145,11 +220,11 @@ public final class GltfModel {
             Map<?, ?> mesh = GltfFile.object(id, meshes.get(meshIndex), path);
             List<Object> primitives = GltfFile.list(mesh, "primitives");
             for (int p = 0; p < primitives.size(); p++)
-                primitive(GltfFile.object(id, primitives.get(p), path + ".primitives[" + p + "]"), name, world,
+                primitive(GltfFile.object(id, primitives.get(p), path + ".primitives[" + p + "]"), name,
                         path + ".primitives[" + p + "]");
         }
 
-        private void primitive(Map<?, ?> primitive, String name, Matrix world, String path) {
+        private void primitive(Map<?, ?> primitive, String name, String path) {
             int mode = GltfFile.integer(id, primitive, "mode", path, 4);
             if (mode < 4 || mode > 6) {
                 warn(id + ": " + path + ".mode: points and lines aren't drawn");
@@ -188,22 +263,18 @@ public final class GltfModel {
                 material = materials.get(m);
             }
 
-            boolean mirrored = world.determinant() < 0;
+            // In the node's own space; GltfModel.pose places them.
             float[][] placed = new float[vertices][];
             for (int v = 0; v < vertices; v++)
-                placed[v] = world.point(positions[v * 3], positions[v * 3 + 1], positions[v * 3 + 2]);
+                placed[v] = new float[] {positions[v * 3], positions[v * 3 + 1], positions[v * 3 + 2]};
 
             for (int t = 0; t < triangles.length; t++) {
                 int[] a = triangles[t];
-                if (mirrored)
-                    a = new int[] {a[0], a[2], a[1]};
                 if (degenerate(placed, a))
                     continue;
                 int[] corners = null;
                 if (t + 1 < triangles.length) {
                     int[] b = triangles[t + 1];
-                    if (mirrored)
-                        b = new int[] {b[0], b[2], b[1]};
                     corners = merge(placed, a, b);
                     if (corners != null)
                         t++;
