@@ -10,6 +10,7 @@ Each agent has one job. A brief says what it **owns** (may edit), what it **read
 | OBJ | [obj.md](obj.md) | Our own OBJ/MTL parser and the OBJ model type |
 | glTF | [gltf.md](gltf.md) | GLB/glTF models and their animations (after parity) |
 | Tile entities | [tile-entities.md](tile-entities.md) | Model-driven tile entity renderers |
+| Shapes | [shapes.md](shapes.md) | Multi-box block shapes in code: collision, picking, outline |
 | Animation | [animation.md](animation.md) | Blockbench animations and the player |
 | Build and release | [build-release.md](build-release.md) | Gradle, GitHub Actions, versions, changelog, releases |
 | Reviewer | [reviewer.md](reviewer.md) | Reviews PRs; never writes features |

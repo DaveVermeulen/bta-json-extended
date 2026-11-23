@@ -83,6 +83,10 @@ Priority: work like modern Minecraft first (phases 0 to 3), then extend on top (
 | 6. Animation | Bedrock keyframes (rot/pos/scale, linear + catmull-rom), loop/one-shot, controller API | Animated entity and tile entity from Blockbench | 2 weeks (done 2026-11-22: PR #20, #21, #22) |
 | 7. GLB / glTF | glTF 2.0 meshes and materials as a model type; node animations through the phase 6 player | A static GLB block and an animated GLB tile entity | 2-3 weeks (skinning later, separate). Step 1 (static block models) done (PR #26); step 2 (node animations on tile entities) in review |
 
+## Side track: block shapes
+
+Multi-box block shapes in code (like NeoForge's `VoxelShape`): collision, aiming at each box and the hover outline. BTA 8.0.1 already supports all three through `BlockLogic` overrides, so no mixins are needed for the core. Independent of the phases above. Plan and steps: [knowledge/shapes.md](knowledge/shapes.md); owner: [agents/shapes.md](agents/shapes.md).
+
 ## Reuse, risks, open questions
 
 Licence: MIT. Reused from Betafront: OBJ test models and tests (not the NeoForge-derived LGPL parser), texture-pack loading, smooth lighting (or BTA's own), KNOWLEDGE.md API table, Gradle build and release steps. Dropped: StationAPI build, `ObjModels.block(..., yRotation)` API.

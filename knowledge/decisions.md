@@ -5,6 +5,7 @@ Newest first. One line each, with the date and who decided.
 | Date | Decision | By |
 | --- | --- | --- |
 | 2026-11-22 | glTF animations get their own sampler and player (`GltfAnimation`, `GltfAnimationPlayer`, same API as `AnimationPlayer`) instead of being converted to Bedrock clips: rotations are quaternions (slerp, no Euler flips) and they move a node tree, not Blockbench parts. Changes the glTF brief's "converted to the same clip format" | Claude (phase 7 step 2), for Dave's review |
+| 2026-11-18 | Add multi-box block shapes (like NeoForge `VoxelShape`), defined in code only, not JSON; plan first, owned by a new Shapes agent; subtracting shapes comes later | Dave |
 | 2026-11-17 | `.glb` is the recommended file for packs; `.gltf` (+ `.bin`) is read too, same content | Dave |
 | 2026-11-17 | GLB textures: start by referencing atlas textures by id in the model JSON (like OBJ); maybe stitch embedded images later | Dave |
 | 2026-11-17 | Resource packs may restyle vanilla BTA blocks through our blockstates, using a mixin into `BlockModelDispatcher` (Platform owns it) | Dave |
