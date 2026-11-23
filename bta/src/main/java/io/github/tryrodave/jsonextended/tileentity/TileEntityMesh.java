@@ -106,6 +106,11 @@ public final class TileEntityMesh {
         return interval == 0L || System.nanoTime() - lastPosed >= interval;
     }
 
+    /** Dev timing: adds the batch's draw time, from {@code started} ({@link System#nanoTime}) to now. */
+    static void timedFlush(long started) {
+        renderNanos += System.nanoTime() - started;
+    }
+
     /** Dev timing: adds one tile entity's render time, from {@code started} ({@link System#nanoTime}) to now. */
     public static void timed(long started) {
         renderNanos += System.nanoTime() - started;
@@ -167,25 +172,13 @@ public final class TileEntityMesh {
         drawItem(tess, x, y, z);
     }
 
-    /** The terrain path: fill and upload when the faces or light changed, then one draw call. */
+    /** The terrain path: fill and upload when the faces or light changed, then queue one draw for the batch. */
     private void drawTerrain(TileEntity te, double x, double y, double z, boolean relit) {
         lastDrawn = System.nanoTime();
         if (vao == 0 || dirty || relit)
             upload(fill(te));
-        if (vertexCount == 0)
-            return;
-        GLRenderer.pushFrame();
-        try {
-            TextureRegistry.worldAtlas.bind();
-            GLRenderer.setShader(Shaders.TERRAIN);
-            GLRenderer.enableState(State.BLEND);
-            GLRenderer.setBlendFunc(BlendFactor.SRC_ALPHA, BlendFactor.ONE_MINUS_SRC_ALPHA);
-            GLRenderer.modelM4f().translate((float) x, (float) y, (float) z);
-            GLRenderer.render(vao, vbo, 0, vertexCount, DrawMode.TRIANGLES);
-        } finally {
-            GLRenderer.disableState(State.BLEND);
-            GLRenderer.popFrame();
-        }
+        if (vertexCount > 0)
+            TileEntityBatch.add(x, y, z, vao, vertexCount); // drawn with the others after the tile entity loop
     }
 
     /** Writes the faces in the terrain vertex format, with smooth light and shade when the option is on. */
@@ -298,6 +291,7 @@ public final class TileEntityMesh {
 
     /** Frees every mesh's buffers, e.g. when the world changes. */
     public static void freeAll() {
+        TileEntityBatch.clear();
         new ArrayList<>(LIVE).forEach(TileEntityMesh::free);
     }
 

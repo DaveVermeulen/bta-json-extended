@@ -22,6 +22,9 @@
 			"io.github.tryrodave.jsonextended.client.JsonExtendedClient"
 		]
 	},
+	"mixins": [
+		"jsonextended.mixins.json"
+	],
 	"depends": {
 		"fabricloader": ">=${fabricloader}",
 		"minecraft": "*",
