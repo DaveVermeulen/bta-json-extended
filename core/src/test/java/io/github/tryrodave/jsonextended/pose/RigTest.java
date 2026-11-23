@@ -2,6 +2,7 @@ package io.github.tryrodave.jsonextended.pose;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
 import io.github.tryrodave.jsonextended.model.ElementQuads;
@@ -107,5 +108,15 @@ class RigTest {
         PartTransform half = PartTransform.lerp(PartTransform.NONE, PartTransform.rotation(90, 0, 0), 0.5f);
         assertEquals(45f, half.rx());
         assertEquals(1f, half.sx());
+    }
+
+    @Test
+    void posesAreEqualWhenEveryPartSitsTheSame() {
+        Pose open = Pose.REST.with("lid", PartTransform.rotation(90, 0, 0));
+        assertEquals(open, Pose.REST.with("lid", PartTransform.rotation(90, 0, 0)));
+        assertEquals(open.hashCode(), Pose.REST.with("lid", PartTransform.rotation(90, 0, 0)).hashCode());
+        assertEquals(Pose.REST, Pose.REST.with("lid", PartTransform.NONE)); // an explicit no-op is the rest pose
+        assertEquals(Pose.REST.hashCode(), Pose.REST.with("lid", PartTransform.NONE).hashCode());
+        assertNotEquals(open, Pose.REST.with("lid", PartTransform.rotation(89, 0, 0)));
     }
 }

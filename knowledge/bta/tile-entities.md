@@ -58,7 +58,7 @@ GLRenderer.popFrame();
 - `BlockModel.renderStandalone(tess, meta, light)` draws **centred on the origin** and does its own start/draw. The jar uses translate(x, y, z), scale 0.75, translate(0.66, 0.75, 0.66) to put it back in the block.
 - Our own quads in 0..1 need only `translate(x, y, z)`.
 
-**B. World way** (moving piston). Gives AO and per-corner world light from `LightingCache`:
+**B. World way** (moving piston). Gives per-corner world light from `LightingCache`, but no AO: the ITEM shader drops it (below).
 - `worldAtlas.bind()`, `setShader(Shaders.ITEM)`, blend on, `disableState(CULL_FACE)`.
 - `tess.startDrawingQuads()`, then `tess.setTranslation(x - te.x, y - te.y, z - te.z)`. `renderAttached` adds the world position back.
 - Call `blockModel.renderNoCulling(tess, world, pos)` (or `renderAttached` on a `StaticBlockModel`).
@@ -68,7 +68,9 @@ GLRenderer.popFrame();
 **Lighting under `Shaders.ITEM`:**
 - The world brightness comes from the lightmap coordinate (block + sky light byte). Set it per vertex, or rely on the dispatcher's global `GLRenderer.setLightmapCoord1i`.
 - Directional face shading comes from the normal while global lighting is on, which it is in the world (item GUI turns it off).
-- The world path also writes `setShade1i(0..255)` per vertex as AO/brightness. With way A, set `setShade1i(255)` or leave it out. (I didn't verify the ITEM shader's default shade.)
+- Directional shading is the same as in chunks: terrain and TEs both draw between `Lighting.enableLight()` / `disable()`, and both shaders use `lightModelAmbient + lightSourceDiffuse1 * (dir1 + dir2)` (checked in the jar's shaders, 2026-11-23).
+- **No AO under ITEM.** `item.vsh`/`item.fsh` have no shade input, so `setShade1i` is dropped (moving pistons lose AO too). Only `terrain.vsh` reads it (`aLightShade`, location 4; `terrain.fsh` does `mix(1, Shade, shadeEffect)`). Vertex colour can't stand in: it only tints pixels the colour mask marks. Exact AO would mean drawing with `Shaders.TERRAIN` and `TessellatorTerrainImpl` (`startDrawing(DrawMode)`, `record(vao, vbo)` → `RenderBuffer`, `GLRenderer.render`); untried.
+- What we do instead (`tileentity/TileEntityMesh`, shared by both TE renderers): each face looks towards the side its normal points to most, and each corner blends that neighbour's light index with the block's own by depth (1 on that side's plane, 0 at the far side), per channel, as `ObjSmoothLight` does for its two layers. Opaque neighbour: own light. (First version used neighbour light only for faces flat on the edge; Dave saw the inset glTF lantern's sides stay unlit, 2026-11-23.) Light is read at most once per 50 ms; faces are rebuilt only when pose, facing or atlas change.
 - Atlas: there is no separate `blockAtlas`. `TextureRegistry.worldAtlas` holds `block/`, `item/` and `particle/`.
 - UVs: `icon.getSubIconU(u)` / `getSubIconV(v)` with u, v in 0..1 inside the icon (JSON uv / 16).
 

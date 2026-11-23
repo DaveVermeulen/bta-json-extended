@@ -82,6 +82,8 @@ The block's `BlockLogic` should return `false` from `isSolidRender()` and `isCub
 
 ## Lighting
 
-Every face takes the light of the tile entity's own block and is shaded by its direction. There's no smooth lighting or culling against neighbours for tile entity models.
+Faces are shaded by their direction like block faces. Each face takes light from the block it looks towards, mixed with the light of the tile entity's own block by how deep inside the block it sits: a face on the edge of the block takes all of its neighbour's light, one in the middle half of each. That's how OBJ and glTF block models are lit with smooth lighting on. Light is read once per tick, and a model's faces are only rebuilt when its pose or facing changes, so a tile entity that isn't moving is cheap to draw.
+
+There's no smooth lighting (the soft darkening in corners) or culling against neighbours for tile entity models. BTA draws tile entities with a shader that has no input for it; its own pistons lose it too.
 
 The full working version is the Test Chest: `bta/src/main/java/io/github/tryrodave/jsonextended/tileentity/example/TestChest.java`. To move parts from an animation file instead of code, see [animations.md](animations.md).
