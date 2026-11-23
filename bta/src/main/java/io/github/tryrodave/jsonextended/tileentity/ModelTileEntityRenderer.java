@@ -18,6 +18,7 @@ import net.minecraft.client.render.tessellator.TessellatorGeneral;
 import net.minecraft.client.render.texture.stitcher.IconCoordinate;
 import net.minecraft.client.render.tileentity.TileEntityRenderer;
 import net.minecraft.core.block.entity.TileEntity;
+import net.minecraft.core.world.World;
 
 /**
  * Draws a model JSON (a Blockbench "Java Block" export) for a tile entity every frame, with its parts posed from code.
@@ -62,6 +63,19 @@ public class ModelTileEntityRenderer<T extends TileEntity> extends TileEntityRen
 
     public ModelTileEntityRenderer(String modelId, Poser<T> poser) {
         this(modelId, poser, te -> 0);
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        TileEntityMesh.sweep();
+    }
+
+    @Override
+    public void onWorldChanged(World world) {
+        super.onWorldChanged(world);
+        meshes.clear();
+        TileEntityMesh.freeAll();
     }
 
     @Override

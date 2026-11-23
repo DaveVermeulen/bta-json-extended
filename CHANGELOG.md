@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Tile entity models (model JSON and glTF) are drawn with the world's terrain shader, so with smooth lighting on they get the same soft corner darkening as blocks. Each tile entity keeps a small GPU buffer, uploaded again only when it moves or its light changes, and freed two seconds after it's no longer drawn. Start the game with `-Djsonextended.tileEntityItemShader=true` to go back to the old drawing.
+
 ## 1.0.0 (2026-11-23)
 
 The full plan: blockstates, item models and model JSON (0.1.0), plus OBJ models, model tile entity renderers, Blockbench animations on tile entities and mobs, and GLB/glTF models with their animations. Documentation for mod developers is in `docs/`.

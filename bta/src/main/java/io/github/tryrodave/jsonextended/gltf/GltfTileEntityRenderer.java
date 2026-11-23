@@ -20,6 +20,7 @@ import net.minecraft.client.render.tessellator.TessellatorGeneral;
 import net.minecraft.client.render.texture.stitcher.IconCoordinate;
 import net.minecraft.client.render.tileentity.TileEntityRenderer;
 import net.minecraft.core.block.entity.TileEntity;
+import net.minecraft.core.world.World;
 
 /**
  * Draws a glTF model JSON ({@code "loader": "jsonextended:gltf"}) for a tile entity every frame, with its nodes
@@ -79,6 +80,19 @@ public class GltfTileEntityRenderer<T extends TileEntity> extends TileEntityRend
             }
         }
         return model;
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        TileEntityMesh.sweep();
+    }
+
+    @Override
+    public void onWorldChanged(World world) {
+        super.onWorldChanged(world);
+        meshes.clear();
+        TileEntityMesh.freeAll();
     }
 
     @Override
