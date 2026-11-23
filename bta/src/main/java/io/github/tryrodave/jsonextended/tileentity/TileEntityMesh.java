@@ -19,18 +19,20 @@ import net.minecraft.core.world.World;
  * <p>
  * Faces are rebuilt only when the key (pose and facing) changes or the atlas is rebuilt, so a still model costs
  * one pass over its vertices per frame and no posing. Light is read at most once per tick (50 ms): the block's
- * own, and for each face lying flat on the block's edge, the light of the block it faces, as chunk blocks do.
- * A face against an opaque block keeps the block's own light (in a chunk it would be culled).
+ * own and its six neighbours'. Like OBJ blocks with smooth lighting ({@code ObjSmoothLight}), each face looks
+ * towards the side its normal points to most, and each corner blends that neighbour's light with the block's own
+ * by how deep inside the block it sits: a face flat on the edge takes the neighbour's light, one in the middle
+ * half of each. When that neighbour is opaque, the block's own light is used (its light is the dark inside of a
+ * solid block).
  * <p>
  * Drawn with the item shader like BTA's own tile entities, so there is no ambient occlusion
  * (see {@code knowledge/bta/tile-entities.md}). Main thread only.
  */
 @Environment(EnvType.CLIENT)
 public final class TileEntityMesh {
-    /** Side index for a face inside the block: it takes the block's own light. */
-    public static final int INSIDE = 6;
+    /** Index of the block's own light in {@link #light}; 0 to 5 are the neighbours. */
+    private static final int OWN = 6;
     private static final long TICK_NANOS = 50_000_000L;
-    private static final float EDGE = 1e-3f;
     /** Neighbour offsets for sides 0 to 5: down, up, north, south, west, east. */
     private static final int[][] SIDES = {{0, -1, 0}, {0, 1, 0}, {0, 0, -1}, {0, 0, 1}, {-1, 0, 0}, {1, 0, 0}};
 
@@ -41,7 +43,8 @@ public final class TileEntityMesh {
     private double[] uvs = new double[0];     // 8 per face, atlas coordinates
     private float[] normals = new float[0];   // 3 per face
     private float[] colors = new float[0];    // 3 per face
-    private byte[] sides = new byte[0];
+    private byte[] sides = new byte[0];       // 0 to 5, the side each face looks towards
+    private float[] outside = new float[0];   // 4 per face: weight of the neighbour's light at each corner
     private byte[] emissions = new byte[0];
 
     private final byte[] light = new byte[7];
@@ -66,7 +69,7 @@ public final class TileEntityMesh {
      * @param corners  four corners in blocks, already turned to the block's facing
      * @param uvs      four atlas UVs
      * @param normal   the shading normal, already turned
-     * @param geometry the face's geometric normal, already turned, for finding the side it lies on
+     * @param geometry the face's geometric normal, already turned, for the side it looks towards
      * @param emission block light the face gives itself, 0 to 15
      */
     public void add(float[][] corners, double[][] uvs, float[] normal, float[] geometry, float[] color, int emission) {
@@ -77,7 +80,10 @@ public final class TileEntityMesh {
         }
         System.arraycopy(normal, 0, normals, count * 3, 3);
         System.arraycopy(color, 0, colors, count * 3, 3);
-        sides[count] = (byte) side(corners, geometry);
+        int side = side(geometry);
+        sides[count] = (byte) side;
+        for (int i = 0; i < 4; i++)
+            outside[count * 4 + i] = outsideWeight(side, corners[i]);
         emissions[count] = (byte) Math.max(0, Math.min(15, emission));
         count++;
     }
@@ -94,14 +100,15 @@ public final class TileEntityMesh {
             GLRenderer.modelM4f().translate((float) x, (float) y, (float) z);
             tess.startDrawingQuads();
             for (int f = 0; f < count; f++) {
-                byte faceLight = light[sides[f]];
-                if (emissions[f] > LightIndexHelper.blockLightFromIndex(faceLight))
-                    faceLight = LightIndexHelper.setBlockLight(faceLight, emissions[f]);
+                byte neighbour = light[sides[f]], own = light[OWN];
                 tess.setNormal(normals[f * 3], normals[f * 3 + 1], normals[f * 3 + 2]);
                 for (int i = 0; i < 4; i++) {
                     int p = f * 12 + i * 3, t = f * 8 + i * 2;
                     tess.setColorOpaque3f(colors[f * 3], colors[f * 3 + 1], colors[f * 3 + 2]);
-                    tess.setLightmapCoord1i(faceLight);
+                    byte corner = blend(own, neighbour, outside[f * 4 + i]);
+                    if (emissions[f] > LightIndexHelper.blockLightFromIndex(corner))
+                        corner = LightIndexHelper.setBlockLight(corner, emissions[f]);
+                    tess.setLightmapCoord1i(corner);
                     tess.setShade1i(255);
                     tess.addVertexWithUV(positions[p], positions[p + 1], positions[p + 2], uvs[t], uvs[t + 1]);
                 }
@@ -123,28 +130,41 @@ public final class TileEntityMesh {
         lightRead = now;
         World world = te.worldObj;
         int x = te.tilePos.x, y = te.tilePos.y, z = te.tilePos.z;
-        light[INSIDE] = world.getLightmapCoord(x, y, z, 0);
+        light[OWN] = world.getLightmapCoord(x, y, z, 0);
         for (int s = 0; s < 6; s++) {
             int nx = x + SIDES[s][0], ny = y + SIDES[s][1], nz = z + SIDES[s][2];
-            light[s] = world.isBlockOpaqueCube(nx, ny, nz) ? light[INSIDE] : world.getLightmapCoord(nx, ny, nz, 0);
+            light[s] = world.isBlockOpaqueCube(nx, ny, nz) ? light[OWN] : world.getLightmapCoord(nx, ny, nz, 0);
         }
     }
 
-    /** The side (0 to 5) a face lies flat on, facing out of the block; {@link #INSIDE} otherwise. */
-    static int side(float[][] corners, float[] normal) {
-        for (int axis = 0; axis < 3; axis++) {
-            float n = normal[axis];
-            if (Math.abs(n) < 0.99f)
-                continue;
-            float plane = n > 0 ? 1f : 0f;
-            for (float[] c : corners)
-                if (Math.abs(c[axis] - plane) > EDGE)
-                    return INSIDE;
-            // axis 0 is x (west 4, east 5), 1 is y (down 0, up 1), 2 is z (north 2, south 3)
-            int base = axis == 0 ? 4 : axis == 1 ? 0 : 2;
-            return base + (n > 0 ? 1 : 0);
-        }
-        return INSIDE;
+    /** The side (0 to 5: down, up, north, south, west, east) a normal points to most. */
+    static int side(float[] n) {
+        float x = Math.abs(n[0]), y = Math.abs(n[1]), z = Math.abs(n[2]);
+        if (y >= x && y >= z)
+            return n[1] < 0 ? 0 : 1;
+        if (z >= x)
+            return n[2] < 0 ? 2 : 3;
+        return n[0] < 0 ? 4 : 5;
+    }
+
+    /** How much of the neighbour's light a corner takes: 1 on that side's plane, 0 on the opposite side. */
+    static float outsideWeight(int side, float[] p) {
+        int axis = side >= 4 ? 0 : side >= 2 ? 2 : 1;
+        float along = Math.max(0f, Math.min(1f, p[axis]));
+        return (side & 1) == 1 ? along : 1f - along;
+    }
+
+    /** The light index between {@code own} (weight 0) and {@code neighbour} (weight 1), per channel. */
+    static byte blend(byte own, byte neighbour, float weight) {
+        if (weight >= 1f || own == neighbour)
+            return neighbour;
+        if (weight <= 0f)
+            return own;
+        int sky = Math.round(LightIndexHelper.skyLightFromIndex(own) * (1 - weight)
+                + LightIndexHelper.skyLightFromIndex(neighbour) * weight);
+        int block = Math.round(LightIndexHelper.blockLightFromIndex(own) * (1 - weight)
+                + LightIndexHelper.blockLightFromIndex(neighbour) * weight);
+        return LightIndexHelper.setSkyLight(LightIndexHelper.setBlockLight(own, block), sky);
     }
 
     private void grow() {
@@ -156,6 +176,7 @@ public final class TileEntityMesh {
         normals = Arrays.copyOf(normals, size * 3);
         colors = Arrays.copyOf(colors, size * 3);
         sides = Arrays.copyOf(sides, size);
+        outside = Arrays.copyOf(outside, size * 4);
         emissions = Arrays.copyOf(emissions, size);
     }
 }

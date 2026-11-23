@@ -27,7 +27,7 @@ import net.minecraft.core.block.entity.TileEntity;
  * once and again after a texture pack change (the game makes new renderers then).
  * <p>
  * Drawn like {@code ModelTileEntityRenderer}, by {@link TileEntityMesh}: faces are reused while the pose and facing
- * stay the same, faces on the block's edge take their neighbour's light; a material's {@code emissiveFactor} raises
+ * stay the same, each face takes light from the side it looks towards; a material's {@code emissiveFactor} raises
  * block light when {@code emissive_ambient} is on.
  */
 @Environment(EnvType.CLIENT)

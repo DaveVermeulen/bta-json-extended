@@ -24,8 +24,9 @@ import net.minecraft.core.block.entity.TileEntity;
  * Parts are Blockbench's groups (see {@code knowledge/formats/pose.md}); the {@link Poser} says how each part sits
  * this frame. The model is read once and again after a texture pack change (the game makes new renderers then).
  * <p>
- * Drawn by {@link TileEntityMesh}: faces are reused while the pose and facing stay the same, faces on the block's
- * edge take their neighbour's light, face shading comes from the normal, and there is no ambient occlusion.
+ * Drawn by {@link TileEntityMesh}: faces are reused while the pose and facing stay the same, each face takes
+ * light from the side it looks towards (blended with the block's own by depth), face shading comes from the
+ * normal, and there is no ambient occlusion.
  */
 @Environment(EnvType.CLIENT)
 public class ModelTileEntityRenderer<T extends TileEntity> extends TileEntityRenderer<T> {
