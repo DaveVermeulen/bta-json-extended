@@ -16,11 +16,11 @@ import net.minecraft.core.util.helper.LightIndexHelper;
  * edge gets vanilla's lighting and faces inside the block get in-between values. When the neighbour on that side
  * is opaque, the outside layer is the block's own (its light would be the dark inside of a solid block).
  * <p>
- * One instance per {@code renderAttached} call, after {@link LightingCache#setupCache}; corners are worked out
- * lazily, at most once per side and layer.
+ * One instance per {@code renderAttached} call (or tile entity mesh fill), after {@link LightingCache#setupCache};
+ * corners are worked out lazily, at most once per side and layer.
  */
 @Environment(EnvType.CLIENT)
-final class ObjSmoothLight {
+public final class ObjSmoothLight {
     /** Offset of the neighbour on each side, by {@link ObjQuad.Side} ordinal: down, up, north, south, west, east. */
     private static final int[][] DIRECTION = {{0, -1, 0}, {0, 1, 0}, {0, 0, -1}, {0, 0, 1}, {-1, 0, 0}, {1, 0, 0}};
     /** The two axes lying in each side's plane. */
@@ -31,15 +31,25 @@ final class ObjSmoothLight {
     private final float[][] corners = new float[12][];
 
     /** Results of the last {@link #sample}. */
-    byte lightIndex;
-    float shade;
+    public byte lightIndex;
+    public float shade;
 
-    ObjSmoothLight(LightingCache cache) {
+    public ObjSmoothLight(LightingCache cache) {
         this.cache = cache;
     }
 
+    /**
+     * Works out every side and layer now, so {@link #sample} no longer reads the {@link LightingCache} and the cache
+     * can be set up for another block. Tile entity meshes keep one prepared instance per tick.
+     */
+    public void prepareAll() {
+        for (int side = 0; side < 6; side++)
+            for (int layer = 0; layer < 2; layer++)
+                corners(side, layer);
+    }
+
     /** Light index and shade for a vertex at {@code p} (block units) on a face looking towards {@code side}. */
-    void sample(ObjQuad.Side side, float[] p) {
+    public void sample(ObjQuad.Side side, float[] p) {
         int s = side.ordinal();
         int au = PLANE_AXES[s][0], av = PLANE_AXES[s][1];
         float along = clamp(p[side.axis]);

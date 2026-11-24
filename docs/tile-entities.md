@@ -82,8 +82,10 @@ The block's `BlockLogic` should return `false` from `isSolidRender()` and `isCub
 
 ## Lighting
 
-Faces are shaded by their direction like block faces. Each face takes light from the block it looks towards, mixed with the light of the tile entity's own block by how deep inside the block it sits: a face on the edge of the block takes all of its neighbour's light, one in the middle half of each. That's how OBJ and glTF block models are lit with smooth lighting on. Light is read once per tick, and a model's faces are only rebuilt when its pose or facing changes, so a tile entity that isn't moving is cheap to draw.
+Tile entity models are drawn with the same shader as the world's blocks, so they're lit like a block model in the same spot: shaded by direction, and with smooth lighting on, the soft darkening in corners and next to other blocks. With smooth lighting off, each face takes light from the block it looks towards, mixed with the tile entity's own block by how deep inside the block it sits.
 
-There's no smooth lighting (the soft darkening in corners) or culling against neighbours for tile entity models. BTA draws tile entities with a shader that has no input for it; its own pistons lose it too.
+Light is read once per tick. Each tile entity keeps its model in a small buffer on the graphics card, filled again only when the model moves, turns or its light changes, so a tile entity that isn't moving costs one draw call per frame. The buffer is freed ten seconds after the tile entity stops being drawn. Tile entities off screen are skipped entirely: not posed, rebuilt or drawn.
+
+If a graphics driver has trouble with this, start the game with `-Djsonextended.tileEntityItemShader=true` to draw tile entities the way BTA draws its own (no corner darkening). Faces aren't culled against neighbours.
 
 The full working version is the Test Chest: `bta/src/main/java/io/github/tryrodave/jsonextended/tileentity/example/TestChest.java`. To move parts from an animation file instead of code, see [animations.md](animations.md).

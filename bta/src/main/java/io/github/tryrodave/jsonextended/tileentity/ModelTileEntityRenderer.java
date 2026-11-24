@@ -14,10 +14,13 @@ import java.util.Map;
 import java.util.WeakHashMap;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.render.camera.ICamera;
 import net.minecraft.client.render.tessellator.TessellatorGeneral;
 import net.minecraft.client.render.texture.stitcher.IconCoordinate;
 import net.minecraft.client.render.tileentity.TileEntityRenderer;
 import net.minecraft.core.block.entity.TileEntity;
+import net.minecraft.core.world.World;
+import org.joml.primitives.AABBd;
 
 /**
  * Draws a model JSON (a Blockbench "Java Block" export) for a tile entity every frame, with its parts posed from code.
@@ -50,6 +53,7 @@ public class ModelTileEntityRenderer<T extends TileEntity> extends TileEntityRen
     private final AtlasIcons icons;
     /** Last drawn faces per tile entity; an unloaded one drops out with its tile entity. */
     private final Map<T, TileEntityMesh> meshes = new WeakHashMap<>();
+    private final AABBd box = new AABBd();
     private static final float[] WHITE = {1f, 1f, 1f};
 
     /** @param modelId a model id as blockstates take it, e.g. {@code mymod:block/chest} */
@@ -64,31 +68,54 @@ public class ModelTileEntityRenderer<T extends TileEntity> extends TileEntityRen
         this(modelId, poser, te -> 0);
     }
 
+    /** Skips tile entities off screen (no pose, rebuild or draw), checking the block grown by a block each way. */
+    @Override
+    public boolean isVisible(T te, ICamera camera, float partialTick) {
+        box.minX = te.tilePos.x - 1;
+        box.minY = te.tilePos.y - 1;
+        box.minZ = te.tilePos.z - 1;
+        box.maxX = te.tilePos.x + 2;
+        box.maxY = te.tilePos.y + 2;
+        box.maxZ = te.tilePos.z + 2;
+        return camera.getFrustum().isVisible(box, partialTick);
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        TileEntityMesh.sweep();
+    }
+
+    @Override
+    public void onWorldChanged(World world) {
+        super.onWorldChanged(world);
+        meshes.clear();
+        TileEntityMesh.freeAll();
+    }
+
     @Override
     public void doRender(TessellatorGeneral tess, T te, double x, double y, double z, float partialTick) {
         if (!loaded())
             return;
-        Pose pose = poser.pose(te, partialTick);
-        int turns = facing.yTurns(te);
+        long started = System.nanoTime();
         TileEntityMesh mesh = meshes.computeIfAbsent(te, k -> new TileEntityMesh());
-        Key key = new Key(pose, turns);
-        if (!mesh.matches(key)) {
-            mesh.begin(key);
-            for (ModelQuad quad : rig.pose(quads, pose)) {
-                IconCoordinate icon = icon(quad.texture());
-                if (icon == null)
-                    continue;
-                float[][] corners = new float[4][];
-                double[][] uvs = new double[4][];
-                for (int i = 0; i < 4; i++) {
-                    corners[i] = QuarterTurns.point(quad.positions()[i], 0, turns, 0);
-                    uvs[i] = new double[] {icon.getSubIconU(quad.uvs()[i][0]), icon.getSubIconV(quad.uvs()[i][1])};
+        // Far away, a moving model is re-posed less often (see TileEntityMesh.poseDue).
+        if (mesh.poseDue(x, y, z)) {
+            Pose pose = poser.pose(te, partialTick);
+            int turns = facing.yTurns(te);
+            Key key = new Key(pose, turns);
+            if (!mesh.matches(key)) {
+                mesh.begin(key);
+                for (ModelQuad quad : rig.pose(quads, pose)) {
+                    IconCoordinate icon = icon(quad.texture());
+                    if (icon == null)
+                        continue;
+                    mesh.add(quad.positions(), quad.uvs(), icon, turns, quad.normal(), quad.normal(), WHITE, 0);
                 }
-                float[] n = QuarterTurns.vector(quad.normal(), 0, turns, 0);
-                mesh.add(corners, uvs, n, n, WHITE, 0);
             }
         }
         mesh.draw(tess, te, x, y, z);
+        TileEntityMesh.timed(started);
     }
 
     /** What the faces were built for: the parts' pose and the facing. */

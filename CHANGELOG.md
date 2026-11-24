@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Tile entity models (model JSON and glTF) are drawn with the world's terrain shader, so with smooth lighting on they get the same soft corner darkening as blocks. Each tile entity keeps a small GPU buffer, uploaded again only when it moves or its light changes, and freed ten seconds after it's no longer drawn. Start the game with `-Djsonextended.tileEntityItemShader=true` to go back to the old drawing.
+- Tile entity models are drawn together after BTA's tile entity loop, with the shader set up once instead of once per tile entity (a mixin at the end of `RenderGlobal.renderEntities`). Moving models far from the camera update less often (every frame within 16 blocks, down to twice a second beyond 64), and smooth light is worked out once per tick. The dev client logs the time spent every 5 seconds.
+- Tile entity models off screen are skipped (no posing, rebuilding or drawing), and rebuilding a moving model no longer allocates per face.
+
 ## 1.0.0 (2026-11-23)
 
 The full plan: blockstates, item models and model JSON (0.1.0), plus OBJ models, model tile entity renderers, Blockbench animations on tile entities and mobs, and GLB/glTF models with their animations. Documentation for mod developers is in `docs/`.

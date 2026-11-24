@@ -5,21 +5,22 @@ import io.github.tryrodave.jsonextended.model.AtlasIcons;
 import io.github.tryrodave.jsonextended.model.Models;
 import io.github.tryrodave.jsonextended.obj.ObjMaterial;
 import io.github.tryrodave.jsonextended.obj.ObjQuad;
-import io.github.tryrodave.jsonextended.obj.QuarterTurns;
 import io.github.tryrodave.jsonextended.tileentity.ModelTileEntityRenderer.Facing;
 import io.github.tryrodave.jsonextended.tileentity.TileEntityMesh;
 import java.io.UncheckedIOException;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.render.camera.ICamera;
 import net.minecraft.client.render.tessellator.TessellatorGeneral;
 import net.minecraft.client.render.texture.stitcher.IconCoordinate;
 import net.minecraft.client.render.tileentity.TileEntityRenderer;
 import net.minecraft.core.block.entity.TileEntity;
+import net.minecraft.core.world.World;
+import org.joml.primitives.AABBd;
 
 /**
  * Draws a glTF model JSON ({@code "loader": "jsonextended:gltf"}) for a tile entity every frame, with its nodes
@@ -47,6 +48,7 @@ public class GltfTileEntityRenderer<T extends TileEntity> extends TileEntityRend
     private boolean failed;
     /** Last drawn faces per tile entity; an unloaded one drops out with its tile entity. */
     private final Map<T, TileEntityMesh> meshes = new WeakHashMap<>();
+    private final AABBd box = new AABBd();
     private static final float[] WHITE = {1f, 1f, 1f};
     private static final float[] UP = {0f, 1f, 0f};
 
@@ -81,49 +83,103 @@ public class GltfTileEntityRenderer<T extends TileEntity> extends TileEntityRend
         return model;
     }
 
+    /** Skips tile entities off screen (no pose, rebuild or draw), checking the block grown by a block each way. */
+    @Override
+    public boolean isVisible(T te, ICamera camera, float partialTick) {
+        box.minX = te.tilePos.x - 1;
+        box.minY = te.tilePos.y - 1;
+        box.minZ = te.tilePos.z - 1;
+        box.maxX = te.tilePos.x + 2;
+        box.maxY = te.tilePos.y + 2;
+        box.maxZ = te.tilePos.z + 2;
+        return camera.getFrustum().isVisible(box, partialTick);
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        TileEntityMesh.sweep();
+    }
+
+    @Override
+    public void onWorldChanged(World world) {
+        super.onWorldChanged(world);
+        meshes.clear();
+        TileEntityMesh.freeAll();
+    }
+
     @Override
     public void doRender(TessellatorGeneral tess, T te, double x, double y, double z, float partialTick) {
         GltfModel model = model();
         if (model == null)
             return;
-        Map<Integer, float[]> pose = poser.pose(te, model, partialTick);
-        int turns = facing.yTurns(te);
+        long started = System.nanoTime();
         TileEntityMesh mesh = meshes.computeIfAbsent(te, k -> new TileEntityMesh());
-        Key key = Key.of(pose, turns);
-        if (!mesh.matches(key)) {
-            mesh.begin(key);
-            for (ObjQuad quad : settings.place(model.pose(pose))) {
-                ObjMaterial m = quad.material();
-                String texture = m == null || m.texture() == null ? settings.particle() : settings.texture(m.texture());
-                IconCoordinate icon = icons.get(texture != null ? texture : settings.particle());
-                if (icon == null)
-                    continue;
-                int emission = m != null && settings.emissiveAmbient() ? Math.round(m.ambient() * 15f) : 0;
-                float[] geometry = QuarterTurns.vector(ObjQuad.faceNormal(quad.positions()), 0, turns, 0);
-                float[] n = settings.shadeQuads() ? geometry : UP;
-                float[][] corners = new float[4][];
-                double[][] uvs = new double[4][];
-                for (int i = 0; i < 4; i++) {
-                    corners[i] = QuarterTurns.point(quad.positions()[i], 0, turns, 0);
-                    uvs[i] = new double[] {icon.getSubIconU(quad.uvs()[i][0]), icon.getSubIconV(quad.uvs()[i][1])};
+        // Far away, a moving model is re-posed less often (see TileEntityMesh.poseDue).
+        if (mesh.poseDue(x, y, z)) {
+            Map<Integer, float[]> pose = poser.pose(te, model, partialTick);
+            int turns = facing.yTurns(te);
+            Key key = Key.of(pose, turns);
+            if (!mesh.matches(key)) {
+                mesh.begin(key);
+                for (ObjQuad quad : settings.place(model.pose(pose))) {
+                    ObjMaterial m = quad.material();
+                    String texture = m == null || m.texture() == null ? settings.particle() : settings.texture(m.texture());
+                    IconCoordinate icon = icons.get(texture != null ? texture : settings.particle());
+                    if (icon == null)
+                        continue;
+                    int emission = m != null && settings.emissiveAmbient() ? Math.round(m.ambient() * 15f) : 0;
+                    float[] geometry = ObjQuad.faceNormal(quad.positions());
+                    float[] n = settings.shadeQuads() ? geometry : UP;
+                    mesh.add(quad.positions(), quad.uvs(), icon, turns, n, geometry, m == null ? WHITE : m.color(), emission);
                 }
-                mesh.add(corners, uvs, n, geometry, m == null ? WHITE : m.color(), emission);
             }
         }
         mesh.draw(tess, te, x, y, z);
+        TileEntityMesh.timed(started);
     }
 
-    /** What the faces were built for: a copy of the node TRS (compared by value) and the facing. */
-    private record Key(Map<Integer, List<Float>> pose, int turns) {
+    /** What the faces were built for: the node TRS (copied, compared by value) and the facing. */
+    private static final class Key {
+        private final int[] nodes;
+        private final float[] values;
+        private final int turns;
+        private final int hash;
+
+        private Key(int[] nodes, float[] values, int turns) {
+            this.nodes = nodes;
+            this.values = values;
+            this.turns = turns;
+            this.hash = 31 * (31 * Arrays.hashCode(nodes) + Arrays.hashCode(values)) + turns;
+        }
+
         static Key of(Map<Integer, float[]> pose, int turns) {
-            Map<Integer, List<Float>> copy = new HashMap<>();
-            pose.forEach((node, trs) -> {
-                List<Float> values = new ArrayList<>(trs.length);
-                for (float v : trs)
-                    values.add(v);
-                copy.put(node, values);
-            });
-            return new Key(copy, turns);
+            int[] nodes = new int[pose.size()];
+            int n = 0, length = 0;
+            for (Map.Entry<Integer, float[]> e : pose.entrySet()) {
+                nodes[n++] = e.getKey();
+                length += e.getValue().length;
+            }
+            Arrays.sort(nodes);
+            float[] values = new float[length];
+            int at = 0;
+            for (int node : nodes) {
+                float[] trs = pose.get(node);
+                System.arraycopy(trs, 0, values, at, trs.length);
+                at += trs.length;
+            }
+            return new Key(nodes, values, turns);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            return o instanceof Key k && turns == k.turns && hash == k.hash && Arrays.equals(nodes, k.nodes)
+                    && Arrays.equals(values, k.values);
+        }
+
+        @Override
+        public int hashCode() {
+            return hash;
         }
     }
 }

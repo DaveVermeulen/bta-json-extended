@@ -1,18 +1,34 @@
 package io.github.tryrodave.jsonextended.tileentity;
 
+import io.github.tryrodave.jsonextended.JsonExtended;
+import io.github.tryrodave.jsonextended.obj.ObjQuad;
+import io.github.tryrodave.jsonextended.obj.ObjSmoothLight;
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.IdentityHashMap;
+import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.option.GameSettings;
+import net.minecraft.client.render.LightingCache;
 import net.minecraft.client.render.renderer.BlendFactor;
+import net.minecraft.client.render.renderer.DrawMode;
 import net.minecraft.client.render.renderer.GLRenderer;
 import net.minecraft.client.render.renderer.Shaders;
 import net.minecraft.client.render.renderer.State;
 import net.minecraft.client.render.tessellator.TessellatorGeneral;
+import net.minecraft.client.render.tessellator.TessellatorTerrainImpl;
+import net.minecraft.client.render.texture.stitcher.IconCoordinate;
 import net.minecraft.client.render.texture.stitcher.TextureRegistry;
+import net.minecraft.core.block.Block;
 import net.minecraft.core.block.entity.TileEntity;
 import net.minecraft.core.util.helper.LightIndexHelper;
 import net.minecraft.core.world.World;
+import org.lwjgl.opengl.GL41;
 
 /**
  * The faces of one tile entity's model as last drawn, ready to send again, plus the light around its block.
@@ -25,7 +41,14 @@ import net.minecraft.core.world.World;
  * half of each. When that neighbour is opaque, the block's own light is used (its light is the dark inside of a
  * solid block).
  * <p>
- * Drawn with the item shader like BTA's own tile entities, so there is no ambient occlusion
+ * Drawn with BTA's terrain shader, like chunk blocks: the faces are written in the terrain vertex format into a
+ * vertex buffer of this mesh's own, uploaded again only when the faces or the light change, and drawn with one
+ * call per frame. With smooth lighting on, each corner gets light and ambient occlusion from {@link ObjSmoothLight}
+ * like an OBJ block (the terrain shader is the only one that reads the shade). The buffers are freed when the mesh
+ * hasn't been drawn for {@link #UNUSED_NANOS} (see {@link #sweep}) or the world changes ({@link #freeAll}).
+ * <p>
+ * Fallback: with {@code -Djsonextended.tileEntityItemShader=true}, or after an error in the terrain path, faces
+ * go through the item shader like BTA's own tile entities, with no ambient occlusion
  * (see {@code knowledge/bta/tile-entities.md}). Main thread only.
  */
 @Environment(EnvType.CLIENT)
@@ -35,6 +58,26 @@ public final class TileEntityMesh {
     private static final long TICK_NANOS = 50_000_000L;
     /** Neighbour offsets for sides 0 to 5: down, up, north, south, west, east. */
     private static final int[][] SIDES = {{0, -1, 0}, {0, 1, 0}, {0, 0, -1}, {0, 0, 1}, {-1, 0, 0}, {1, 0, 0}};
+
+    /** Free a mesh's vertex buffer after this long without being drawn (unloaded, removed, or its renderer replaced). */
+    static final long UNUSED_NANOS = 10_000_000_000L;
+    private static final int GL_ARRAY_BUFFER = 34962, GL_DYNAMIC_DRAW = 35048;
+    private static final ObjQuad.Side[] SIDE_VALUES = ObjQuad.Side.values();
+    private static boolean itemShader = Boolean.getBoolean("jsonextended.tileEntityItemShader");
+    /** Meshes holding GL buffers, so they can be freed even after their tile entity or renderer is gone. */
+    private static final Set<TileEntityMesh> LIVE = Collections.newSetFromMap(new IdentityHashMap<>());
+    private static long lastSweep;
+    private static int lastLogged;
+    private static TessellatorTerrainImpl terrain;
+    private static final LightingCache CACHE = new LightingCache();
+
+    private int vao, vbo, vertexCount;
+    private boolean dirty = true, smoothBefore;
+    private ObjSmoothLight smoothLight;
+    private long lastDrawn, lastPosed = Long.MIN_VALUE / 2;
+    /** Dev timing, summed over all meshes since the last log line. */
+    private static long renderNanos, renders, fills;
+    private static long lastTiming;
 
     private Object key;
     private int generation = -1;
@@ -51,6 +94,30 @@ public final class TileEntityMesh {
     private long lightRead;
     private boolean lightSet;
 
+    /**
+     * Whether the renderer should work out the pose this frame. Always when the mesh has no faces yet; otherwise
+     * every frame within 16 blocks, then 20, 8 and 2 times a second within 32, 64 and beyond. A still model costs
+     * nothing extra either way; this only spaces out rebuilds of moving models far from the camera.
+     */
+    public boolean poseDue(double x, double y, double z) {
+        if (generation != TextureRegistry.reloadGeneration)
+            return true;
+        double d2 = x * x + y * y + z * z;
+        long interval = d2 < 16 * 16 ? 0L : d2 < 32 * 32 ? 50_000_000L : d2 < 64 * 64 ? 125_000_000L : 500_000_000L;
+        return interval == 0L || System.nanoTime() - lastPosed >= interval;
+    }
+
+    /** Dev timing: adds the batch's draw time, from {@code started} ({@link System#nanoTime}) to now. */
+    static void timedFlush(long started) {
+        renderNanos += System.nanoTime() - started;
+    }
+
+    /** Dev timing: adds one tile entity's render time, from {@code started} ({@link System#nanoTime}) to now. */
+    public static void timed(long started) {
+        renderNanos += System.nanoTime() - started;
+        renders++;
+    }
+
     /** True when the faces were built for this key and the current atlas, so they can be drawn as they are. */
     public boolean matches(Object key) {
         return generation == TextureRegistry.reloadGeneration && Objects.equals(this.key, key);
@@ -61,6 +128,8 @@ public final class TileEntityMesh {
         this.key = key;
         this.generation = TextureRegistry.reloadGeneration;
         this.count = 0;
+        this.dirty = true;
+        this.lastPosed = System.nanoTime();
     }
 
     /**
@@ -79,18 +148,219 @@ public final class TileEntityMesh {
             System.arraycopy(uvs[i], 0, this.uvs, count * 8 + i * 2, 2);
         }
         System.arraycopy(normal, 0, normals, count * 3, 3);
+        finish(geometry[0], geometry[1], geometry[2], color, emission);
+    }
+
+    /**
+     * Adds one face without allocating: corners and normals are turned {@code turns} quarter turns about Y (as
+     * {@code QuarterTurns}, about the block centre) and the 0..1 UVs mapped into {@code icon} here. Renderers
+     * rebuild moving models every frame, so this keeps that free of garbage.
+     *
+     * @param normal   the shading normal, not yet turned
+     * @param geometry the geometric normal, not yet turned
+     */
+    public void add(float[][] corners, float[][] uv, IconCoordinate icon, int turns, float[] normal, float[] geometry,
+                    float[] color, int emission) {
+        grow();
+        int t = Math.floorMod(turns, 4);
+        for (int i = 0; i < 4; i++) {
+            float[] c = corners[i];
+            int at = count * 12 + i * 3;
+            positions[at + 1] = c[1];
+            float x = c[0] - 0.5f, z = c[2] - 0.5f;
+            for (int k = 0; k < t; k++) { // (x, z) -> (z, -x), as QuarterTurns
+                float old = x;
+                x = z;
+                z = -old;
+            }
+            positions[at] = x + 0.5f;
+            positions[at + 2] = z + 0.5f;
+            uvs[count * 8 + i * 2] = icon.getSubIconU(uv[i][0]);
+            uvs[count * 8 + i * 2 + 1] = icon.getSubIconV(uv[i][1]);
+        }
+        turn(normal, t, normals, count * 3);
+        float gx = geometry[0], gz = geometry[2];
+        for (int k = 0; k < t; k++) {
+            float old = gx;
+            gx = gz;
+            gz = -old;
+        }
+        finish(gx, geometry[1], gz, color, emission);
+    }
+
+    private static void turn(float[] v, int t, float[] out, int at) {
+        float x = v[0], z = v[2];
+        for (int k = 0; k < t; k++) {
+            float old = x;
+            x = z;
+            z = -old;
+        }
+        out[at] = x;
+        out[at + 1] = v[1];
+        out[at + 2] = z;
+    }
+
+    /** The rest of {@link #add}: colour, side, light weights and emission of the face at {@code count}. */
+    private void finish(float gx, float gy, float gz, float[] color, int emission) {
         System.arraycopy(color, 0, colors, count * 3, 3);
-        int side = side(geometry);
+        int side = side(gx, gy, gz);
         sides[count] = (byte) side;
         for (int i = 0; i < 4; i++)
-            outside[count * 4 + i] = outsideWeight(side, corners[i]);
+            outside[count * 4 + i] = outsideWeight(side, positions, count * 12 + i * 3);
         emissions[count] = (byte) Math.max(0, Math.min(15, emission));
         count++;
     }
 
     /** Draws the faces at the camera-relative position, with the light around {@code te}. */
     public void draw(TessellatorGeneral tess, TileEntity te, double x, double y, double z) {
-        readLight(te);
+        boolean relit = readLight(te);
+        if (!itemShader) {
+            try {
+                drawTerrain(te, x, y, z, relit);
+                return;
+            } catch (RuntimeException e) {
+                itemShader = true;
+                freeAll();
+                JsonExtended.LOGGER.error("Tile entity models can't use the terrain shader; using the item shader", e);
+            }
+        }
+        drawItem(tess, x, y, z);
+    }
+
+    /** The terrain path: fill and upload when the faces or light changed, then queue one draw for the batch. */
+    private void drawTerrain(TileEntity te, double x, double y, double z, boolean relit) {
+        lastDrawn = System.nanoTime();
+        if (vao == 0 || dirty || relit)
+            upload(fill(te));
+        if (vertexCount > 0)
+            TileEntityBatch.add(x, y, z, vao, vertexCount); // drawn with the others after the tile entity loop
+    }
+
+    /** Writes the faces in the terrain vertex format, with smooth light and shade when the option is on. */
+    private TessellatorTerrainImpl fill(TileEntity te) {
+        fills++;
+        if (terrain == null)
+            terrain = new TessellatorTerrainImpl(64 * 1024);
+        TessellatorTerrainImpl t = terrain;
+        ObjSmoothLight smooth = smoothLight;
+        t.drawing = false; // in case an earlier fill stopped half way
+        t.startDrawing(DrawMode.QUADS);
+        float[] p = new float[3];
+        for (int f = 0; f < count; f++) {
+            byte neighbour = light[sides[f]], own = light[OWN];
+            t.setNormal(normals[f * 3], normals[f * 3 + 1], normals[f * 3 + 2]);
+            int rgb = channel(colors[f * 3]) << 16 | channel(colors[f * 3 + 1]) << 8 | channel(colors[f * 3 + 2]);
+            for (int i = 0; i < 4; i++) {
+                int at = f * 12 + i * 3, uv = f * 8 + i * 2;
+                p[0] = positions[at];
+                p[1] = positions[at + 1];
+                p[2] = positions[at + 2];
+                byte corner;
+                int shade = 255;
+                if (smooth != null) {
+                    smooth.sample(SIDE_VALUES[sides[f]], p);
+                    corner = smooth.lightIndex;
+                    if (emissions[f] == 0)
+                        shade = Math.max(0, Math.min(255, (int) (smooth.shade * 255f)));
+                } else {
+                    corner = blend(own, neighbour, outside[f * 4 + i]);
+                }
+                if (emissions[f] > LightIndexHelper.blockLightFromIndex(corner))
+                    corner = LightIndexHelper.setBlockLight(corner, emissions[f]);
+                t.setColor1i(rgb);
+                t.setLightmapCoord1i(corner);
+                t.setShade1i(shade);
+                t.setTextureUV(uvs[uv], uvs[uv + 1]);
+                t.addVertex(p[0], p[1], p[2]);
+            }
+        }
+        // draw() isn't supported on the terrain tessellator: BTA's chunk code ends a batch by clearing the flag.
+        t.drawing = false;
+        return t;
+    }
+
+    /** Uploads the filled vertices to this mesh's own buffer, made on first use. */
+    private void upload(TessellatorTerrainImpl t) {
+        ByteBuffer data = t.data.getBuffer();
+        data.flip();
+        vertexCount = t.data.vertexCount;
+        dirty = false;
+        if (vao == 0) {
+            vao = GL41.glGenVertexArrays();
+            vbo = GL41.glGenBuffers();
+            LIVE.add(this);
+            GL41.glBindBuffer(GL_ARRAY_BUFFER, vbo);
+            GL41.glBufferData(GL_ARRAY_BUFFER, data, GL_DYNAMIC_DRAW);
+            // Binds our VAO and VBO and sets the five attribute pointers of the terrain format on the VAO.
+            new TessellatorTerrainImpl.TerrainVertexConfig().enable(vao, vbo);
+            GL41.glBindVertexArray(0);
+        } else {
+            GL41.glBindBuffer(GL_ARRAY_BUFFER, vbo);
+            GL41.glBufferData(GL_ARRAY_BUFFER, data, GL_DYNAMIC_DRAW);
+        }
+        GL41.glBindBuffer(GL_ARRAY_BUFFER, 0);
+    }
+
+    /** Deletes this mesh's buffer; it is made again if the mesh is drawn later. */
+    private void free() {
+        if (vao != 0) {
+            GL41.glDeleteBuffers(vbo);
+            GL41.glDeleteVertexArrays(vao);
+        }
+        vao = vbo = vertexCount = 0;
+        dirty = true;
+        LIVE.remove(this);
+    }
+
+    /**
+     * Frees the buffers of meshes not drawn for {@link #UNUSED_NANOS}: their tile entity was removed or unloaded,
+     * or the renderer was replaced on a texture pack reload. Call from the renderers' {@code tick()}; runs at most
+     * once a second however many renderers call it.
+     */
+    public static void sweep() {
+        long now = System.nanoTime();
+        if (now - lastSweep < 1_000_000_000L)
+            return;
+        lastSweep = now;
+        List<TileEntityMesh> stale = new ArrayList<>();
+        for (TileEntityMesh mesh : LIVE)
+            if (now - mesh.lastDrawn > UNUSED_NANOS)
+                stale.add(mesh);
+        stale.forEach(TileEntityMesh::free);
+        // Dev only: one line whenever the count changes, so a leak shows as a number that only grows.
+        if (LIVE.size() != lastLogged && JsonExtended.devContentEnabled()) {
+            lastLogged = LIVE.size();
+            JsonExtended.LOGGER.info("Tile entity model buffers in use: {}", lastLogged);
+        }
+        // Dev only: every 5 s, the time spent in our tile entity renderers, to measure each optimisation.
+        if (now - lastTiming >= 5_000_000_000L && JsonExtended.devContentEnabled()) {
+            double seconds = (now - lastTiming) / 1e9;
+            if (lastTiming != 0 && renders > 0)
+                JsonExtended.LOGGER.info("Tile entity models: {} ms/s rendering ({} draws/s, {} rebuilds/s), {} µs per draw",
+                        String.format("%.1f", renderNanos / 1e6 / seconds), Math.round(renders / seconds),
+                        Math.round(fills / seconds), String.format("%.0f", renderNanos / 1e3 / renders));
+            lastTiming = now;
+            renderNanos = renders = fills = 0;
+        }
+    }
+
+    /** Frees every mesh's buffers, e.g. when the world changes. */
+    public static void freeAll() {
+        TileEntityBatch.clear();
+        new ArrayList<>(LIVE).forEach(TileEntityMesh::free);
+    }
+
+    /** Number of meshes holding GL buffers, for the dev check that buffers are freed. */
+    public static int liveBuffers() {
+        return LIVE.size();
+    }
+
+    private static int channel(float c) {
+        return Math.max(0, Math.min(255, Math.round(c * 255f)));
+    }
+
+    /** The item path, as BTA's own tile entities draw: no ambient occlusion. */
+    private void drawItem(TessellatorGeneral tess, double x, double y, double z) {
         GLRenderer.pushFrame();
         try {
             GLRenderer.setShader(Shaders.ITEM);
@@ -121,36 +391,59 @@ public final class TileEntityMesh {
         }
     }
 
-    /** Reads the block's light and its six neighbours', at most once per tick. */
-    private void readLight(TileEntity te) {
+    /**
+     * Reads the block's light and its six neighbours', at most once per tick; true when any of it (or the smooth
+     * lighting option) changed, so the terrain buffer is filled again. A neighbour placed or broken without a
+     * change in light keeps the old ambient occlusion until the next change.
+     */
+    private boolean readLight(TileEntity te) {
         long now = System.nanoTime();
         if (lightSet && now - lightRead < TICK_NANOS)
-            return;
+            return false;
         lightSet = true;
         lightRead = now;
         World world = te.worldObj;
         int x = te.tilePos.x, y = te.tilePos.y, z = te.tilePos.z;
+        byte[] before = light.clone();
         light[OWN] = world.getLightmapCoord(x, y, z, 0);
         for (int s = 0; s < 6; s++) {
             int nx = x + SIDES[s][0], ny = y + SIDES[s][1], nz = z + SIDES[s][2];
             light[s] = world.isBlockOpaqueCube(nx, ny, nz) ? light[OWN] : world.getLightmapCoord(nx, ny, nz, 0);
         }
+        boolean smooth = Boolean.TRUE.equals(GameSettings.AMBIENT_OCCLUSION.value);
+        boolean changed = !Arrays.equals(before, light) || smooth != smoothBefore;
+        smoothBefore = smooth;
+        // Corner light and shade for smooth lighting, worked out once per tick (not per fill: an animated model
+        // is filled every frame) and only when something changed.
+        if (!smooth) {
+            smoothLight = null;
+        } else if (changed || smoothLight == null) {
+            Block<?> block = world.getBlock(x, y, z);
+            smoothLight = null;
+            if (block != null) {
+                CACHE.setupCache(block, world, x, y, z);
+                smoothLight = new ObjSmoothLight(CACHE);
+                smoothLight.prepareAll();
+            }
+            changed = true;
+        }
+        return changed;
     }
 
     /** The side (0 to 5: down, up, north, south, west, east) a normal points to most. */
-    static int side(float[] n) {
-        float x = Math.abs(n[0]), y = Math.abs(n[1]), z = Math.abs(n[2]);
+    static int side(float nx, float ny, float nz) {
+        float x = Math.abs(nx), y = Math.abs(ny), z = Math.abs(nz);
         if (y >= x && y >= z)
-            return n[1] < 0 ? 0 : 1;
+            return ny < 0 ? 0 : 1;
         if (z >= x)
-            return n[2] < 0 ? 2 : 3;
-        return n[0] < 0 ? 4 : 5;
+            return nz < 0 ? 2 : 3;
+        return nx < 0 ? 4 : 5;
     }
 
     /** How much of the neighbour's light a corner takes: 1 on that side's plane, 0 on the opposite side. */
-    static float outsideWeight(int side, float[] p) {
+    static float outsideWeight(int side, float[] positions, int at) {
         int axis = side >= 4 ? 0 : side >= 2 ? 2 : 1;
-        float along = Math.max(0f, Math.min(1f, p[axis]));
+        float along = Math.max(0f, Math.min(1f, positions[at + axis]));
         return (side & 1) == 1 ? along : 1f - along;
     }
 
