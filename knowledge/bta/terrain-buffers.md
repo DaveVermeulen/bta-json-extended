@@ -28,7 +28,7 @@ GL objects must be deleted on the render thread, so a `WeakHashMap` can't free t
 - `TileEntityRenderDispatcher.reload()` replaces every renderer and drops the old ones; HalpLibe's `ClientEvents.TILE_ENTITY_RENDERER_RELOAD` fires after it.
 - `TileEntity.isInvalid()`. There is no chunk-unload callback for TEs.
 
-What we do: a static set of meshes holding buffers; `sweep()` from `tick()` (at most once a second) frees meshes not drawn for 2 s, which covers removed and unloaded TEs and replaced renderers; `onWorldChanged` frees all. In the dev client a log line gives the count whenever it changes.
+What we do: a static set of meshes holding buffers; `sweep()` from `tick()` (at most once a second) frees meshes not drawn for 10 s (off-screen TEs are skipped via `isVisible`, so 2 s churned buffers while looking around), which covers removed and unloaded TEs and replaced renderers; `onWorldChanged` frees all. In the dev client a log line gives the count whenever it changes.
 
 ## Chunk AO, for reference
 `StaticBlockModelMojang.renderAttached` with a static `LightingCache`: `setupCache(Block<?>, WorldSource, int x, int y, int z)` (or `TilePosc`), then `getOpacity`, `getLightIndex` and `getBrightness(dx, dy, dz)` with offsets −1..1. Corner light is `LightIndexHelper.avg` of 4 samples, brightness the average of the same 4, interpolated over the face and written as `setShade1i((int) (shade * 255))`. `obj/ObjSmoothLight` reproduces this.
@@ -41,3 +41,6 @@ Measured on Dave's Mac (Intel Iris 640, macOS GL) with 57 TEs: ~85–130 µs per
 - `Shader` (`net.minecraft.client.render.shader`): `bind()`, `unbind()`, `getUniform(String)` (cached location), `uniformMat4f(String, Matrix4fc)`, `uniformFloat`, `uniformInt`, `uniformVec*`. `GLRenderer.modelM4f()` returns `org.joml.Matrix4f`; `globalSetUniforms(Shader)` is public static.
 - Mixin config: no refmap needed (the game runs with named classes; HalpLibe's own config has none). Format copied from `halplibe.mixins.json`.
 - `TileEntityRendererSign$BufferedTextMeshRenderer` caches one VAO per sign text and draws each immediately (no cross-sign batch); it frees entries unused for 120 s from `tick()`.
+
+## View culling (2026-11-24)
+`TileEntityRenderer.isVisible(T, ICamera, float)` returns true by default; `TileEntityRenderDispatcher.renderTileEntity` checks distance, then `isVisible`, then sets the global light and colour and calls `doRender`. `TileEntityRendererSign` overrides it with `camera.getFrustum().isVisible(new AABBd(x, y, z, x + 1, y + 1, z + 1), partialTick)` (world coordinates). `ICamera.getFrustum()` → `net.minecraft.client.render.culling.CameraFrustum`, `isVisible(org.joml.primitives.AABBdc, float)`. Our renderers check the block grown by one block each way (parts that swing out), reusing one `AABBd`. Measured before culling, with batching (0169b56): 52–83 ms/s for 57 TEs, 11–22 µs per draw, 1300–3450 rebuilds/s (looping lantern animations).

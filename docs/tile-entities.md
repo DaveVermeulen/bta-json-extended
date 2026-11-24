@@ -84,7 +84,7 @@ The block's `BlockLogic` should return `false` from `isSolidRender()` and `isCub
 
 Tile entity models are drawn with the same shader as the world's blocks, so they're lit like a block model in the same spot: shaded by direction, and with smooth lighting on, the soft darkening in corners and next to other blocks. With smooth lighting off, each face takes light from the block it looks towards, mixed with the tile entity's own block by how deep inside the block it sits.
 
-Light is read once per tick. Each tile entity keeps its model in a small buffer on the graphics card, filled again only when the model moves, turns or its light changes, so a tile entity that isn't moving costs one draw call per frame. The buffer is freed two seconds after the tile entity stops being drawn.
+Light is read once per tick. Each tile entity keeps its model in a small buffer on the graphics card, filled again only when the model moves, turns or its light changes, so a tile entity that isn't moving costs one draw call per frame. The buffer is freed ten seconds after the tile entity stops being drawn. Tile entities off screen are skipped entirely: not posed, rebuilt or drawn.
 
 If a graphics driver has trouble with this, start the game with `-Djsonextended.tileEntityItemShader=true` to draw tile entities the way BTA draws its own (no corner darkening). Faces aren't culled against neighbours.
 

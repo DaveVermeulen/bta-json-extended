@@ -22,6 +22,7 @@ import net.minecraft.client.render.renderer.Shaders;
 import net.minecraft.client.render.renderer.State;
 import net.minecraft.client.render.tessellator.TessellatorGeneral;
 import net.minecraft.client.render.tessellator.TessellatorTerrainImpl;
+import net.minecraft.client.render.texture.stitcher.IconCoordinate;
 import net.minecraft.client.render.texture.stitcher.TextureRegistry;
 import net.minecraft.core.block.Block;
 import net.minecraft.core.block.entity.TileEntity;
@@ -59,7 +60,7 @@ public final class TileEntityMesh {
     private static final int[][] SIDES = {{0, -1, 0}, {0, 1, 0}, {0, 0, -1}, {0, 0, 1}, {-1, 0, 0}, {1, 0, 0}};
 
     /** Free a mesh's vertex buffer after this long without being drawn (unloaded, removed, or its renderer replaced). */
-    static final long UNUSED_NANOS = 2_000_000_000L;
+    static final long UNUSED_NANOS = 10_000_000_000L;
     private static final int GL_ARRAY_BUFFER = 34962, GL_DYNAMIC_DRAW = 35048;
     private static final ObjQuad.Side[] SIDE_VALUES = ObjQuad.Side.values();
     private static boolean itemShader = Boolean.getBoolean("jsonextended.tileEntityItemShader");
@@ -147,11 +148,65 @@ public final class TileEntityMesh {
             System.arraycopy(uvs[i], 0, this.uvs, count * 8 + i * 2, 2);
         }
         System.arraycopy(normal, 0, normals, count * 3, 3);
+        finish(geometry[0], geometry[1], geometry[2], color, emission);
+    }
+
+    /**
+     * Adds one face without allocating: corners and normals are turned {@code turns} quarter turns about Y (as
+     * {@code QuarterTurns}, about the block centre) and the 0..1 UVs mapped into {@code icon} here. Renderers
+     * rebuild moving models every frame, so this keeps that free of garbage.
+     *
+     * @param normal   the shading normal, not yet turned
+     * @param geometry the geometric normal, not yet turned
+     */
+    public void add(float[][] corners, float[][] uv, IconCoordinate icon, int turns, float[] normal, float[] geometry,
+                    float[] color, int emission) {
+        grow();
+        int t = Math.floorMod(turns, 4);
+        for (int i = 0; i < 4; i++) {
+            float[] c = corners[i];
+            int at = count * 12 + i * 3;
+            positions[at + 1] = c[1];
+            float x = c[0] - 0.5f, z = c[2] - 0.5f;
+            for (int k = 0; k < t; k++) { // (x, z) -> (z, -x), as QuarterTurns
+                float old = x;
+                x = z;
+                z = -old;
+            }
+            positions[at] = x + 0.5f;
+            positions[at + 2] = z + 0.5f;
+            uvs[count * 8 + i * 2] = icon.getSubIconU(uv[i][0]);
+            uvs[count * 8 + i * 2 + 1] = icon.getSubIconV(uv[i][1]);
+        }
+        turn(normal, t, normals, count * 3);
+        float gx = geometry[0], gz = geometry[2];
+        for (int k = 0; k < t; k++) {
+            float old = gx;
+            gx = gz;
+            gz = -old;
+        }
+        finish(gx, geometry[1], gz, color, emission);
+    }
+
+    private static void turn(float[] v, int t, float[] out, int at) {
+        float x = v[0], z = v[2];
+        for (int k = 0; k < t; k++) {
+            float old = x;
+            x = z;
+            z = -old;
+        }
+        out[at] = x;
+        out[at + 1] = v[1];
+        out[at + 2] = z;
+    }
+
+    /** The rest of {@link #add}: colour, side, light weights and emission of the face at {@code count}. */
+    private void finish(float gx, float gy, float gz, float[] color, int emission) {
         System.arraycopy(color, 0, colors, count * 3, 3);
-        int side = side(geometry);
+        int side = side(gx, gy, gz);
         sides[count] = (byte) side;
         for (int i = 0; i < 4; i++)
-            outside[count * 4 + i] = outsideWeight(side, corners[i]);
+            outside[count * 4 + i] = outsideWeight(side, positions, count * 12 + i * 3);
         emissions[count] = (byte) Math.max(0, Math.min(15, emission));
         count++;
     }
@@ -376,19 +431,19 @@ public final class TileEntityMesh {
     }
 
     /** The side (0 to 5: down, up, north, south, west, east) a normal points to most. */
-    static int side(float[] n) {
-        float x = Math.abs(n[0]), y = Math.abs(n[1]), z = Math.abs(n[2]);
+    static int side(float nx, float ny, float nz) {
+        float x = Math.abs(nx), y = Math.abs(ny), z = Math.abs(nz);
         if (y >= x && y >= z)
-            return n[1] < 0 ? 0 : 1;
+            return ny < 0 ? 0 : 1;
         if (z >= x)
-            return n[2] < 0 ? 2 : 3;
-        return n[0] < 0 ? 4 : 5;
+            return nz < 0 ? 2 : 3;
+        return nx < 0 ? 4 : 5;
     }
 
     /** How much of the neighbour's light a corner takes: 1 on that side's plane, 0 on the opposite side. */
-    static float outsideWeight(int side, float[] p) {
+    static float outsideWeight(int side, float[] positions, int at) {
         int axis = side >= 4 ? 0 : side >= 2 ? 2 : 1;
-        float along = Math.max(0f, Math.min(1f, p[axis]));
+        float along = Math.max(0f, Math.min(1f, positions[at + axis]));
         return (side & 1) == 1 ? along : 1f - along;
     }
 
